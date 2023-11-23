@@ -1,4 +1,4 @@
-package com.example.jobfinder.data.dto;
+package com.example.jobfinder.data.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +11,8 @@ import java.util.Map;
 @NoArgsConstructor
 @Data
 public class ResponseMessage {
+    private int httpCode;
     private String message;
-    private Map<String, Object> data;
+    private String path;
 
 }
