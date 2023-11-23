@@ -1,7 +1,7 @@
 package com.example.jobfinder.exception;
 
 
-import com.example.jobfinder.data.dto.ErrorMessageDTO;
+import com.example.jobfinder.data.dto.response.ErrorMessageDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

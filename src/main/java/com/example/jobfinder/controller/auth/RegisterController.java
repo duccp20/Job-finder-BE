@@ -1,8 +1,8 @@
-package com.example.jobfinder.controller.user;
+package com.example.jobfinder.controller.auth;
 
 
 import com.example.jobfinder.constant.ApiURL;
-import com.example.jobfinder.data.dto.user.UserCreationDTO;
+import com.example.jobfinder.data.dto.request.user.UserCreationDTO;
 import com.example.jobfinder.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,9 +19,9 @@ public class RegisterController {
     @Autowired
     private UserService userService;
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UserCreationDTO userCreationDTO) {
+    public ResponseEntity<?> doRegister(@RequestBody UserCreationDTO userCreationDTO) {
         return new ResponseEntity<>(
                 userService.register(userCreationDTO), HttpStatus.CREATED
-                );
+        );
     }
 }

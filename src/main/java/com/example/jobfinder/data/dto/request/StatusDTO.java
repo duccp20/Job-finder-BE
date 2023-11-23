@@ -1,4 +1,4 @@
-package com.example.jobfinder.data.dto;
+package com.example.jobfinder.data.dto.request;
 
 import lombok.Data;
 

@@ -9,3 +9,32 @@ spring:
       ddl-auto: update
     generate-ddl: true
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: phuocduc2k3@gmail.com
+    password: rpfrhdvdmqropojm
+    properties:
+      mail:
+        mime:
+          charset=UTF-8:
+        smtp:
+          auth: true
+          starttls.enable: true
+
+
+
+application:
+  security:
+    jwt:
+      secret-key: kiGtJXhv5R86NBx8gS7kO9TRq6XKP5Pzs44cEpgAzNA=
+      expiration: 20000 # a day
+      refresh:
+        expiration: 604800000 # 7 days
+
+
+url:
+  redirect:
+    path: ${domain.path}
+domain:
+  path: http://localhost:3000/

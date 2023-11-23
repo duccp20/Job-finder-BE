@@ -52,16 +52,16 @@ public class User {
     private boolean mailReceive;
 
     @JsonIgnore
-    @Column(name = "auth_provider")
-    private String authProvider;
-
-    @JsonIgnore
     @Column(name = "password_forgot_token")
     private String passwordForgotToken;
 
     @JsonIgnore
     @Column(name = "token_active")
     private String tokenActive;
+
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "social_account_id",)
+//    private SocialAccount socialAccount;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", nullable = false)
