@@ -8,10 +8,8 @@ import java.io.UnsupportedEncodingException;
 
 public interface MailService{
 
-    String sendSimpleMail(MailResponse details);
+    ResponseMessage sendMailActive(String email) throws MessagingException, UnsupportedEncodingException;
 
-    void sendMailWithAttachment(MailResponse details) throws MessagingException, UnsupportedEncodingException;
-
-    Object sendMailActive(String email) throws MessagingException, UnsupportedEncodingException;
+    void send(MailResponse mail) throws MessagingException, UnsupportedEncodingException;
 }
 

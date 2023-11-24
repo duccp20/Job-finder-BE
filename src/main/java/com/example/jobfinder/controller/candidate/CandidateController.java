@@ -29,24 +29,6 @@ public class CandidateController {
     @Autowired
     private MailService mailService;
 
-//    @GetMapping("/active")
-//    public ResponseEntity<?> activeAccountCandidate(@RequestParam(name = "activeToken") String token) {
-//        RedirectView redirectView = new RedirectView();
-//        try {
-//            this.candidateService.activeCandidate(token);
-//            String redirectUrl = "http://localhost:3000/auth/confirmActive?status=success&message="
-//                    + messageSource.getMessage("error.activeUserSuccessfull", null, null);
-//
-//            redirectView.setUrl(redirectUrl);
-//            return ResponseEntity.ok(redirectView);
-//        } catch (Exception ex) {
-//            String redirectUrl = "http://localhost:3000/auth/confirmActive?status=failed&message=" + ex.getMessage();
-//
-//            redirectView.setUrl(redirectUrl);
-//            return (ResponseEntity<?>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-//
-//        }
-//    }
 
     @PostMapping("/send-mail-active/{email}")
     public ResponseEntity<?> sendMailActive(@PathVariable String email) throws MessagingException, UnsupportedEncodingException {

@@ -7,6 +7,7 @@ import com.example.jobfinder.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -22,5 +23,10 @@ public class TokenServiceImpl implements TokenService {
         theToken.setUser(user);
         tokenRepository.save(theToken);
         return theToken;
+    }
+
+    @Override
+    public Optional<Token> findByToken(String token) {
+        return tokenRepository.findByToken(token);
     }
 }
