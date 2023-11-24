@@ -26,13 +26,11 @@ public class Token {
     @JoinColumn(name = "id")
     private User user;
 
-
     public Token(String token, User user) {
         this.token = token;
         this.user = user;
         this.expirationTime = this.getTokenExpirationTime();
     }
-
 
     public Date getTokenExpirationTime() {
         Calendar calendar = Calendar.getInstance();

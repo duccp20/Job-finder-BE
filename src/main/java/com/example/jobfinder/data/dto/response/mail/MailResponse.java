@@ -8,9 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 @AllArgsConstructor
 @Data
 @NoArgsConstructor
@@ -25,12 +22,14 @@ public class MailResponse {
     private String cv;
     private EMailType typeMail;
 
+    private String token;
 
-    public String createMailConfirm(String urlRedirect, String token) {
 
-        String link = urlRedirect + "api/candidate/active?active_token=" + token;
+    public void createMailConfirm(String urlRedirect, String token) {
 
-        return this.mailTemplate = "<!DOCTYPE html>\r\n"
+        String link = urlRedirect + "api/candidate/active?active-token=" + token;
+        log.info(link);
+        this.mailTemplate = "<!DOCTYPE html>\r\n"
                 + "<html lang=\"en\">\r\n"
                 + "<head>\r\n"
                 + "    <meta charset=\"UTF-8\">\r\n"
@@ -118,6 +117,7 @@ public class MailResponse {
                 + "</body>\r\n"
                 + "</html>";
     }
+
 
 //    public void createMailActiveOTP(String urlRedirect, int token) {
 //        String link = String.valueOf(token);

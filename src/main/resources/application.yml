@@ -34,6 +34,7 @@ application:
 
 
 url:
+  server: http://localhost:8080/
   redirect:
     path: ${domain.path}
 domain:
