@@ -6,23 +6,14 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class UserCreationDTO {
+public class LoginDTO {
 
-    @NotNull
-    @NotEmpty
-    private String firstName;
-    @NotNull
-    @NotEmpty
-    private String lastName;
     @NotNull
     @NotEmpty
     @Email
     private String email;
+
     @NotNull
     @NotEmpty
     private String password;
-    private String phone;
-
-    private int role;
-
 }

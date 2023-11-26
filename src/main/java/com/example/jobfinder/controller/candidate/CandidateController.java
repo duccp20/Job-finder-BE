@@ -6,6 +6,7 @@ import com.example.jobfinder.data.dto.response.mail.MailResponse;
 import com.example.jobfinder.service.CandidateService;
 import com.example.jobfinder.service.MailService;
 import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class CandidateController {
 
 
     @PostMapping("/send-mail-active/{email}")
-    public ResponseEntity<?> sendMailActive(@PathVariable String email) throws MessagingException, UnsupportedEncodingException {
+    public ResponseEntity<?> sendMailActive(@Valid @PathVariable String email) throws MessagingException, UnsupportedEncodingException {
         return new ResponseEntity<>(
                 mailService.sendMailActive(email),
                 HttpStatus.OK);

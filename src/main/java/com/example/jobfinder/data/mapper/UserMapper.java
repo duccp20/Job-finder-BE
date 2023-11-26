@@ -28,7 +28,7 @@ public interface UserMapper {
     @Mapping(target = "role", ignore = true)
     UserCreationDTO toDTO(User user);
 
-    @Mapping(target = "roleName", ignore = true)
+    @Mapping(source="role.name", target = "role")
     ShowUserDTO toShowDTO(User user);
 
 }
