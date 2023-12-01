@@ -1,12 +1,12 @@
 package com.example.jobfinder.controller.candidate;
 
 import com.example.jobfinder.constant.ApiURL;
-import com.example.jobfinder.data.dto.response.ResponseMessage;
-import com.example.jobfinder.data.dto.response.mail.MailResponse;
 import com.example.jobfinder.service.CandidateService;
 import com.example.jobfinder.service.MailService;
+
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -44,7 +44,7 @@ public class CandidateController {
         try {
             this.candidateService.activeCandidate(token);
             String redirectUrl = "http://localhost:3000/auth/confirmActive?status=success&message="
-                    + messageSource.getMessage("error.activeUserSuccessfull", null, null);
+                    + messageSource.getMessage("error.activeUserSuccessful", null, null);
 
             redirectView.setUrl(redirectUrl);
             return ResponseEntity.ok(redirectView);

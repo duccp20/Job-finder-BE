@@ -10,7 +10,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @Table(name = "token")
-public class Token {
+public class Token extends Auditable {
     private static final int EXPIRATION_TIME = 10;
 
     @Id
