@@ -7,6 +7,7 @@ import com.example.jobfinder.exception.ValidationException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -91,6 +92,15 @@ public class JwtTokenUtils {
     public boolean isTokenExpired(String token) {
         Date dateExpiration = this.extractClaim(token, Claims::getExpiration);
         return dateExpiration.before(new Date());
+    }
+
+    public String extractEmail(String token) {
+        return this.extractClaim(token, Claims::getSubject);
+    }
+
+    public boolean validateToken(String token, UserDetails userDetails) {
+        final String email = this.extractEmail(token);
+        return (email.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
 }

@@ -1,5 +1,4 @@
 package com.example.jobfinder.config;
-import com.example.jobfinder.data.entity.User;
 import com.example.jobfinder.data.repository.UserRepository;
 import com.example.jobfinder.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;

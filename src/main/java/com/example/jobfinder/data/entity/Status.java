@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "status")
-public class Status {
+public class Status extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
