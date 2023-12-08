@@ -1,10 +1,12 @@
 package com.example.jobfinder.controller.candidate;
 
 import com.example.jobfinder.constant.ApiURL;
+import com.example.jobfinder.data.dto.request.mail.EmailRequest;
 import com.example.jobfinder.service.CandidateService;
 import com.example.jobfinder.service.MailService;
 
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Collections;
 
 @RestController
 @RequestMapping(ApiURL.CANDIDATE)
@@ -31,32 +34,25 @@ public class CandidateController {
     private MailService mailService;
 
 
-    @PostMapping("/send-mail-active/{email}")
-    public ResponseEntity<?> sendMailActive(@Valid @PathVariable String email) throws MessagingException, UnsupportedEncodingException {
+    @PostMapping("/active-account")
+    public ResponseEntity<?> sendMailActive(@Valid @RequestBody EmailRequest emailRequest) throws MessagingException, UnsupportedEncodingException {
+        // Xử lý email
         return new ResponseEntity<>(
-                mailService.sendMailActive(email),
+                mailService.sendMailActive(emailRequest.getEmail()),
                 HttpStatus.OK);
     }
 
+
+
     @GetMapping("/active")
-    public ResponseEntity<?> activeAccountCandidate(@RequestParam(name = "activeToken") String token) {
-        RedirectView redirectView = new RedirectView();
+    public Object activeAccountCandidate(@RequestParam(name = "active-token") String token) {
         try {
-            this.candidateService.activeCandidate(token);
-            String redirectUrl = "http://localhost:3000/auth/confirmActive?status=success&message="
-                    + messageSource.getMessage("error.activeUserSuccessful", null, null);
-
-            redirectView.setUrl(redirectUrl);
-            return ResponseEntity.ok(redirectView);
-        } catch (Exception ex) {
-            String redirectUrl = "http://localhost:3000/auth/confirmActive?status=failed&message=" + ex.getMessage();
-
-            redirectView.setUrl(redirectUrl);
-            return (ResponseEntity<?>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-
+           return candidateService.activeCandidate(token);
+        }
+        catch (Exception e) {
+            String redirectUrl = "http://localhost:3000/verify-email?status=fail";
+            return new RedirectView(redirectUrl);
         }
     }
-
-
 
 }

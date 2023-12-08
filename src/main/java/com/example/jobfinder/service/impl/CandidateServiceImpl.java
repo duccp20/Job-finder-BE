@@ -1,9 +1,9 @@
 package com.example.jobfinder.service.impl;
 
+import com.example.jobfinder.data.entity.Status;
 import com.example.jobfinder.data.entity.Token;
 import com.example.jobfinder.data.entity.User;
 import com.example.jobfinder.data.repository.UserRepository;
-import com.example.jobfinder.exception.InternalServerErrorException;
 import com.example.jobfinder.exception.ResourceNotFoundException;
 import com.example.jobfinder.exception.ValidationException;
 import com.example.jobfinder.service.CandidateService;
@@ -11,17 +11,18 @@ import com.example.jobfinder.service.StatusService;
 import com.example.jobfinder.service.TokenRepository;
 import com.example.jobfinder.service.TokenService;
 import com.example.jobfinder.utils.enumeration.Estatus;
-import org.apache.logging.log4j.message.Message;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.Calendar;
+import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
+
 
 @Service
+@Slf4j
 public class CandidateServiceImpl implements CandidateService {
 
     @Autowired
@@ -40,25 +41,36 @@ public class CandidateServiceImpl implements CandidateService {
     private MessageSource messageSource;
 
     @Override
-    public void activeCandidate(String token) {
+    public Object activeCandidate(String token) {
 
         Token theToken = tokenService.findByToken(token).orElseThrow(() -> {
             throw new ResourceNotFoundException(Collections.singletonMap("token", token));
         });
 
-        Calendar calendar = Calendar.getInstance();
-        boolean tokenExpired = theToken.getExpirationTime().getTime() - calendar.getTime().getTime() < 0;
+        if (theToken.getStatus().getName().equals(Estatus.Delete.toString())) {
+            String redirectUrl = "http://localhost:3000/verify-email?status=completed";
+            return new RedirectView(redirectUrl);
+        }
+
+
+        Instant expirationTime = theToken.getExpirationTime().toInstant();
+        Instant now = Instant.now();
+
+        boolean tokenExpired = expirationTime.isBefore(now);
 
         if (tokenExpired) {
-           throw new ValidationException(Collections.singletonMap("token expired", token));
+            return new RedirectView("http://localhost:3000/verify-email?status=fail");
         }
 
         User user = this.userRepository.findByTokenActive(token);
-        user.setStatus(this.statusService.findByName(Estatus.Active.toString()));
+
+        Status statusActive = this.statusService.findByName(Estatus.Active.toString());
+        user.setStatus(statusActive);
 
         user.setTokenActive("");
-        this.tokenRepository.delete(theToken);
+        theToken.setStatus(this.statusService.findByName(Estatus.Delete.toString()));
         this.userRepository.save(user);
+        return new RedirectView("http://localhost:3000/verify-email?status=success");
     }
 }
 

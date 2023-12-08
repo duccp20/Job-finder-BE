@@ -5,11 +5,13 @@ import lombok.*;
 import java.util.Calendar;
 import java.util.Date;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "token")
+@Builder
 public class Token extends Auditable {
     private static final int EXPIRATION_TIME = 10;
 
@@ -26,13 +28,12 @@ public class Token extends Auditable {
     @JoinColumn(name = "id")
     private User user;
 
-    public Token(String token, User user) {
-        this.token = token;
-        this.user = user;
-        this.expirationTime = this.getTokenExpirationTime();
-    }
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "status_id", nullable = false)
+    private Status status;
 
-    public Date getTokenExpirationTime() {
+
+    public static Date getTokenExpirationTime() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(new Date().getTime());
         calendar.add(Calendar.MINUTE, EXPIRATION_TIME);

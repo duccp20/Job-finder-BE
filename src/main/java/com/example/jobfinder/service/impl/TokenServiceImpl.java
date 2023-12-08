@@ -2,11 +2,15 @@ package com.example.jobfinder.service.impl;
 
 import com.example.jobfinder.data.entity.Token;
 import com.example.jobfinder.data.entity.User;
+import com.example.jobfinder.data.repository.StatusRepository;
 import com.example.jobfinder.service.TokenRepository;
 import com.example.jobfinder.service.TokenService;
+import com.example.jobfinder.utils.enumeration.Estatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,12 +19,19 @@ public class TokenServiceImpl implements TokenService {
 
     @Autowired
     private TokenRepository tokenRepository;
+
+    @Autowired
+    private StatusRepository statusRepository;
     @Override
     public Token generateToken(User user) {
-        Token theToken = new Token();
-        theToken.setToken(UUID.randomUUID().toString());
-        theToken.setExpirationTime(new Token().getExpirationTime());
-        theToken.setUser(user);
+        String uuid = UUID.randomUUID().toString();
+
+       Token theToken = Token.builder()
+               .token(uuid)
+               .expirationTime(Token.getTokenExpirationTime())
+               .user(user)
+               .status(statusRepository.findByName(Estatus.Active.toString()))
+               .build();
         tokenRepository.save(theToken);
         return theToken;
     }

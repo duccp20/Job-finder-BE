@@ -17,8 +17,10 @@ public class MailController {
     @Autowired
     private MailService mailService;
 
-      @GetMapping("/active-user")
+    @GetMapping("/active-user")
     public ResponseEntity<?> sendMailActive(@RequestParam String email) throws MessagingException, UnsupportedEncodingException {
       return  ResponseEntity.ok(mailService.sendMailActive(email));
     }
+
+
 }

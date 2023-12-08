@@ -64,9 +64,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         }
     }
 
-    private String getEmailFromToken(String token, String tokenType) {
+    private String getEmailFromToken(String tokenType, String token) {
 
-        if (tokenType != null && tokenType.startsWith("Bearer")) {
+        if (token != null && tokenType.startsWith("Bearer")) {
             return jwtTokenUtils.extractEmail(token);
         }
         return null;
@@ -76,7 +76,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private boolean isByPassToken(HttpServletRequest request) {
         List<Pair<String, String>> byPassTokens = Arrays.asList(
                 Pair.of(ApiURL.USER + "/login", "POST"),
-                Pair.of(ApiURL.AUTH + "/register", "POST")
+                Pair.of(ApiURL.AUTH + "/register", "POST"),
+                Pair.of(ApiURL.USER + "/forget-password", "POST"),
+                Pair.of(ApiURL.USER + "/active-forget-password", "GET"),
+                Pair.of(ApiURL.CANDIDATE + "/active-account", "POST"),
+                Pair.of(ApiURL.CANDIDATE + "/active", "GET"),
+                Pair.of(ApiURL.USER + "/reset-password-by-token", "POST")
         );
 
         return byPassTokens.stream()

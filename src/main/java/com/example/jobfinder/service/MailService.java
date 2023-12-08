@@ -11,5 +11,8 @@ public interface MailService{
     ResponseMessage sendMailActive(String email) throws MessagingException, UnsupportedEncodingException;
 
     void send(MailResponse mail) throws MessagingException, UnsupportedEncodingException;
+
+
+    ResponseMessage sendTokenForgetPassword(String email) throws MessagingException, UnsupportedEncodingException;
 }
 
