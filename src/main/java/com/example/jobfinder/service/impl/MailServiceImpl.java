@@ -23,6 +23,8 @@ import org.springframework.stereotype.Service;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.Random;
+import java.util.UUID;
 
 @Service
 public class MailServiceImpl implements MailService {
@@ -44,7 +46,7 @@ public class MailServiceImpl implements MailService {
     @Value("${spring.mail.username}")
     private String sender;
 
-    @Value("${domain.path:}")
+    @Value("${url.server.path}")
     private String urlRedirect;
 
 
@@ -64,6 +66,8 @@ public class MailServiceImpl implements MailService {
             }
             case ForgotPassword -> {
                 mailResponse.setSubject("Yêu cầu đổi mật khẩu tài khoản trên Jobsit.vn");
+                userService.updateTokenForgetPassword(mailResponse.getTo(), mailResponse.getToken());
+                mailResponse.createMailForgotPassword(urlRedirect, mailResponse.getToken());
                 break;
             }
             default -> throw new InternalServerErrorException("Type mail is incorect!");
@@ -75,67 +79,52 @@ public class MailServiceImpl implements MailService {
         mailSender.send(message);
     }
 
-
-
     @Override
-    public ResponseMessage sendMailActive(String email) throws MessagingException, UnsupportedEncodingException {
-        User user = userRepository.findByEmail(email).orElseThrow(() ->  {
+    public ResponseMessage sendTokenForgetPassword(String email) throws MessagingException, UnsupportedEncodingException {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> {
             throw new ResourceNotFoundException(Collections.singletonMap("email", email));
         });
 
-        if (user.getStatus().getName().equals(Estatus.Active.toString()))
-            throw new InternalServerErrorException(messageSource.getMessage("error.alreadyActive", null, null));
+        if (user.getStatus().getName().equals(Estatus.Not_Active.toString())) {
+            throw new ResourceNotFoundException(Collections.singletonMap("email", email));
+        }
 
         Token token = tokenService.generateToken(user);
         MailResponse mailResponse = new MailResponse();
         mailResponse.setNamePost("job-finder");
         mailResponse.setNameReceive(user.getFirstName());
-        mailResponse.setTo(email);// Set email to reset password! Get User by Email => Change Password
-        mailResponse.setTypeMail(EMailType.ConfirmMail);
+        mailResponse.setTo(email);
+        mailResponse.setTypeMail(EMailType.ForgotPassword);
         mailResponse.setToken(token.getToken());
         this.send(mailResponse);
-        return new ResponseMessage(HttpServletResponse.SC_OK, "SEND MAIL", null);
+
+        return new ResponseMessage(HttpServletResponse.SC_OK, "SEND MAIL", null, null);
     }
 
 
 
 
-//    @Override
-//    public void sendMailWithAttachment(MailResponse details) throws MessagingException, UnsupportedEncodingException {
-//
-//        User user = userRepository.findByEmail(details.getNameReceive()).orElseThrow(() -> {
-//                    throw new ResourceNotFoundException(Collections.singletonMap("email", details.getNameReceive()));
-//                }
-//        );
-//
-//
-//        String urlDirect = url + "test thôi, chưa xác thực đâu";
-//        Token token = tokenService.generateToken(user);
-//        MimeMessage message = mailSender.createMimeMessage();
-//        var messageHelper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
-//        messageHelper.setFrom(sender, details.getNamePost());
-//        messageHelper.setTo(user.getEmail());
-//        messageHelper.setText(new MailResponse().createMailConfirm(urlDirect, token.getToken()), true);
-//        messageHelper.setSubject(details.getSubject());
-//
-//        // Sending mail
-//        mailSender.send(message);
-//    }
-//
-//    @Override
-//    public Object sendMailActive(String email) throws MessagingException, UnsupportedEncodingException {
-//
-//        MailResponse mailResponse = MailResponse.builder()
-//                .namePost("job-finder")
-//                .subject("Xác thực email cho tài khoản Jobsit.vn")
-//                .nameReceive(email)
-//                .build();
-//
-//
-//        this.sendMailWithAttachment(mailResponse);
-//
-//        return new ResponseEntity<>("Send mail Completed!", HttpStatus.OK);
-//    }
 
 
+    @Override
+    public ResponseMessage sendMailActive(String email) throws MessagingException, UnsupportedEncodingException {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> {
+            throw new ResourceNotFoundException(Collections.singletonMap("email", email));
+        });
+
+        if (user.getStatus().getName().equals(Estatus.Active.toString()))
+            throw new InternalServerErrorException(
+                    messageSource.getMessage("error.alreadyActive", null, null));
+
+        Token token = tokenService.generateToken(user);
+        MailResponse mailResponse = new MailResponse();
+        mailResponse.setNamePost("job-finder");
+        mailResponse.setNameReceive(user.getFirstName());
+        mailResponse.setTo(email);
+        mailResponse.setTypeMail(EMailType.ConfirmMail);
+        mailResponse.setToken(token.getToken());
+        this.send(mailResponse);
+
+        return new ResponseMessage(HttpServletResponse.SC_OK, "SEND MAIL", null, null);
+    }
 }

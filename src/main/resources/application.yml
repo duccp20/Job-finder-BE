@@ -34,8 +34,7 @@ application:
 
 
 url:
-  server: http://localhost:8080/
-  redirect:
-    path: ${domain.path}
-domain:
-  path: http://localhost:3000/
+  server:
+      path:  http://localhost:8080/
+  client:
+    path: http://localhost:3000/

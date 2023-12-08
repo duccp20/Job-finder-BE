@@ -14,6 +14,10 @@ public interface UserMapper {
 
 
 //    @Mapping(target = "socialAccount",ignore = true)
+    @Mapping(target = "lastModifiedDate", ignore = true)
+    @Mapping(target = "lastModifiedBy", ignore = true)
+    @Mapping(target = "createdDate", ignore = true)
+    @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "tokenActive", ignore = true)
     @Mapping(target = "passwordForgotToken", ignore = true)
     @Mapping(target = "mailReceive", ignore = true)

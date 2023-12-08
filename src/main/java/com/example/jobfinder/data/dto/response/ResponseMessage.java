@@ -13,6 +13,7 @@ import java.util.Map;
 public class ResponseMessage {
     private int httpCode;
     private String message;
+    private Object data;
     private String path;
 
 }

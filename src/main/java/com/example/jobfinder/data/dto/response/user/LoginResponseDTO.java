@@ -10,8 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginResponseDTO {
+    private int httpCode;
     private String message;
     private String accessToken;
     private String refreshToken;
-    private ShowUserDTO user;
+    private ShowUserDTO data;
 }
