@@ -1,19 +1,26 @@
 package com.example.jobfinder.controller.candidate;
 
 import com.example.jobfinder.constant.ApiURL;
+import com.example.jobfinder.data.dto.request.candidate.CandidateProfileDTO;
 import com.example.jobfinder.data.dto.request.mail.EmailRequest;
+import com.example.jobfinder.data.dto.response.ResponseMessage;
 import com.example.jobfinder.service.CandidateService;
 import com.example.jobfinder.service.MailService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.UnsupportedEncodingException;
@@ -43,7 +50,6 @@ public class CandidateController {
     }
 
 
-
     @GetMapping("/active")
     public Object activeAccountCandidate(@RequestParam(name = "active-token") String token) {
         try {
@@ -55,4 +61,28 @@ public class CandidateController {
         }
     }
 
+//    @SecurityRequirement(name = "Bearer Authentication")
+//    @PreAuthorize(value = "hasAuthority('Role_Candidate')")
+//    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity<?> update(@PathVariable long id,
+//                                    @RequestPart(name = "candidateProfileDTO") String candidateProfileDTOJson,
+//                                    @RequestPart(name = "fileAvatar", required = false) MultipartFile fileAvatar,
+//                                    @RequestPart(name = "fileCV", required = false) MultipartFile fileCV) {
+//
+//    }
+
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize(value = "hasAuthority('Role_Candidate')")
+    @PutMapping("/profile")
+    public ResponseEntity<?> updateProfile(@Valid @RequestBody CandidateProfileDTO candidateProfileDTO) {
+
+        return ResponseEntity.ok(candidateService.updateProfile(candidateProfileDTO));
+    }
+
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize(value = "hasAuthority('Role_Candidate')")
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getCandidateByUserId(@PathVariable long id) {
+        return ResponseEntity.ok(candidateService.getCandidateByUserId(id));
+    }
 }

@@ -1,16 +1,16 @@
 package com.example.jobfinder.service.impl;
+
 import com.example.jobfinder.data.dto.request.user.LoginDTO;
 import com.example.jobfinder.data.dto.request.user.ResetPasswordByToken;
+import com.example.jobfinder.data.dto.request.user.UserProfileDTO;
 import com.example.jobfinder.data.dto.response.ErrorMessageDTO;
 import com.example.jobfinder.data.dto.response.ResponseMessage;
 import com.example.jobfinder.data.dto.request.user.UserCreationDTO;
 import com.example.jobfinder.data.dto.response.user.LoginResponseDTO;
 import com.example.jobfinder.data.dto.response.user.ShowUserDTO;
-import com.example.jobfinder.data.entity.Role;
-import com.example.jobfinder.data.entity.Status;
-import com.example.jobfinder.data.entity.Token;
-import com.example.jobfinder.data.entity.User;
+import com.example.jobfinder.data.entity.*;
 import com.example.jobfinder.data.mapper.UserMapper;
+import com.example.jobfinder.data.repository.CandidateRepository;
 import com.example.jobfinder.data.repository.RoleRepository;
 import com.example.jobfinder.data.repository.StatusRepository;
 import com.example.jobfinder.data.repository.UserRepository;
@@ -20,9 +20,11 @@ import com.example.jobfinder.exception.ResourceNotFoundException;
 import com.example.jobfinder.exception.ValidationException;
 import com.example.jobfinder.security.jwt.JwtTokenUtils;
 import com.example.jobfinder.service.*;
+import com.example.jobfinder.utils.enumeration.ERole;
 import com.example.jobfinder.utils.enumeration.Estatus;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Builder;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -33,10 +35,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @Builder
@@ -81,6 +86,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private Validation validation;
 
+    @Autowired
+    private CandidateRepository candidateRepository;
+
     @Override
     public Object register(UserCreationDTO userCreationDTO) {
 
@@ -101,7 +109,20 @@ public class UserServiceImpl implements UserService {
         Status status = statusRepository.findByName(notActiveStatus);
         user.setStatus(status);
 
-        return new ResponseMessage(201, "Register Successfully",  userRepository.save(user), servletRequest.getServletPath());
+        userRepository.save(user);
+
+        if (user.getRole().getName().equals(ERole.Candidate.toString())) {
+            Candidate candidate = new Candidate();
+            candidate.setUser(user);
+            candidateRepository.save(candidate);
+        }
+
+        return ResponseMessage.builder()
+                .httpCode(HttpStatus.CREATED.value())
+                .message("Register Successfully")
+                .data(user)
+                .build();
+//        return new ResponseMessage(201, "Register Successfully", , servletRequest.getServletPath());
     }
 
     @Override
@@ -130,13 +151,13 @@ public class UserServiceImpl implements UserService {
                     throw new ResourceNotFoundException(Collections.singletonMap("email or password not valid", loginDTO.getEmail()));
                 });
 
-        boolean checkPassword =  passwordEncoder.matches(loginDTO.getPassword(), existingUser.getPassword());
-        if(!checkPassword) {
+        boolean checkPassword = passwordEncoder.matches(loginDTO.getPassword(), existingUser.getPassword());
+        if (!checkPassword) {
             throw new ValidationException(Collections.singletonMap("email or password not valid", loginDTO.getEmail()));
         }
 
         boolean isStatusActive = existingUser.getStatus().getName().equals(Estatus.Active.toString());
-        if(!isStatusActive) {
+        if (!isStatusActive) {
             return new ResponseEntity<>(
                     ErrorMessageDTO.builder()
                             .message("Account Not Active")
@@ -194,29 +215,29 @@ public class UserServiceImpl implements UserService {
     @Override
     public void resetPasswordByToken(ResetPasswordByToken resetPasswordByTokenDTO) {
 
-            User user = this.userRepository.findByPasswordForgotToken(resetPasswordByTokenDTO.getToken()).orElseThrow(
-                    () -> new InternalServerErrorException(this.messageSource.getMessage("error.tokenNotFound", null, null)));
+        User user = this.userRepository.findByPasswordForgotToken(resetPasswordByTokenDTO.getToken()).orElseThrow(
+                () -> new InternalServerErrorException(this.messageSource.getMessage("error.tokenNotFound", null, null)));
 
-            Token theToken = this.tokenRepository.findByToken(resetPasswordByTokenDTO.getToken()).orElseThrow(
-                    () ->  new InternalServerErrorException(this.messageSource.getMessage("error.tokenNotFound", null, null)));
+        Token theToken = this.tokenRepository.findByToken(resetPasswordByTokenDTO.getToken()).orElseThrow(
+                () -> new InternalServerErrorException(this.messageSource.getMessage("error.tokenNotFound", null, null)));
 
-            Instant expirationTime = theToken.getExpirationTime().toInstant();
-            Instant now = Instant.now();
+        Instant expirationTime = theToken.getExpirationTime().toInstant();
+        Instant now = Instant.now();
 
-            boolean tokenExpired = expirationTime.isBefore(now);
-            if (tokenExpired) {
-                throw new InternalServerErrorException(this.messageSource.getMessage("error.tokenIsExpired", null, null));
-            }
+        boolean tokenExpired = expirationTime.isBefore(now);
+        if (tokenExpired) {
+            throw new InternalServerErrorException(this.messageSource.getMessage("error.tokenIsExpired", null, null));
+        }
 
-            if (!this.validation.passwordValid(resetPasswordByTokenDTO.getNewPassword())) // Check Password is strong
-                throw new InternalServerErrorException(messageSource.getMessage("error.passwordRegex", null, null));
+        if (!this.validation.passwordValid(resetPasswordByTokenDTO.getNewPassword())) // Check Password is strong
+            throw new InternalServerErrorException(messageSource.getMessage("error.passwordRegex", null, null));
 
-            String newPasswordEncoder = passwordEncoder.encode(resetPasswordByTokenDTO.getNewPassword());
-            user.setPassword(newPasswordEncoder);
-            user.setPasswordForgotToken("");
+        String newPasswordEncoder = passwordEncoder.encode(resetPasswordByTokenDTO.getNewPassword());
+        user.setPassword(newPasswordEncoder);
+        user.setPasswordForgotToken("");
 
-            theToken.setStatus(this.statusService.findByName(Estatus.Delete.toString()));
-            this.userRepository.save(user);
+        theToken.setStatus(this.statusService.findByName(Estatus.Delete.toString()));
+        this.userRepository.save(user);
     }
 
     @Override
@@ -228,6 +249,36 @@ public class UserServiceImpl implements UserService {
                 new ResourceNotFoundException(Collections.singletonMap("email", email)));
 
         return userMapper.toShowDTO(user);
+    }
+
+
+    public ShowUserDTO update(long id, UserProfileDTO userProfileDTO
+            , MultipartFile fileAvatar
+    ) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User oldUser = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("id", id)));
+
+        if (!oldUser.getEmail().equals(email)) {
+            throw new ResourceNotFoundException(Collections.singletonMap("email", email));
+        }
+
+        User updateUser = userMapper.toEntity(userProfileDTO);
+        updateUser.setId(oldUser.getId());
+        updateUser.setEmail(oldUser.getEmail());
+        updateUser.setPassword(oldUser.getPassword());
+        updateUser.setBirthDay(userProfileDTO.getBirthDay());
+        // check update file Avatar
+//        if (!StringUtils.equals(updateUser.getAvatar(), oldUser.getAvatar()) || (fileAvatar != null)) {
+//            fileService.deleteFile(oldUser.getAvatar());
+//            updateUser.setAvatar(fileService.uploadFile(fileAvatar));
+//        }
+        updateUser.setRole(oldUser.getRole());
+        updateUser.setStatus(oldUser.getStatus());
+        updateUser.setMailReceive(oldUser.isMailReceive());
+
+        return userMapper.toShowDTO(userRepository.save(updateUser));
     }
 
 

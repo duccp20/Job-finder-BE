@@ -1,26 +1,27 @@
-package com.example.jobfinder.data.dto.response.user;
+package com.example.jobfinder.data.dto.request.user;
+
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-@Getter
-@Setter
-public class ShowUserDTO {
-    private Long id;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class UserProfileDTO {
+    private Long userId;
     private String firstName;
     private String lastName;
-    private boolean gender;
-
+    private String phone;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private Date birthDay;
+    private boolean gender;
     private String address;
-    private String email;
-    private String phone;
     private String avatar;
-    private String role;
+
 
 }
