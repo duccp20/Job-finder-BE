@@ -2,10 +2,9 @@ package com.example.jobfinder.data.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.mail.Address;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,8 +15,10 @@ import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@Data
 @Entity
 @Table(name = "user")
 public class User extends Auditable implements UserDetails  {
@@ -51,8 +52,12 @@ public class User extends Auditable implements UserDetails  {
     @Column(name = "birthday")
     private Date birthDay;
 
-    @Column(name = "location")
-    private String location;
+//    @ManyToOne
+//    @JoinColumn(name = "location_id")
+//    private Location location;
+
+    @Column(name = "address")
+    private String address;
 
     @Column(name = "mail_receive")
     private boolean mailReceive;
