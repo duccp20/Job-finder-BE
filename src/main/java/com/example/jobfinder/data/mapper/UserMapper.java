@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 @Component
 public interface UserMapper {
 
-
 //    @Mapping(target = "socialAccount",ignore = true)
     @Mapping(target = "lastModifiedDate", ignore = true)
     @Mapping(target = "lastModifiedBy", ignore = true)
@@ -34,19 +33,21 @@ public interface UserMapper {
 
 
     @Mapping(target = "role", ignore = true)
-
     UserCreationDTO toDTO(User user);
+
 
     @Mapping(target = "tokenActive", ignore = true)
     @Mapping(target = "status", ignore = true)
+    @Mapping(target = "role", ignore = true)
     @Mapping(target = "passwordForgotToken", ignore = true)
+    @Mapping(target = "password", ignore = true)
     @Mapping(target = "mailReceive", ignore = true)
     @Mapping(target = "lastModifiedDate", ignore = true)
     @Mapping(target = "lastModifiedBy", ignore = true)
-    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "email", ignore = true)
     @Mapping(target = "createdDate", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
-    @Mapping(target = "role", ignore = true)
+    @Mapping(source="userId", target = "id")
     User toEntity(UserProfileDTO userProfileDTO);
 
 

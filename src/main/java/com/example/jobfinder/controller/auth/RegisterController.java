@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class RegisterController {
 
     @Autowired
-    private UserService userService;
+    private UserService userService;    
     @PostMapping("/register")
     public ResponseEntity<?> doRegister(@Valid  @RequestBody UserCreationDTO userCreationDTO) {
         return new ResponseEntity<>(
@@ -24,3 +24,4 @@ public class RegisterController {
         );
     }
 }
+

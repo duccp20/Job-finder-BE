@@ -26,6 +26,7 @@ public class Candidate extends Auditable{
 
 	@OneToOne
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
+	@JsonIgnore
 	private User user;
 	
 	@Column(name = "university")
@@ -51,9 +52,9 @@ public class Candidate extends Auditable{
 	@Fetch(FetchMode.SUBSELECT)
 	private List<CandidatePosition> candidatePositions = new ArrayList<>();
 
-//	@OneToMany(mappedBy = "candidate", fetch = FetchType.LAZY)
-//	@Fetch(FetchMode.SUBSELECT)
-//	private List<CandidateSchedule> candidateSchedules = new ArrayList<>();
+	@OneToMany(mappedBy = "candidate", fetch = FetchType.LAZY)
+	@Fetch(FetchMode.SUBSELECT)
+	private List<CandidateSchedule> candidateSchedules = new ArrayList<>();
 
 	@Column(name = "searchable")
 	boolean searchable; // permit hr to search

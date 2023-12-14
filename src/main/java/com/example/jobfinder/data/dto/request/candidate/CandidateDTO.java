@@ -1,17 +1,26 @@
 package com.example.jobfinder.data.dto.request.candidate;
 
+import com.example.jobfinder.data.dto.request.major.MajorDTO;
+import com.example.jobfinder.data.dto.request.position.PositionDTO;
+import com.example.jobfinder.data.dto.request.schedule.ScheduleDTO;
 import lombok.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
+import java.util.List;
+
+
 @Getter
 @Setter
-@Builder
 public class CandidateDTO {
 
-    private String university;
     private String CV;
     private String referenceLetter;
+    private boolean searchable;
+    private List<PositionDTO> positionDTOs;
+    private List<MajorDTO> majorDTOs;
+
+    private List<ScheduleDTO> scheduleDTOs;
     private String desiredJob;
     private String desiredWorkingProvince;
+    private String university;
+
 }

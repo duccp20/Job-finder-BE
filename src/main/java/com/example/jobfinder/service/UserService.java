@@ -24,5 +24,7 @@ public interface UserService {
 
     Object getUserProfile();
 
-    ShowUserDTO update(long id, UserProfileDTO userProfileDTO, MultipartFile file);
+    ShowUserDTO update(long id, UserProfileDTO userProfileDTO);
+
+    Long getCurrentUserId();
 }

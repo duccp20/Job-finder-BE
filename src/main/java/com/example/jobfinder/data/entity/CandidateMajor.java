@@ -25,7 +25,7 @@ public class CandidateMajor implements Serializable{
 	private Candidate candidate;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "major_id", nullable = false)
-	private CandidateMajor major;
+	@JoinColumn(name = "major_id", nullable = false)
+	private Major major;
 	
 }

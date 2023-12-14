@@ -7,4 +7,7 @@ public class ApiURL {
     public static final String AUTH = PREFIX + Constant.AUTH;
     public static final String MAIL = PREFIX + Constant.MAIL;
     public static final String CANDIDATE = PREFIX + Constant.CANDIDATE;
+    public static final String MAJOR = PREFIX + Constant.MAJOR;
+    public static final String POSITION = PREFIX + Constant.POSITION;
+    public static final String SCHEDULE = PREFIX + Constant.SCHEDULE;
 }

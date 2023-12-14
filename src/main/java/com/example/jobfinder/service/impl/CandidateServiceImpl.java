@@ -16,16 +16,20 @@ import com.example.jobfinder.exception.ResourceNotFoundException;
 import com.example.jobfinder.service.*;
 import com.example.jobfinder.utils.enumeration.Estatus;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -63,6 +67,20 @@ public class CandidateServiceImpl implements CandidateService {
 
     private HttpServletRequest httpServletRequest;
 
+    @Autowired
+    private FileService fileService;
+
+    @Autowired
+    private CandidatePositionService candidatePositionService;
+
+    @Autowired
+    private CandidateMajorService candidateMajorService;
+
+    @Autowired
+    private CandidateScheduleService candidateScheduleService;
+
+
+
     @Override
     public Object activeCandidate(String token) {
 
@@ -98,25 +116,43 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     @Transactional
-    public Object updateProfile(CandidateProfileDTO candidateProfileDTO) {
+    public Object updateProfile(CandidateProfileDTO candidateProfileDTO, MultipartFile fileCV) {
 
-        ShowUserDTO showUserDTO = userService.update(candidateProfileDTO.getUserProfileDTO().getUserId(), candidateProfileDTO.getUserProfileDTO(), null);
+        ShowUserDTO showUserDTO = userService.update(candidateProfileDTO.getUserProfileDTO().getUserId(), candidateProfileDTO.getUserProfileDTO());
 
         Candidate oldCandidate = candidateRepository.findByUserId(candidateProfileDTO.getUserProfileDTO().getUserId()).orElseThrow(
                 () -> new ResourceNotFoundException(Collections.singletonMap("id", candidateProfileDTO.getUserProfileDTO().getUserId()))
         );
 
-        Candidate updatedCandidate = candidateMapper.toEntity(candidateProfileDTO.getCandidateDTO());
-        updatedCandidate.setUser(oldCandidate.getUser());
-        updatedCandidate.setId(oldCandidate.getId());
+        oldCandidate.setSearchable(candidateProfileDTO.getCandidateDTO().isSearchable());
+        oldCandidate.setUniversity(candidateProfileDTO.getCandidateDTO().getUniversity());
+        oldCandidate.setCV(candidateProfileDTO.getCandidateDTO().getCV());
+        oldCandidate.setReferenceLetter(candidateProfileDTO.getCandidateDTO().getReferenceLetter());
+        oldCandidate.setDesiredJob(candidateProfileDTO.getCandidateDTO().getDesiredJob());
+        oldCandidate.setDesiredWorkingProvince(candidateProfileDTO.getCandidateDTO().getDesiredWorkingProvince());
 
-        CandidateDTO candidateDTO = candidateMapper.toDTO(candidateRepository.save(updatedCandidate)) ;
+        // check update file CV
+        if (fileCV != null) {
+            fileService.deleteFile(oldCandidate.getCV());
+            oldCandidate.setCV(fileService.uploadFile(fileCV));
+        }
+
+        candidatePositionService.update(oldCandidate.getId(),
+                candidateProfileDTO.getCandidateDTO().getPositionDTOs());
+        candidateMajorService.update(oldCandidate.getId(),
+                candidateProfileDTO.getCandidateDTO().getMajorDTOs());
+        candidateScheduleService.update(oldCandidate.getId(),
+                candidateProfileDTO.getCandidateDTO().getScheduleDTOs());
+
+        Map<String, Object> dataResponse = new HashMap<>();
+        dataResponse.put("showUserDTO", showUserDTO);
+        dataResponse.put("candidateDTO", candidateMapper.toDTO(candidateRepository.save(oldCandidate)));
+
         return ResponseMessage.builder()
                 .httpCode(200)
                 .message("Profile updated successfully")
-                .data(candidateMapper.toShowCandidateDTO(showUserDTO, candidateDTO))
+                .data(dataResponse)
                 .build();
-
     }
 
     @Override
@@ -131,6 +167,14 @@ public class CandidateServiceImpl implements CandidateService {
                 .httpCode(200)
                 .data(candidateMapper.toDTO(candidate))
                 .build();
+    }
+
+    @Override
+    public boolean isCurrentAuthor(long id) {
+        Long candidateUserId = candidateRepository.findById(id).map(c -> c.getUser().getId()).orElse(null);
+        Long currentUserId = userService.getCurrentUserId();
+
+        return (candidateUserId != null) && (currentUserId != null) && candidateUserId.equals(currentUserId);
     }
 
 
