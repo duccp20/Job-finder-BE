@@ -27,6 +27,7 @@ import lombok.Builder;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -35,6 +36,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -88,6 +90,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private CandidateRepository candidateRepository;
+
+    @Autowired
+    private AuditorAware<Long> auditorAware;
 
     @Override
     public Object register(UserCreationDTO userCreationDTO) {
@@ -252,33 +257,32 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    public ShowUserDTO update(long id, UserProfileDTO userProfileDTO
-            , MultipartFile fileAvatar
-    ) {
+
+
+    public ShowUserDTO update(long id, UserProfileDTO userProfileDTO) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        User oldUser = userRepository.findById(id)
+        User usr = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("id", id)));
 
-        if (!oldUser.getEmail().equals(email)) {
+        if (!usr.getEmail().equals(email)) {
             throw new ResourceNotFoundException(Collections.singletonMap("email", email));
         }
 
-        User updateUser = userMapper.toEntity(userProfileDTO);
-        updateUser.setId(oldUser.getId());
-        updateUser.setEmail(oldUser.getEmail());
-        updateUser.setPassword(oldUser.getPassword());
-        updateUser.setBirthDay(userProfileDTO.getBirthDay());
-        // check update file Avatar
-//        if (!StringUtils.equals(updateUser.getAvatar(), oldUser.getAvatar()) || (fileAvatar != null)) {
-//            fileService.deleteFile(oldUser.getAvatar());
-//            updateUser.setAvatar(fileService.uploadFile(fileAvatar));
-//        }
-        updateUser.setRole(oldUser.getRole());
-        updateUser.setStatus(oldUser.getStatus());
-        updateUser.setMailReceive(oldUser.isMailReceive());
+        usr.setAddress(userProfileDTO.getAddress());
+        usr.setGender(userProfileDTO.isGender());
+        usr.setPhone(userProfileDTO.getPhone());
+        usr.setFirstName(userProfileDTO.getFirstName());
+        usr.setLastName(userProfileDTO.getLastName());
+        usr.setAvatar(userProfileDTO.getAvatar());
+        usr.setBirthDay(userProfileDTO.getBirthDay());
 
-        return userMapper.toShowDTO(userRepository.save(updateUser));
+        return userMapper.toShowDTO(usr);
+    }
+
+    @Override
+    public Long getCurrentUserId() {
+        return auditorAware.getCurrentAuditor().orElse(null);
     }
 
 

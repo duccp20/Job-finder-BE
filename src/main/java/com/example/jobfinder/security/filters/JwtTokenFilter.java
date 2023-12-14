@@ -81,7 +81,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(ApiURL.USER + "/active-forget-password", "GET"),
                 Pair.of(ApiURL.CANDIDATE + "/active-account", "POST"),
                 Pair.of(ApiURL.CANDIDATE + "/active", "GET"),
-                Pair.of(ApiURL.USER + "/reset-password-by-token", "POST")
+                Pair.of(ApiURL.USER + "/reset-password-by-token", "POST"),
+                Pair.of(ApiURL.MAJOR + "", "GET"),
+                Pair.of(ApiURL.SCHEDULE + "", "GET"),
+                Pair.of(ApiURL.POSITION + "", "GET")
+
         );
 
         return byPassTokens.stream()

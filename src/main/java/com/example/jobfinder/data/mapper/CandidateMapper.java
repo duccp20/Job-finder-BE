@@ -9,23 +9,20 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {UserMapper.class, PositionMapper.class, MajorMapper.class, ScheduleMapper.class})
 @Component
 public interface CandidateMapper {
 
-    @Mapping(target = "showUserDTO", source = "showUserDTO")
-    ShowCandidateDTO toShowCandidateDTO(ShowUserDTO showUserDTO, CandidateDTO candidate);
 
-    @Mapping(target = "user", ignore = true)
-    @Mapping(target = "searchable", ignore = true)
-    @Mapping(target = "lastModifiedDate", ignore = true)
-    @Mapping(target = "lastModifiedBy", ignore = true)
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdDate", ignore = true)
-    @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "candidatePositions", ignore = true)
     @Mapping(target = "candidateMajors", ignore = true)
+    @Mapping(target = "candidateSchedules", ignore = true)
     Candidate toEntity(CandidateDTO candidateDTO);
 
+
+    @Mapping(target = "majorDTOs", source = "candidateMajors")
+    @Mapping(target = "positionDTOs", source = "candidatePositions")
+    @Mapping(target = "scheduleDTOs", source = "candidateSchedules")
     CandidateDTO toDTO(Candidate candidate);
+
 }

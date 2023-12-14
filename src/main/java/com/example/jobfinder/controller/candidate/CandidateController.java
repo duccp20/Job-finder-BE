@@ -4,7 +4,9 @@ import com.example.jobfinder.constant.ApiURL;
 import com.example.jobfinder.data.dto.request.candidate.CandidateProfileDTO;
 import com.example.jobfinder.data.dto.request.mail.EmailRequest;
 import com.example.jobfinder.data.dto.response.ResponseMessage;
+import com.example.jobfinder.exception.AccessDeniedException;
 import com.example.jobfinder.service.CandidateService;
+import com.example.jobfinder.service.JsonReaderService;
 import com.example.jobfinder.service.MailService;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -24,8 +26,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Collections;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping(ApiURL.CANDIDATE)
 public class CandidateController {
@@ -39,6 +41,9 @@ public class CandidateController {
 
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private JsonReaderService<Object> jsonReaderService;
 
 
     @PostMapping("/active-account")
@@ -73,10 +78,18 @@ public class CandidateController {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize(value = "hasAuthority('Role_Candidate')")
-    @PutMapping("/profile")
-    public ResponseEntity<?> updateProfile(@Valid @RequestBody CandidateProfileDTO candidateProfileDTO) {
+    @PutMapping(value = "/profile/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> update(
+                                    @PathVariable long id,
+                                    @RequestPart(name = "candidateProfileDTO") String candidateProfileDTOJson,
+                                    @RequestPart(name = "fileCV", required = false) MultipartFile fileCV) {
+        if (!candidateService.isCurrentAuthor(id)) {
+            throw new AccessDeniedException();
 
-        return ResponseEntity.ok(candidateService.updateProfile(candidateProfileDTO));
+        }
+        CandidateProfileDTO candidateProfileDTO = jsonReaderService.readValue(
+                candidateProfileDTOJson, CandidateProfileDTO.class);
+        return ResponseEntity.ok(candidateService.updateProfile(candidateProfileDTO, fileCV));
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
