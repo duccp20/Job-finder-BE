@@ -35,6 +35,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         try {
             if (isByPassToken(request)) {
+
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -84,12 +85,15 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(ApiURL.USER + "/reset-password-by-token", "POST"),
                 Pair.of(ApiURL.MAJOR + "", "GET"),
                 Pair.of(ApiURL.SCHEDULE + "", "GET"),
-                Pair.of(ApiURL.POSITION + "", "GET")
-
+                Pair.of(ApiURL.POSITION + "", "GET"),
+                Pair.of(ApiURL.HR + "", "POST"),
+                Pair.of(ApiURL.HR + "", "GET")
         );
 
+        String servletPath = request.getServletPath();
+        System.out.println("Servlet Path: " + servletPath); // Thêm dòng này
         return byPassTokens.stream()
-                .anyMatch(token -> request.getServletPath().contains(token.getFirst()) &&
+                .anyMatch(token -> request.getServletPath().equals(token.getFirst()) &&
                         request.getMethod().equals(token.getSecond()));
     }
 

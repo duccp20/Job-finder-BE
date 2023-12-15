@@ -89,7 +89,7 @@ public class CandidateController {
         }
         CandidateProfileDTO candidateProfileDTO = jsonReaderService.readValue(
                 candidateProfileDTOJson, CandidateProfileDTO.class);
-        return ResponseEntity.ok(candidateService.updateProfile(candidateProfileDTO, fileCV));
+        return ResponseEntity.ok(candidateService.updateProfile(id, candidateProfileDTO, fileCV));
     }
 
     @SecurityRequirement(name = "Bearer Authentication")

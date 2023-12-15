@@ -6,6 +6,8 @@ import com.example.jobfinder.service.StatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class StatusServiceImpl implements StatusService {
 
@@ -13,7 +15,7 @@ public class StatusServiceImpl implements StatusService {
     @Autowired
     private StatusRepository statusRepository;
     @Override
-    public Status findByName(String name) {
+    public Optional<Status> findByName(String name) {
         return statusRepository.findByName(name);
     }
 }

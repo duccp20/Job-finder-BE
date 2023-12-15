@@ -21,7 +21,7 @@ public class CompanyDTO implements Serializable {
 	private String email;
 	private String phone;
 	private String tax;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	private Date createdDate;
 	private String location;
 	private String personnelSize;

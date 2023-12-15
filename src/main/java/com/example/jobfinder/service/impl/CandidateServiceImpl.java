@@ -2,6 +2,7 @@ package com.example.jobfinder.service.impl;
 
 import com.example.jobfinder.data.dto.request.candidate.CandidateDTO;
 import com.example.jobfinder.data.dto.request.candidate.CandidateProfileDTO;
+import com.example.jobfinder.data.dto.request.user.UserDTO;
 import com.example.jobfinder.data.dto.response.ResponseMessage;
 import com.example.jobfinder.data.dto.response.user.ShowUserDTO;
 import com.example.jobfinder.data.entity.Candidate;
@@ -105,24 +106,28 @@ public class CandidateServiceImpl implements CandidateService {
 
         User user = this.userRepository.findByTokenActive(token);
 
-        Status statusActive = this.statusService.findByName(Estatus.Active.toString());
+        Status statusActive = this.statusService.findByName(Estatus.Active.toString()).orElseThrow(
+                () -> new ResourceNotFoundException(Collections.singletonMap("name", Estatus.Active.name()))
+        );
         user.setStatus(statusActive);
 
         user.setTokenActive("");
-        theToken.setStatus(this.statusService.findByName(Estatus.Delete.toString()));
+        theToken.setStatus(this.statusService.findByName(Estatus.Delete.toString()).orElseThrow(
+                () -> new ResourceNotFoundException(Collections.singletonMap("name", Estatus.Delete.name()))
+        ));
         this.userRepository.save(user);
         return new RedirectView("http://localhost:3000/verify-email?status=success");
     }
 
     @Override
     @Transactional
-    public Object updateProfile(CandidateProfileDTO candidateProfileDTO, MultipartFile fileCV) {
+    public Object updateProfile(long id, CandidateProfileDTO candidateProfileDTO, MultipartFile fileCV) {
 
-        ShowUserDTO showUserDTO = userService.update(candidateProfileDTO.getUserProfileDTO().getUserId(), candidateProfileDTO.getUserProfileDTO());
 
-        Candidate oldCandidate = candidateRepository.findByUserId(candidateProfileDTO.getUserProfileDTO().getUserId()).orElseThrow(
-                () -> new ResourceNotFoundException(Collections.singletonMap("id", candidateProfileDTO.getUserProfileDTO().getUserId()))
-        );
+        Candidate oldCandidate = candidateRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("id", id)));
+        UserDTO showUserDTO = userService.update(oldCandidate.getUser().getId(),
+                candidateProfileDTO.getUserProfileDTO(), null);
 
         oldCandidate.setSearchable(candidateProfileDTO.getCandidateDTO().isSearchable());
         oldCandidate.setUniversity(candidateProfileDTO.getCandidateDTO().getUniversity());

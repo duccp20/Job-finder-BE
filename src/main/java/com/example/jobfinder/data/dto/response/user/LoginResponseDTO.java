@@ -1,5 +1,6 @@
 package com.example.jobfinder.data.dto.response.user;
 
+import com.example.jobfinder.data.dto.request.user.UserDTO;
 import lombok.*;
 
 @Getter
@@ -12,5 +13,5 @@ public class LoginResponseDTO {
     private String message;
     private String accessToken;
     private String refreshToken;
-    private ShowUserDTO data;
+    private UserDTO data;
 }
