@@ -35,6 +35,6 @@ application:
 
 url:
   server:
-      path:  http://localhost:8080/
+      path:  http://localhost:8080
   client:
     path: http://localhost:3000/

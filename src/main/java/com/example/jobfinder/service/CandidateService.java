@@ -11,7 +11,7 @@ public interface CandidateService {
 
     Object activeCandidate(String token);
 
-    Object updateProfile(CandidateProfileDTO candidateProfileDTO , MultipartFile file);
+    Object updateProfile(long id, CandidateProfileDTO candidateProfileDTO , MultipartFile file);
 
     Object getCandidateByUserId(long id);
 

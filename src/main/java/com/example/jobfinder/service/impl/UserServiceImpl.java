@@ -1,11 +1,8 @@
 package com.example.jobfinder.service.impl;
 
-import com.example.jobfinder.data.dto.request.user.LoginDTO;
-import com.example.jobfinder.data.dto.request.user.ResetPasswordByToken;
-import com.example.jobfinder.data.dto.request.user.UserProfileDTO;
+import com.example.jobfinder.data.dto.request.user.*;
 import com.example.jobfinder.data.dto.response.ErrorMessageDTO;
 import com.example.jobfinder.data.dto.response.ResponseMessage;
-import com.example.jobfinder.data.dto.request.user.UserCreationDTO;
 import com.example.jobfinder.data.dto.response.user.LoginResponseDTO;
 import com.example.jobfinder.data.dto.response.user.ShowUserDTO;
 import com.example.jobfinder.data.entity.*;
@@ -44,6 +41,7 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Builder
@@ -93,6 +91,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private AuditorAware<Long> auditorAware;
+    
+    @Autowired
+    private FileService fileService;
 
     @Override
     public Object register(UserCreationDTO userCreationDTO) {
@@ -107,11 +108,16 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.toEntity(userCreationDTO);
         user.setPassword(encodePassword);
 
-        Role role = roleRepository.findByRoleId(userCreationDTO.getRole());
+        Role role = roleRepository.findByName(ERole.Candidate.toString()).orElseThrow(
+                () -> new ResourceNotFoundException(Collections.singletonMap("role", ERole.Candidate.toString()))
+        );
         user.setRole(role);
 
         String notActiveStatus = Estatus.Not_Active.toString();
-        Status status = statusRepository.findByName(notActiveStatus);
+        Status status = statusRepository.findByName(notActiveStatus).orElseThrow(
+                () -> new ResourceNotFoundException(Collections.singletonMap("status", notActiveStatus))
+        );
+
         user.setStatus(status);
 
         userRepository.save(user);
@@ -181,7 +187,7 @@ public class UserServiceImpl implements UserService {
         String accessToken = jwtTokenUtils.generateToken(existingUser);
         String refreshToken = jwtTokenUtils.generateRefreshToken(existingUser);
 
-        ShowUserDTO showUserDTO = userMapper.toShowDTO(existingUser);
+        UserDTO showUserDTO = userMapper.toDTO(existingUser);
 
         return LoginResponseDTO.builder()
                 .httpCode(200)
@@ -241,7 +247,9 @@ public class UserServiceImpl implements UserService {
         user.setPassword(newPasswordEncoder);
         user.setPasswordForgotToken("");
 
-        theToken.setStatus(this.statusService.findByName(Estatus.Delete.toString()));
+        theToken.setStatus(this.statusService.findByName(Estatus.Delete.toString()).orElseThrow(
+                () -> new ResourceNotFoundException(Collections.singletonMap("status", Estatus.Delete.toString()))
+        ));
         this.userRepository.save(user);
     }
 
@@ -253,37 +261,75 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new ResourceNotFoundException(Collections.singletonMap("email", email)));
 
-        return userMapper.toShowDTO(user);
-    }
-
-
-
-
-    public ShowUserDTO update(long id, UserProfileDTO userProfileDTO) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        User usr = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("id", id)));
-
-        if (!usr.getEmail().equals(email)) {
-            throw new ResourceNotFoundException(Collections.singletonMap("email", email));
-        }
-
-        usr.setAddress(userProfileDTO.getAddress());
-        usr.setGender(userProfileDTO.isGender());
-        usr.setPhone(userProfileDTO.getPhone());
-        usr.setFirstName(userProfileDTO.getFirstName());
-        usr.setLastName(userProfileDTO.getLastName());
-        usr.setAvatar(userProfileDTO.getAvatar());
-        usr.setBirthDay(userProfileDTO.getBirthDay());
-
-        return userMapper.toShowDTO(usr);
+        return userMapper.toDTO(user);
     }
 
     @Override
     public Long getCurrentUserId() {
         return auditorAware.getCurrentAuditor().orElse(null);
     }
+
+    @Override
+    public UserDTO create(UserCreationDTO userCreationDTO, MultipartFile fileAvatar, ERole eRole) {
+        // check existing user info
+        Map<String, Object> errors = new HashMap<String, Object>();
+        if (userRepository.existsByEmail(userCreationDTO.getEmail())) {
+            errors.put("email", userCreationDTO.getEmail());
+        }
+
+        if (errors.size() > 0) {
+            throw new ConflictException(errors);
+        }
+
+        // set info for user
+        User user = userMapper.toEntity(userCreationDTO);
+        user.setPassword(passwordEncoder.encode(userCreationDTO.getPassword()));
+        user.setAvatar(fileService.uploadFile(fileAvatar));
+        // set default role and status
+        user.setRole(
+                roleRepository.findByName(eRole.toString())
+                        .orElseThrow(
+                                () -> new InternalServerErrorException(
+                                        Collections.singletonMap(eRole.toString(), "NOT EXISTS"))));
+        user.setStatus(
+                statusRepository.findByName(Estatus.Not_Active.toString())
+                        .orElseThrow(
+                                () -> new InternalServerErrorException(
+                                        Collections.singletonMap(Estatus.Not_Active.toString(), "NOT EXISTS IN"))));
+
+        return userMapper.toDTO(userRepository.save(user));
+    }
+
+    @Override
+    public UserDTO update(long id, UserProfileDTO userProfileDTO, MultipartFile fileAvatar) {
+        User oldUser = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("id", id)));
+
+        // check existing user info in another one
+        Map<String, Object> errors = new HashMap<String, Object>();
+        if (userRepository.existsByIdNotAndEmail(id, userProfileDTO.getEmail())) {
+            errors.put("email", userProfileDTO.getEmail());
+        }
+        if (errors.size() > 0) {
+            throw new ConflictException(errors);
+        }
+
+        User updateUser = userMapper.toEntity(userProfileDTO);
+        updateUser.setId(oldUser.getId());
+        updateUser.setEmail(oldUser.getEmail());
+        updateUser.setPassword(oldUser.getPassword());
+        // check update file Avatar
+        if (!StringUtils.equals(updateUser.getAvatar(), oldUser.getAvatar()) || (fileAvatar != null)) {
+            fileService.deleteFile(oldUser.getAvatar());
+            updateUser.setAvatar(fileService.uploadFile(fileAvatar));
+        }
+        updateUser.setRole(oldUser.getRole());
+        updateUser.setStatus(oldUser.getStatus());
+        updateUser.setMailReceive(oldUser.isMailReceive());
+
+        return userMapper.toDTO(userRepository.save(updateUser));
+    }
+
 
 
 }

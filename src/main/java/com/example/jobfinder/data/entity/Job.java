@@ -43,9 +43,9 @@ public class Job extends Auditable {
 	@Fetch(FetchMode.SUBSELECT)
 	private List<JobPosition> jobPositions = new ArrayList<>();
 
-//	@OneToMany(mappedBy = "job", fetch = FetchType.LAZY)
-//	@Fetch(FetchMode.SUBSELECT)
-//	private List<JobSchedule> jobSchedules = new ArrayList<>();
+	@OneToMany(mappedBy = "job", fetch = FetchType.LAZY)
+	@Fetch(FetchMode.SUBSELECT)
+	private List<JobSchedule> jobSchedules = new ArrayList<>();
 
 	@Column(name = "amount")
 	private int amount;

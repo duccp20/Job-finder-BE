@@ -1,11 +1,9 @@
 package com.example.jobfinder.service;
 
 
-import com.example.jobfinder.data.dto.request.user.LoginDTO;
-import com.example.jobfinder.data.dto.request.user.ResetPasswordByToken;
-import com.example.jobfinder.data.dto.request.user.UserCreationDTO;
-import com.example.jobfinder.data.dto.request.user.UserProfileDTO;
+import com.example.jobfinder.data.dto.request.user.*;
 import com.example.jobfinder.data.dto.response.user.ShowUserDTO;
+import com.example.jobfinder.utils.enumeration.ERole;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
@@ -24,7 +22,11 @@ public interface UserService {
 
     Object getUserProfile();
 
-    ShowUserDTO update(long id, UserProfileDTO userProfileDTO);
+    UserDTO update(long id, UserProfileDTO userProfileDTO, MultipartFile fileAvatar);
 
     Long getCurrentUserId();
+
+    UserDTO create(UserCreationDTO userCreationDTO, MultipartFile fileAvatar, ERole eRole);
+
+
 }
