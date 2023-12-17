@@ -1,6 +1,5 @@
 package com.example.jobfinder.config;
 
-
 import com.example.jobfinder.data.entity.User;
 import com.example.jobfinder.data.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,46 +21,43 @@ public class AuditConfig {
     @Autowired
     private UserRepository userRepository;
 
-    // Maintain a cache for email-to-ID mapping (to avoid loop between AuditorAware and repository)
-    private static Map<String, Long> emailToIdCache = new ConcurrentHashMap<>();
-
+    private static final Map<String, Long> emailToIdCache = new ConcurrentHashMap<>();
 
     @Bean
     public AuditorAware<Long> auditorAware() {
         return () -> {
-            try {
-                // Retrieve the current Authentication from the SecurityContextHolder
-                Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
-
-                // Check if the Authentication is not null, authenticated, and not an instance of AnonymousAuthenticationToken
-                if (currentAuth != null
-                        && currentAuth.isAuthenticated()
-                        && !(currentAuth instanceof AnonymousAuthenticationToken)) {
-                    String email = currentAuth.getName();
-
-                    // Retrieve the user id from the emailToIdCache
-                    Long userId = emailToIdCache.get(email);
-
-                    // If the user id is found in the cache, return it
-                    if (userId != null) {
-                        return Optional.ofNullable(userId);
-                    } else {
-                        // Retrieve the user from the userRepository by email
-                        return userRepository.findByEmail(email)
-                                .map(User::getId)
-                                .map(id -> {
-                                    // Cache the user id in the emailToIdCache
-                                    emailToIdCache.put(email, id);
-                                    return id;
-                                });
+            Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
+            if (currentAuth != null && currentAuth.isAuthenticated() && !(currentAuth instanceof AnonymousAuthenticationToken)) {
+                String email = currentAuth.getName();
+                Long userId = emailToIdCache.get(email);
+                if (userId != null) {
+                    return Optional.of(userId);
+                } else {
+                    // Avoid recursive calls by checking if the current operation is already in progress
+                    if (!isAuditingOperationInProgress()) {
+                        try {
+                            setAuditingOperationInProgress(true);
+                            Optional<User> user = userRepository.findByEmail(email);
+                            user.ifPresent(u -> emailToIdCache.put(email, u.getId()));
+                            return user.map(User::getId);
+                        } finally {
+                            setAuditingOperationInProgress(false);
+                        }
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-
             return Optional.empty();
         };
     }
 
+    private final ThreadLocal<Boolean> auditingOperationInProgress = new ThreadLocal<>();
+
+    private boolean isAuditingOperationInProgress() {
+        Boolean inProgress = auditingOperationInProgress.get();
+        return inProgress != null && inProgress;
+    }
+
+    private void setAuditingOperationInProgress(boolean inProgress) {
+        auditingOperationInProgress.set(inProgress);
+    }
 }

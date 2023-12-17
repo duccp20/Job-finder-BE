@@ -39,6 +39,7 @@ public class CandidatePositionServiceImpl implements CandidatePositionService {
                 candidate.setId(candidateId);
                 Position position = new Position();
                 position.setId(newPositionDTO.getId());
+                position.setName(newPositionDTO.getName());
 
                 newCandidatePosition.setCandidate(candidate);
                 newCandidatePosition.setPosition(position);

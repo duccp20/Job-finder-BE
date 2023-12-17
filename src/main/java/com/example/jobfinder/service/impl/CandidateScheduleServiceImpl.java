@@ -37,6 +37,7 @@ public class CandidateScheduleServiceImpl implements CandidateScheduleService {
                 candidate.setId(candidateId);
                 Schedule schedule = new Schedule();
                 schedule.setId(newScheduleDTO.getId());
+                schedule.setName(newScheduleDTO.getName());
 
                 newCandidateSchedule.setCandidate(candidate);
                 newCandidateSchedule.setSchedule(schedule);

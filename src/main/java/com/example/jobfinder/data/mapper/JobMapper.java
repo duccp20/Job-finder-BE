@@ -17,6 +17,7 @@ import java.util.List;
 public interface JobMapper {
 
     @Mapping(source = "companyDTO", target = "company")
+    @Mapping(source = "province", target = "province")
     Job toEntity(JobCreationDTO jobCreationDTO);
 //    @Mapping(source = "companyDTO", target = "company")
 //	 @Mapping(source = "majorDTOs", target = "jobMajors")
