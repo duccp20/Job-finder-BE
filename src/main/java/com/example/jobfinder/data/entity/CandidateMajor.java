@@ -19,7 +19,7 @@ public class CandidateMajor implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private long id;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name ="candidate_id", nullable = false)
 	private Candidate candidate;

@@ -13,6 +13,7 @@ import com.example.jobfinder.data.mapper.CandidateMapper;
 import com.example.jobfinder.data.mapper.UserMapper;
 import com.example.jobfinder.data.repository.CandidateRepository;
 import com.example.jobfinder.data.repository.UserRepository;
+import com.example.jobfinder.exception.AccessDeniedException;
 import com.example.jobfinder.exception.ResourceNotFoundException;
 import com.example.jobfinder.service.*;
 import com.example.jobfinder.utils.enumeration.Estatus;
@@ -123,18 +124,28 @@ public class CandidateServiceImpl implements CandidateService {
     @Transactional
     public Object updateProfile(long id, CandidateProfileDTO candidateProfileDTO, MultipartFile fileCV) {
 
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
         Candidate oldCandidate = candidateRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("id", id)));
+
+        Map <String, Object> errors = new HashMap<>();
+
+        if (!oldCandidate.getUser().getEmail().equals(email)) {
+            errors.put("email", oldCandidate.getUser().getEmail());
+            errors.put("id", id);
+            throw new AccessDeniedException(errors);
+        }
+
         UserDTO showUserDTO = userService.update(oldCandidate.getUser().getId(),
                 candidateProfileDTO.getUserProfileDTO(), null);
 
-        oldCandidate.setSearchable(candidateProfileDTO.getCandidateDTO().isSearchable());
-        oldCandidate.setUniversity(candidateProfileDTO.getCandidateDTO().getUniversity());
-        oldCandidate.setCV(candidateProfileDTO.getCandidateDTO().getCV());
-        oldCandidate.setReferenceLetter(candidateProfileDTO.getCandidateDTO().getReferenceLetter());
-        oldCandidate.setDesiredJob(candidateProfileDTO.getCandidateDTO().getDesiredJob());
-        oldCandidate.setDesiredWorkingProvince(candidateProfileDTO.getCandidateDTO().getDesiredWorkingProvince());
+        oldCandidate.setSearchable(candidateProfileDTO.getCandidateOtherInfoDTO().isSearchable());
+        oldCandidate.setUniversity(candidateProfileDTO.getCandidateOtherInfoDTO().getUniversity());
+        oldCandidate.setCV(candidateProfileDTO.getCandidateOtherInfoDTO().getCV());
+        oldCandidate.setReferenceLetter(candidateProfileDTO.getCandidateOtherInfoDTO().getReferenceLetter());
+        oldCandidate.setDesiredJob(candidateProfileDTO.getCandidateOtherInfoDTO().getDesiredJob());
+        oldCandidate.setDesiredWorkingProvince(candidateProfileDTO.getCandidateOtherInfoDTO().getDesiredWorkingProvince());
 
         // check update file CV
         if (fileCV != null) {
@@ -143,20 +154,17 @@ public class CandidateServiceImpl implements CandidateService {
         }
 
         candidatePositionService.update(oldCandidate.getId(),
-                candidateProfileDTO.getCandidateDTO().getPositionDTOs());
+                candidateProfileDTO.getCandidateOtherInfoDTO().getPositionDTOs());
         candidateMajorService.update(oldCandidate.getId(),
-                candidateProfileDTO.getCandidateDTO().getMajorDTOs());
+                candidateProfileDTO.getCandidateOtherInfoDTO().getMajorDTOs());
         candidateScheduleService.update(oldCandidate.getId(),
-                candidateProfileDTO.getCandidateDTO().getScheduleDTOs());
+                candidateProfileDTO.getCandidateOtherInfoDTO().getScheduleDTOs());
 
-        Map<String, Object> dataResponse = new HashMap<>();
-        dataResponse.put("showUserDTO", showUserDTO);
-        dataResponse.put("candidateDTO", candidateMapper.toDTO(candidateRepository.save(oldCandidate)));
 
         return ResponseMessage.builder()
                 .httpCode(200)
                 .message("Profile updated successfully")
-                .data(dataResponse)
+                .data(candidateMapper.toDTO(candidateRepository.save(oldCandidate)))
                 .build();
     }
 

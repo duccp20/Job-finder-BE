@@ -28,5 +28,6 @@ public class JobShowDTO {
     private String description;
     private String requirement;
     private String otherInfo;
+    private String province;
     private String location;
 }

@@ -8,6 +8,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.util.Pair;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +28,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final JwtTokenUtils jwtTokenUtils;
     private final UserDetailsService userDetailsService;
+    private static final Logger LOGGER = LoggerFactory.getLogger("info");
 
     @Override
     protected void doFilterInternal(
@@ -35,7 +38,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         try {
             if (isByPassToken(request)) {
-
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -75,6 +77,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
 
     private boolean isByPassToken(HttpServletRequest request) {
+        LOGGER.info("By pass token: " + request.getServletPath());
         List<Pair<String, String>> byPassTokens = Arrays.asList(
                 Pair.of(ApiURL.USER + "/login", "POST"),
                 Pair.of(ApiURL.AUTH + "/register", "POST"),
@@ -87,13 +90,14 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(ApiURL.SCHEDULE + "", "GET"),
                 Pair.of(ApiURL.POSITION + "", "GET"),
                 Pair.of(ApiURL.HR + "", "POST"),
-                Pair.of(ApiURL.HR + "", "GET")
+                Pair.of(ApiURL.HR + "", "GET"),
+                Pair.of("^" + ApiURL.JOB + "/\\d+$", "GET"),
+                Pair.of("^" + ApiURL.JOB + "/active", "GET")
         );
 
-        String servletPath = request.getServletPath();
-        System.out.println("Servlet Path: " + servletPath); // Thêm dòng này
+
         return byPassTokens.stream()
-                .anyMatch(token -> request.getServletPath().equals(token.getFirst()) &&
+                .anyMatch(token -> request.getServletPath().matches(token.getFirst()) &&
                         request.getMethod().equals(token.getSecond()));
     }
 

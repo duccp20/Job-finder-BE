@@ -14,7 +14,6 @@ public class JobDTO extends JobCreationDTO {
 	private long id;
 	private StatusDTO statusDTO;
 	private int numOfApplication;
-	// private int companyId;
-	// private String companyName;
+
 
 }

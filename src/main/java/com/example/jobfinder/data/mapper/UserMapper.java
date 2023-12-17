@@ -20,10 +20,12 @@ public interface UserMapper {
 
 	@Mapping(ignore = true, target = "role")
 	@Mapping(ignore = true, target = "status")
+	@Mapping(source = "location", target = "address")
 	User toEntity(UserProfileDTO userProfileDTO);
 
 	@Mapping(source = "role", target = "roleDTO")
 	@Mapping(source = "status", target = "statusDTO")
+	@Mapping(source = "address", target = "location")
 	UserDTO toDTO(User user);
 
 //	@Mapping(source = "roleDTO", target = "role")

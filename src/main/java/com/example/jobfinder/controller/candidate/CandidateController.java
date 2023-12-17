@@ -78,14 +78,13 @@ public class CandidateController {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize(value = "hasAuthority('Role_Candidate')")
-    @PutMapping(value = "/profile/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> update(
                                     @PathVariable long id,
                                     @RequestPart(name = "candidateProfileDTO") String candidateProfileDTOJson,
                                     @RequestPart(name = "fileCV", required = false) MultipartFile fileCV) {
         if (!candidateService.isCurrentAuthor(id)) {
             throw new AccessDeniedException();
-
         }
         CandidateProfileDTO candidateProfileDTO = jsonReaderService.readValue(
                 candidateProfileDTOJson, CandidateProfileDTO.class);

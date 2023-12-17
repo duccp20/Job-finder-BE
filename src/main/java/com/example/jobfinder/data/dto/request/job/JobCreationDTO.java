@@ -27,6 +27,7 @@ public class JobCreationDTO implements Serializable{
 	private Date endDate;
 	private long salaryMin;
 	private long salaryMax;
+	private String province;
 	private String location;
 	private String description;
 	private String requirement;
