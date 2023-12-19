@@ -2,8 +2,6 @@ package com.example.jobfinder.config;
 
 import com.example.jobfinder.data.repository.UserRepository;
 import com.example.jobfinder.exception.ResourceNotFoundException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,8 +20,11 @@ import java.util.Collections;
 @EnableMethodSecurity // đừng nhầm vs @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public SecurityConfig(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Bean
     public UserDetailsService userDetailsService() {
