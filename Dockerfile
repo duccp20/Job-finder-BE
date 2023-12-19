@@ -5,6 +5,6 @@ RUN mvn clean package -DskipTests
 
 # Stage 2: Create the final image with OpenJDK 17
 FROM openjdk:17-jdk-slim
-COPY --from=build target/jobfinder-0.0.1-SNAPSHOT.jar jobfinder.jar
+COPY --from=build target/job-finder-0.0.1-SNAPSHOT.jar job-finder.jar
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","jobfinder.jar"]
+ENTRYPOINT ["java","-jar","job-finder.jar"]
