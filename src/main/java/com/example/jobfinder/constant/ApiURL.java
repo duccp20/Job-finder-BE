@@ -11,6 +11,8 @@ public class ApiURL {
     public static final String POSITION = PREFIX + Constant.POSITION;
     public static final String SCHEDULE = PREFIX + Constant.SCHEDULE;
     public static final String JOB = PREFIX + Constant.JOB;
+    public static final String COMPANY = PREFIX + Constant.COMPANY;
+
     public static final String HR = PREFIX + Constant.HR;
     public static final String HR_APPLICATION = PREFIX + Constant.HR_APPLICATION;
 

@@ -13,6 +13,7 @@ public class Constant {
     public static final String SCHEDULE = "/schedule";
     public static final String HR = "/hr";
     public static final String JOB = "/job";
+    public static final String COMPANY = "/company";
     public static final String HR_APPLICATION = "/hr-application";
 
 
