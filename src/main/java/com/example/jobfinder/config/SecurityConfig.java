@@ -2,6 +2,7 @@ package com.example.jobfinder.config;
 import com.example.jobfinder.data.repository.UserRepository;
 import com.example.jobfinder.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,11 +18,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Collections;
 
 @Configuration
-@RequiredArgsConstructor
 @EnableMethodSecurity // đừng nhầm vs @EnableWebSecurity
 public class SecurityConfig {
 
-    private final UserRepository userRepository;
+  @Autowired
+  private UserRepository userRepository;
 
     @Bean
     public UserDetailsService userDetailsService() {
