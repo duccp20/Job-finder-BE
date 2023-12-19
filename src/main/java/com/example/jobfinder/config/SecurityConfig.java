@@ -1,4 +1,5 @@
 package com.example.jobfinder.config;
+
 import com.example.jobfinder.data.repository.UserRepository;
 import com.example.jobfinder.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,8 @@ import java.util.Collections;
 @EnableMethodSecurity // đừng nhầm vs @EnableWebSecurity
 public class SecurityConfig {
 
-  @Autowired
-  private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Bean
     public UserDetailsService userDetailsService() {
