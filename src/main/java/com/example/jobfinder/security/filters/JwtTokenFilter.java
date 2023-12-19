@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,11 +24,13 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
 
-    private final JwtTokenUtils jwtTokenUtils;
-    private final UserDetailsService userDetailsService;
+    @Autowired
+    private JwtTokenUtils jwtTokenUtils;
+    @Autowired
+    private UserDetailsService userDetailsService;
+
     private static final Logger LOGGER = LoggerFactory.getLogger("info");
 
     @Override
