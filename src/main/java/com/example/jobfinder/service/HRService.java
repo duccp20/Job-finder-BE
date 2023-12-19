@@ -16,7 +16,7 @@ public interface HRService {
     HRDTO findByUserId(long userId);
 
     @Transactional
-    HRDTO create(HRCreationDTO hrCreationDTO, MultipartFile fileAvatar);
+    Object create(HRCreationDTO hrCreationDTO, MultipartFile fileAvatar);
 
     @Transactional
     Object updateHRInfo(HRProfileDTO hrProfileDTO, MultipartFile fileAvatar);

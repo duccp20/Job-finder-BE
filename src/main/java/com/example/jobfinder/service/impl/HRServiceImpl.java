@@ -6,6 +6,7 @@ import com.example.jobfinder.data.dto.request.hr.HRCreationDTO;
 import com.example.jobfinder.data.dto.request.hr.HRDTO;
 import com.example.jobfinder.data.dto.request.hr.HRProfileDTO;
 import com.example.jobfinder.data.dto.request.user.UserDTO;
+import com.example.jobfinder.data.dto.response.ResponseMessage;
 import com.example.jobfinder.data.entity.HR;
 import com.example.jobfinder.data.mapper.HRMapper;
 import com.example.jobfinder.data.repository.HRRepository;
@@ -64,7 +65,7 @@ public class HRServiceImpl implements HRService {
     }
 
     @Override
-    public HRDTO create(HRCreationDTO hrCreationDTO, MultipartFile fileAvatar) {
+    public Object create(HRCreationDTO hrCreationDTO, MultipartFile fileAvatar) {
         // save user first
         UserDTO createdUserDTO = userService.create(hrCreationDTO.getUserCreationDTO(), fileAvatar, ERole.HR);
 
@@ -82,7 +83,11 @@ public class HRServiceImpl implements HRService {
 
         HRDTO hrDTO = hrMapper.toDTO(hrRepository.save(hr));
         hrDTO.setUserDTO(createdUserDTO);
-        return hrDTO;
+        return ResponseMessage.builder()
+                .httpCode(201)
+                .message("HR created successfully")
+                .data(hrDTO)
+                .build();
     }
 
 

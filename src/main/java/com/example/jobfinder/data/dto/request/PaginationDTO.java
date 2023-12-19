@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class PaginationDTO implements Serializable {
-	private List<?> contents;
+	private List<?> data;
 	private boolean isFirst;
 	private boolean isLast;
 	private long totalPages;

@@ -92,7 +92,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(ApiURL.HR + "", "POST"),
                 Pair.of(ApiURL.HR + "", "GET"),
                 Pair.of("^" + ApiURL.JOB + "/\\d+$", "GET"),
-                Pair.of("^" + ApiURL.JOB + "/active", "GET")
+                Pair.of("^" + ApiURL.JOB + "/active", "GET"),
+                Pair.of("^" + ApiURL.COMPANY + "/\\d+$", "GET"),
+                Pair.of("^" + ApiURL.COMPANY + "/\\d+$", "DELETE"),
+                Pair.of("^" + ApiURL.COMPANY + "/name/[\\s\\S]*$", "GET"),
+                Pair.of(ApiURL.COMPANY + "", "POST"),
+                Pair.of(ApiURL.COMPANY + "", "GET")
         );
 
 
