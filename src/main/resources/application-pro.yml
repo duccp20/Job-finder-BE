@@ -1,0 +1,24 @@
+server:
+  port: 8080
+db:
+  port: 16986
+  name: railway
+  endpoint: monorail.proxy.rlwy.net
+  username: root
+  password: A63E4A4bGeCcg45HA1cdF3GEbaAAfeg4
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${db.endpoint}:${db.port}/${db.name}
+    username: ${db.username}
+    password: ${db.password}
+
+
+domain:
+  path: https://job-worked-be.up.railway.app/
+
+url:
+  server:
+    path:  ${domain.path}
+  client:
+    path: http://localhost:3000/
