@@ -2,7 +2,7 @@ server:
   port: 8080
 db:
   port: 16986
-  name: railway
+  name: job_finder
   endpoint: monorail.proxy.rlwy.net
   username: root
   password: A63E4A4bGeCcg45HA1cdF3GEbaAAfeg4
@@ -15,7 +15,7 @@ spring:
 
 
 domain:
-  path: https://job-worked-be.up.railway.app/
+  path: https://job-finder-be.onrender.com
 
 url:
   server:
