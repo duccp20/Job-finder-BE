@@ -1,11 +1,15 @@
 spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/job_finder
-    username: root
-    password: Ducvc123123!@#$%
-    driver-class-name: com.mysql.cj.jdbc.Driver
+  main:
+    allow-circular-references: true #allowing beans to have circular references.
+
+  profiles:
+    active: pro #Active DEV or PRO Environment
+  jackson:
+    time-zone: GMT+7
+    serialization:
+      fail-on-empty-beans: false
+
   jpa:
-    database-platform: org.hibernate.dialect.MySQLDialect
     properties:
       hibernate:
         current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
@@ -43,8 +47,4 @@ application:
         expiration: 604800000 # 7 days
 
 
-url:
-  server:
-      path:  http://localhost:8080
-  client:
-      path: http://localhost:3000/
+
