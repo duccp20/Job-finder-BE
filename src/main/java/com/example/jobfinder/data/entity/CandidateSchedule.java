@@ -21,11 +21,11 @@ public class CandidateSchedule implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name ="candidate_id", nullable = false)
 	private Candidate candidate;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "schedule_id", nullable = false)
 	private Schedule schedule;
 	

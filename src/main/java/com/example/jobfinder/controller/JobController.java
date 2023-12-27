@@ -28,7 +28,11 @@ public class JobController {
     @GetMapping("/active")
     public ResponseEntity<?> findAllActive(@RequestParam(defaultValue = PageDefault.NO) int no,
                                            @RequestParam(defaultValue = PageDefault.LIMIT) int limit) {
-        return ResponseEntity.ok(jobService.findAllActive(no, limit));
+        try {
+            return ResponseEntity.ok(jobService.findAllActive(no, limit));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
@@ -62,7 +66,6 @@ public class JobController {
 //        return ResponseEntity
 //                .ok(jobService.filterJob(jobFilterDTO, no, limit));
 //    }
-
 
 
 //    @SecurityRequirement(name = "Bearer Authentication")
@@ -164,8 +167,6 @@ public class JobController {
 //                                                      @RequestParam(defaultValue = PageDefault.LIMIT) int limit) {
 //        return ResponseEntity.ok(this.jobService.findAllActiveByCompanyId(companyId, no, limit));
 //    }
-
-
 
 
 }

@@ -20,11 +20,11 @@ public class CandidateMajor implements Serializable{
 	@Column(name = "id")
 	private long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name ="candidate_id", nullable = false)
 	private Candidate candidate;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "major_id", nullable = false)
 	private Major major;
 	

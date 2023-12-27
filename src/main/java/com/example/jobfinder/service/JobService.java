@@ -25,6 +25,7 @@ public interface JobService {
     @Transactional
     JobDTO create(JobCreationDTO jobCreationDTO);
 
+    @Transactional
     PaginationDTO findAllActive(int no, int limit);
 
     JobDTO update(long id, JobDTO jobDTO);

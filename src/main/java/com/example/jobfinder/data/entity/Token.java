@@ -25,7 +25,7 @@ public class Token extends Auditable {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.EAGER)

@@ -19,9 +19,12 @@ public class RegisterController {
     private UserService userService;    
     @PostMapping("/register")
     public ResponseEntity<?> doRegister(@Valid  @RequestBody UserCreationDTO userCreationDTO) {
-        return new ResponseEntity<>(
-                userService.register(userCreationDTO), HttpStatus.CREATED
-        );
+        try {
+            return ResponseEntity.ok(userService.register(userCreationDTO));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
 }
 

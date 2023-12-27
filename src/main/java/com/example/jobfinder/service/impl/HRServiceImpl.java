@@ -25,6 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -65,7 +66,7 @@ public class HRServiceImpl implements HRService {
     }
 
     @Override
-    public Object create(HRCreationDTO hrCreationDTO, MultipartFile fileAvatar) {
+    public Object create(HRCreationDTO hrCreationDTO, MultipartFile fileAvatar) throws IOException {
         // save user first
         UserDTO createdUserDTO = userService.create(hrCreationDTO.getUserCreationDTO(), fileAvatar, ERole.HR);
 
@@ -92,7 +93,7 @@ public class HRServiceImpl implements HRService {
 
 
     @Override
-    public Object updateHRInfo(HRProfileDTO hrProfileDTO, MultipartFile fileAvatar) {
+    public Object updateHRInfo(HRProfileDTO hrProfileDTO, MultipartFile fileAvatar) throws IOException {
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 

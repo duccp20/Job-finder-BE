@@ -16,6 +16,7 @@ public class Constant {
     public static final String COMPANY = "/company";
     public static final String HR_APPLICATION = "/hr-application";
 
+    public static final String FILE = "/file";
 
 
 }

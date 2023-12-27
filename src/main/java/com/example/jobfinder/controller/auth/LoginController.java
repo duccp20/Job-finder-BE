@@ -17,8 +17,8 @@ public class LoginController {
     final private UserService userService;
     @PostMapping("/login")
     public ResponseEntity<?> register(@Valid @RequestBody LoginDTO loginDTO) {
-        return new ResponseEntity<>(
-                userService.login(loginDTO), HttpStatus.OK
-        );
+
+            return ResponseEntity.ok(userService.login(loginDTO));
+
     }
 }

@@ -61,4 +61,9 @@ public class CandidatePositionServiceImpl implements CandidatePositionService {
         return true;
     }
 
+    @Override
+    public List<CandidatePosition> findAllByCandidate_Id(long candidateId) {
+        return candidatePositionRepository.findAllByCandidate_Id(candidateId);
+    }
+
 }

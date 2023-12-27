@@ -14,6 +14,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -37,7 +39,7 @@ public class CompanyController {
 
     @PostMapping(value = "", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<?> create(@Valid @RequestPart CompanyDTO companyDTO,
-    @RequestPart(name = "fileLogo", required = false) MultipartFile fileLogo) {
+    @RequestPart(name = "fileLogo", required = false) MultipartFile fileLogo) throws IOException {
         return new ResponseEntity<>(companyService.create(companyDTO, fileLogo), HttpStatus.CREATED);
     }
 
@@ -47,7 +49,11 @@ public class CompanyController {
     @PreAuthorize("hasAuthority('Role_HR')")
     public ResponseEntity<?> update(@PathVariable long id, @Valid @RequestPart CompanyDTO companyDTO,
             @RequestPart(name = "fileLogo", required = false) MultipartFile fileLogo) {
-        return ResponseEntity.ok(this.companyService.update(id, companyDTO, fileLogo));
+        try {
+            return ResponseEntity.ok(this.companyService.update(id, companyDTO, fileLogo));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
 

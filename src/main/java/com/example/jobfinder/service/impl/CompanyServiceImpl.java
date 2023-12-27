@@ -27,6 +27,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -49,7 +50,10 @@ public class CompanyServiceImpl implements CompanyService {
     private FileService fileService;
     @Autowired
     private HRRepository hrRepository;
+    @Autowired
+    private UpdateFile updateFile;
     public final static Logger LOGGER = LoggerFactory.getLogger("info");
+
 
     // Find by ID ---> Get by ID
     @Override
@@ -59,7 +63,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     // Save
     @Override
-    public CompanyDTO create(CompanyDTO companyDTO, MultipartFile fileLogo) {
+    public CompanyDTO create(CompanyDTO companyDTO, MultipartFile fileLogo) throws IOException {
         // check exists company info
         Map<String, String> errors = new HashMap<>();
         if (companyRepository.existsByName(companyDTO.getName())) {
@@ -79,7 +83,8 @@ public class CompanyServiceImpl implements CompanyService {
         }
 
         Company company = this.companyMapper.toEntity(companyDTO);
-        company.setLogo(fileService.uploadFile(fileLogo));
+//        company.setLogo(fileService.uploadFile(fileLogo));
+        company.setLogo(updateFile.uploadImage(fileLogo));
         company.setLocation(null); //update
         company.setStatus(this.statusRepository.findByName(Estatus.Active.toString())
                 .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("name", Estatus.Active.toString()))));
@@ -89,7 +94,7 @@ public class CompanyServiceImpl implements CompanyService {
 
 
     @Override
-    public CompanyDTO update(long id, CompanyDTO companyDTO, MultipartFile fileLogo) {
+    public CompanyDTO update(long id, CompanyDTO companyDTO, MultipartFile fileLogo) throws IOException {
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -121,7 +126,8 @@ public class CompanyServiceImpl implements CompanyService {
                 fileService.deleteFile(oldCompany.getLogo());
             }
 
-            updateCompany.setLogo(fileService.uploadFile(fileLogo));
+//            updateCompany.setLogo(fileService.uploadFile(fileLogo));
+            updateCompany.setLogo(updateFile.uploadImage(fileLogo));
             updateCompany.setId(oldCompany.getId());
             updateCompany.setStatus(oldCompany.getStatus());
 
