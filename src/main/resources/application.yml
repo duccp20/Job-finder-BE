@@ -3,7 +3,7 @@ spring:
     allow-circular-references: true #allowing beans to have circular references.
 
   profiles:
-    active: dev #Active DEV or PRO Environment
+    active: pro #Active DEV or PRO Environment
   jackson:
     time-zone: GMT+7
     serialization:

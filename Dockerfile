@@ -8,3 +8,4 @@ FROM openjdk:17-jdk-slim
 COPY --from=build target/job-finder-0.0.1-SNAPSHOT.jar job-finder.jar
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","job-finder.jar"]
+
