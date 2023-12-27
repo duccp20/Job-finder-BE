@@ -7,6 +7,8 @@ import com.example.jobfinder.data.dto.request.hr.HRProfileDTO;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 public interface HRService {
 
     PaginationDTO findAll(int no, int limit);
@@ -16,8 +18,8 @@ public interface HRService {
     HRDTO findByUserId(long userId);
 
     @Transactional
-    Object create(HRCreationDTO hrCreationDTO, MultipartFile fileAvatar);
+    Object create(HRCreationDTO hrCreationDTO, MultipartFile fileAvatar) throws IOException;
 
     @Transactional
-    Object updateHRInfo(HRProfileDTO hrProfileDTO, MultipartFile fileAvatar);
+    Object updateHRInfo(HRProfileDTO hrProfileDTO, MultipartFile fileAvatar) throws IOException;
 }

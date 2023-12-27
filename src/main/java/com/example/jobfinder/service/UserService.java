@@ -6,6 +6,8 @@ import com.example.jobfinder.data.dto.response.user.ShowUserDTO;
 import com.example.jobfinder.utils.enumeration.ERole;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 public interface UserService {
     Object register(UserCreationDTO userCreationDTO);
 
@@ -22,7 +24,7 @@ public interface UserService {
 
     Object getUserProfile();
 
-    UserDTO update(long id, UserProfileDTO userProfileDTO, MultipartFile fileAvatar);
+    UserDTO update(long id, UserProfileDTO userProfileDTO, MultipartFile fileAvatar) throws IOException;
 
     Long getCurrentUserId();
 

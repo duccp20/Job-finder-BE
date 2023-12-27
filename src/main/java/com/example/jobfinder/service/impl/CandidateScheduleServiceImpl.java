@@ -59,4 +59,10 @@ public class CandidateScheduleServiceImpl implements CandidateScheduleService {
         return true;
     }
 
+    @Override
+    public List<CandidateSchedule> findAllByCandidate_Id(long id) {
+
+        return candidateScheduleRepository.findAllByCandidate_Id(id);
+    }
+
 }

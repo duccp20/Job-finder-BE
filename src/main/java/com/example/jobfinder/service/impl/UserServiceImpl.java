@@ -17,6 +17,7 @@ import com.example.jobfinder.exception.ResourceNotFoundException;
 import com.example.jobfinder.exception.ValidationException;
 import com.example.jobfinder.security.jwt.JwtTokenUtils;
 import com.example.jobfinder.service.*;
+import com.example.jobfinder.utils.common.UpdateFile;
 import com.example.jobfinder.utils.enumeration.ERole;
 import com.example.jobfinder.utils.enumeration.Estatus;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
@@ -94,6 +96,9 @@ public class UserServiceImpl implements UserService {
     
     @Autowired
     private FileService fileService;
+
+    @Autowired
+    private UpdateFile updateFile;
 
     @Override
     public Object register(UserCreationDTO userCreationDTO) {
@@ -301,7 +306,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO update(long id, UserProfileDTO userProfileDTO, MultipartFile fileAvatar) {
+    public UserDTO update(long id, UserProfileDTO userProfileDTO, MultipartFile fileAvatar) throws IOException {
         User oldUser = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("id", id)));
 
@@ -320,8 +325,12 @@ public class UserServiceImpl implements UserService {
         updateUser.setPassword(oldUser.getPassword());
         // check update file Avatar
         if (!StringUtils.equals(updateUser.getAvatar(), oldUser.getAvatar()) || (fileAvatar != null)) {
-            fileService.deleteFile(oldUser.getAvatar());
-            updateUser.setAvatar(fileService.uploadFile(fileAvatar));
+//            fileService.deleteFile(oldUser.getAvatar());
+//            fileService.uploadFile(fileAvatar);
+//            updateUser.setAvatar(fileAvatar);
+           updateUser.setAvatar(updateFile.uploadImage(fileAvatar));
+        } else {
+            updateUser.setAvatar(oldUser.getAvatar());
         }
         updateUser.setRole(oldUser.getRole());
         updateUser.setStatus(oldUser.getStatus());

@@ -42,9 +42,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         try {
             if (isByPassToken(request)) {
                 filterChain.doFilter(request, response);
-                return;
+                return; 
             }
-
+            LOGGER.info("path: " + request.getServletPath());
             String authorizationHeader = request.getHeader("Authorization");
             String token = authorizationHeader.substring(7);
             String email = getEmailFromToken(authorizationHeader, token);
@@ -100,7 +100,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of("^" + ApiURL.COMPANY + "/\\d+$", "DELETE"),
                 Pair.of("^" + ApiURL.COMPANY + "/name/[\\s\\S]*$", "GET"),
                 Pair.of(ApiURL.COMPANY + "", "POST"),
-                Pair.of(ApiURL.COMPANY + "", "GET")
+                Pair.of(ApiURL.COMPANY + "", "GET"),
+                Pair.of("^" + ApiURL.FILE + "/display/.*$", "GET"),
+                Pair.of("^" + ApiURL.FILE + "/raw/.*$", "GET"),
+                Pair.of("^" + ApiURL.FILE + "/upload/image", "POST")
         );
 
 

@@ -16,5 +16,5 @@ public class ApiURL {
     public static final String HR = PREFIX + Constant.HR;
     public static final String HR_APPLICATION = PREFIX + Constant.HR_APPLICATION;
 
-
+    public static final String FILE = PREFIX + Constant.FILE;
 }

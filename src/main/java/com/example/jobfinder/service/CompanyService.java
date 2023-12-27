@@ -6,6 +6,7 @@ import com.example.jobfinder.data.entity.Company;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Date;
 
 public interface CompanyService {
@@ -19,10 +20,10 @@ public interface CompanyService {
 	CompanyDTO findByJobId(long jobId);
 
 	@Transactional
-	CompanyDTO create(CompanyDTO companyDTO, MultipartFile fileLogo);
+	CompanyDTO create(CompanyDTO companyDTO, MultipartFile fileLogo) throws IOException;
 
 	@Transactional
-	CompanyDTO update(long id, CompanyDTO companyDTO, MultipartFile fileLogo);
+	CompanyDTO update(long id, CompanyDTO companyDTO, MultipartFile fileLogo) throws IOException;
 
 	// Find by ID ---> Get by ID
 	CompanyDTO findById(long id);

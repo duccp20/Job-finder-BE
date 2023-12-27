@@ -21,7 +21,7 @@ import java.util.Collections;
 public class FileServiceImpl implements FileService {
 
 
-    private String UPLOAD_DIR = "path/files";
+    private String UPLOAD_DIR = "path/files/";
 
     @Override
     public String uploadFile(MultipartFile file) {
@@ -59,10 +59,10 @@ public class FileServiceImpl implements FileService {
         try {
             resource = new UrlResource(filePath.toUri());
             if (!resource.exists() || !resource.isReadable()) {
-                new ResourceNotFoundException(Collections.singletonMap("fileName", fileName));
+                throw new ResourceNotFoundException(Collections.singletonMap("fileName", fileName));
             }
         } catch (MalformedURLException e) {
-            new ResourceNotFoundException(Collections.singletonMap("fileName", fileName));
+            throw new ResourceNotFoundException(Collections.singletonMap("fileName", fileName));
         }
 
         return resource;
@@ -79,4 +79,5 @@ public class FileServiceImpl implements FileService {
             e.printStackTrace();
         }
     }
+
 }

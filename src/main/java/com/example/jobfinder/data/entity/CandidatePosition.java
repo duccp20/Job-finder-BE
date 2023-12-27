@@ -22,11 +22,11 @@ public class CandidatePosition implements Serializable{
 	@Column(name = "id")
 	private long id;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "position_id", nullable = false)
 	private Position position;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name ="candidate_id", nullable = false)
 	private Candidate candidate;
 
