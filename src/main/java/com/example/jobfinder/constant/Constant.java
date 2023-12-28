@@ -2,6 +2,8 @@ package com.example.jobfinder.constant;
 
 public class Constant {
 
+    public static final String DATE_FORMAT = "dd-MM-yyyy";
+    public static final String DATE_TIME_FORMAT = DATE_FORMAT + " HH:mm:ss";
     public static final String API = "/api";
     public static final String USER = "/user";
     public static final String AUTH = "/auth";
@@ -15,8 +17,8 @@ public class Constant {
     public static final String JOB = "/job";
     public static final String COMPANY = "/company";
     public static final String HR_APPLICATION = "/hr-application";
-
     public static final String FILE = "/file";
+    public static final String APPLICATION = "-application";
 
-
+    ;
 }

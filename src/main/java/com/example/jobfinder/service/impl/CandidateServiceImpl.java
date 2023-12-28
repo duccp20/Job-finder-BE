@@ -291,6 +291,15 @@ public class CandidateServiceImpl implements CandidateService {
                 .build();
     }
 
+    @Override
+    public CandidateDTO findByUserId(long userId) {
+
+        return candidateMapper.toDTO(
+                candidateRepository.findByUserId(userId)
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                Collections.singletonMap("userId", userId))));
+    }
+
 
 }
 

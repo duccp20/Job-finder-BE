@@ -1,5 +1,6 @@
 package com.example.jobfinder.service;
 
+import com.example.jobfinder.data.dto.request.candidate.CandidateDTO;
 import com.example.jobfinder.data.dto.request.candidate.CandidateProfileDTO;
 import com.example.jobfinder.data.entity.Candidate;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,4 +22,7 @@ public interface CandidateService {
     Object updateAvatar(long id, MultipartFile fileAvatar) throws IOException;
 
     Object updateSearchable(long id);
+
+
+    CandidateDTO findByUserId(long id);
 }

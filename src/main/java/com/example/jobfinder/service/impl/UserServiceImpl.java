@@ -275,6 +275,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDTO getCurrentLoginUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> user = userRepository.findByEmail(email);
+
+        return user.isPresent() ? userMapper.toDTO(user.get()) : null;
+    }
+
+    @Override
     public UserDTO create(UserCreationDTO userCreationDTO, MultipartFile fileAvatar, ERole eRole) {
         // check existing user info
         Map<String, Object> errors = new HashMap<String, Object>();

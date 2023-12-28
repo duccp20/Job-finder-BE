@@ -1,9 +1,8 @@
 spring:
   main:
     allow-circular-references: true #allowing beans to have circular references.
-
   profiles:
-    active: pro #Active DEV or PRO Environment
+    active: dev #Active DEV or PRO Environment
   jackson:
     time-zone: GMT+7
     serialization:
@@ -36,6 +35,7 @@ spring:
           auth: true
           starttls.enable: true
 
+
 application:
   security:
     jwt:
@@ -50,3 +50,12 @@ url:
     bucket: job-worked.appspot.com
     folder: https://firebasestorage.googleapis.com/v0/b/
 
+#swagger custom path
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /api-docs
+  show-actuator: true
+
+  #swagger url: http://host/context-path/swagger-ui/index.html

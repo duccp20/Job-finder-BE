@@ -15,11 +15,8 @@ import java.util.Map;
 public interface JobService {
 
 //    Long recruitmentNews (int month);
-//
 
-    //
-//    PaginationDTO findAllDisableByCompanyIdShowForHr( int no, int limit);
-//
+    PaginationDTO findAllDisableByCompanyIdShowForHr( int no, int limit);
     JobDTO findById(long id);
 
     @Transactional
@@ -29,33 +26,32 @@ public interface JobService {
     PaginationDTO findAllActive(int no, int limit);
 
     JobDTO update(long id, JobDTO jobDTO);
-//
 //    JobDTO replicate(long id, JobDTO jobDTO);
-//
-//    PaginationDTO findAllActiveByCompanyIdShowForHr(int no, int limit);
-//
-//    PaginationDTO findAllByCompanyIdShowForHr(int no, int limit);
-//
-//    long countAllActiveByCompanyIdShowForHr();
-//
-//
-//    long countAllDisableByCompanyIdShowForHr();
-//
-//    long countAllByCompanyId();
-//
+
+    PaginationDTO findAllActiveByCompanyIdShowForHr(int no, int limit);
+
+    PaginationDTO findAllByCompanyIdShowForHr(int no, int limit);
+
+    long countAllActiveByCompanyIdShowForHr();
+
+
+    long countAllDisableByCompanyIdShowForHr();
+
+    long countAllByCompanyId();
+
 //    Long countByCreatedDate(LocalDateTime from, LocalDateTime to);
-//
-//    PaginationDTO findAllActiveByCompanyId(long companyId, int no, int limit);
-//
+
+    PaginationDTO findAllActiveByCompanyId(long companyId, int no, int limit);
+
 //    List<Object[]> getNewStatistics();
-//
-//    boolean isAppliable(JobDTO jobDTO);
-//
-//    PaginationDTO filterJob(JobFilterDTO jobFilterDTO, int no, int limit);
-//
-//    Map<YearMonth, int[]> countByMonth();
-//
-//    Map<Integer, int[]> countByYear();
-//
+
+    boolean isAppliable(JobDTO jobDTO);
+
+    PaginationDTO filterJob(JobFilterDTO jobFilterDTO, int no, int limit);
+
+    Map<YearMonth, int[]> countByMonth();
+
+    Map<Integer, int[]> countByYear();
+
 //    List<JobDTO> createByExcelFile(MultipartFile file);
 }

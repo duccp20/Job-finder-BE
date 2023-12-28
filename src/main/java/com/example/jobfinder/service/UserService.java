@@ -24,11 +24,12 @@ public interface UserService {
 
     Object getUserProfile();
 
+    UserDTO create(UserCreationDTO userCreationDTO, MultipartFile fileAvatar, ERole eRole);
     UserDTO update(long id, UserProfileDTO userProfileDTO, MultipartFile fileAvatar) throws IOException;
 
     Long getCurrentUserId();
 
-    UserDTO create(UserCreationDTO userCreationDTO, MultipartFile fileAvatar, ERole eRole);
+    UserDTO getCurrentLoginUser();
 
 
 }

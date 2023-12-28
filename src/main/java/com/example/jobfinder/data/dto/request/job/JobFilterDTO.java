@@ -18,5 +18,5 @@ public class JobFilterDTO implements Serializable {
     private List<String> positionIds;
     private List<String> scheduleIds;
     private List<String> majorIds;
-    private String province;
+    private String provinceName;
 }

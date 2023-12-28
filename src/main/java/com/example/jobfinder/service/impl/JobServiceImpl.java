@@ -51,8 +51,8 @@ public class JobServiceImpl implements JobService {
     private StatusService statusService;
     @Autowired
     private JobPositionService jobPositionService;
-//    @Autowired
-//    private JobTypeService jobTypeService;
+    @Autowired
+    private JobTypeService jobTypeService;
     @Autowired
     private MajorService majorService;
 
@@ -82,21 +82,24 @@ public class JobServiceImpl implements JobService {
     private JobScheduleMapper jobScheduleMapper;
     @Autowired
     private UserService userService;
-//    @Autowired
-//    private CandidateApplicationRepository candidateApplicationRepository;
+
+    @Autowired
+    private CandidateRepository candidateRepository;
+    @Autowired
+    private CandidateApplicationRepository candidateApplicationRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger("info");
     public static final int JOB_STATUS_ACTIVE_ID = 1;
 
-//    @Override
-//    public PaginationDTO filterJob(JobFilterDTO jobFilterDTO, int no, int limit) {
-//        Page<JobShowDTO> page = this.jobRepository
-//                .findAll(JobSpecification.filterJobForCandidate(jobFilterDTO), PageRequest.of(no, limit))
-//                .map(item -> jobMapper.toDTOShow(item));
-//        return new PaginationDTO(page.getContent(), page.isFirst(), page.isLast(),
-//                page.getTotalPages(),
-//                page.getTotalElements(), page.getSize(),
-//                page.getNumber());
-//    }
+    @Override
+    public PaginationDTO filterJob(JobFilterDTO jobFilterDTO, int no, int limit) {
+        Page<JobShowDTO> page = this.jobRepository
+                .findAll(JobSpecification.filterJobForCandidate(jobFilterDTO), PageRequest.of(no, limit))
+                .map(item -> jobMapper.toDTOShow(item));
+        return new PaginationDTO(page.getContent(), page.isFirst(), page.isLast(),
+                page.getTotalPages(),
+                page.getTotalElements(), page.getSize(),
+                page.getNumber());
+    }
 
 
     @Override
@@ -311,7 +314,7 @@ public class JobServiceImpl implements JobService {
         return jobScheduleList;
     }
 
-//
+
 //    @Override
 //    public JobDTO replicate(long id, JobDTO jobDTO) {
 //        String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -342,9 +345,9 @@ public class JobServiceImpl implements JobService {
 //            throw new AccessDeniedException("FORBIDDEN");
 //        }
 //    }
-//
 
-//
+
+
 
     @Override
     public JobDTO findById(long id) {
@@ -365,12 +368,12 @@ public class JobServiceImpl implements JobService {
 
         return job;
     }
-//
+
 //    @Override
 //    public Long recruitmentNews(int month) {
 //        return this.jobRepository.recruitmentNews(month);
 //    }
-//
+
     @Override
     public PaginationDTO findAllActive(int no, int limit) {
 
@@ -379,79 +382,79 @@ public class JobServiceImpl implements JobService {
         return new PaginationDTO(page.getContent(), page.isFirst(), page.isLast(), page.getTotalPages(),
                 page.getTotalElements(), page.getSize(), page.getNumber());
     }
-//
-//    @Override
-//    public PaginationDTO findAllActiveByCompanyIdShowForHr(int no, int limit) {
-//
-//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-//        HR hr = this.hrRepository.findByUsername(username).orElseThrow(
-//                () -> new AccessDeniedException("FORBIDDEN"));
-//
-//        Page<JobShowDTO> page = jobRepository.findAllActiveByCompanyId(hr.getCompany().getId(), PageRequest.of(no, limit))
-//                .map(item -> jobMapper.toDTOShow(item));
-//
-//        return new PaginationDTO(page.getContent(), page.isFirst(), page.isLast(), page.getTotalPages(),
-//                page.getTotalElements(), page.getSize(), page.getNumber());
-//    }
-//
-//    @Override
-//    public PaginationDTO findAllDisableByCompanyIdShowForHr(int no, int limit) {
-//
-//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-//        HR hr = this.hrRepository.findByUsername(username).orElseThrow(
-//                () -> new AccessDeniedException("FORBIDDEN"));
-//
-//        Page<Object> page = jobRepository.findAllDisableByCompanyId(hr.getCompany().getId(), PageRequest.of(no, limit))
-//                .map(j -> jobMapper.toDTOShow(j));
-//
-//        return new PaginationDTO(page.getContent(), page.isFirst(), page.isLast(), page.getTotalPages(),
-//                page.getTotalElements(), page.getSize(), page.getNumber());
-//    }
-//
-//    @Override
-//    public PaginationDTO findAllByCompanyIdShowForHr(int no, int limit) {
-//
-//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-//        HR hr = this.hrRepository.findByUsername(username).orElseThrow(
-//                () -> new AccessDeniedException("FORBIDDEN"));
-//
-//        Page<Object> page = jobRepository.findAllByCompanyId(hr.getCompany().getId(), PageRequest.of(no, limit))
-//                .map(j -> jobMapper.toDTOShow(j));
-//
-//        return new PaginationDTO(page.getContent(), page.isFirst(), page.isLast(), page.getTotalPages(),
-//                page.getTotalElements(), page.getSize(), page.getNumber());
-//    }
-//
-//    @Override
-//    public long countAllActiveByCompanyIdShowForHr() {
-//
-//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-//        HR hr = this.hrRepository.findByUsername(username).orElseThrow(
-//                () -> new AccessDeniedException("FORBIDDEN"));
-//
-//        return jobRepository.countAllActiveByCompanyId(hr.getCompany().getId());
-//    }
-//
-//    @Override
-//    public long countAllDisableByCompanyIdShowForHr() {
-//
-//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-//        HR hr = this.hrRepository.findByUsername(username).orElseThrow(
-//                () -> new AccessDeniedException("FORBIDDEN"));
-//
-//        return jobRepository.countAllDisableByCompanyId(hr.getCompany().getId());
-//    }
-//
-//    @Override
-//    public long countAllByCompanyId() {
-//
-//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-//        HR hr = this.hrRepository.findByUsername(username).orElseThrow(
-//                () -> new AccessDeniedException("FORBIDDEN"));
-//
-//        return jobRepository.countAllByCompanyId(hr.getCompany().getId());
-//    }
-//
+
+    @Override
+    public PaginationDTO findAllActiveByCompanyIdShowForHr(int no, int limit) {
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        HR hr = this.hrRepository.findByUsername(username).orElseThrow(
+                () -> new AccessDeniedException("FORBIDDEN"));
+
+        Page<JobShowDTO> page = jobRepository.findAllActiveByCompanyId(hr.getCompany().getId(), PageRequest.of(no, limit))
+                .map(item -> jobMapper.toDTOShow(item));
+
+        return new PaginationDTO(page.getContent(), page.isFirst(), page.isLast(), page.getTotalPages(),
+                page.getTotalElements(), page.getSize(), page.getNumber());
+    }
+
+    @Override
+    public PaginationDTO findAllDisableByCompanyIdShowForHr(int no, int limit) {
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        HR hr = this.hrRepository.findByUsername(username).orElseThrow(
+                () -> new AccessDeniedException("FORBIDDEN"));
+
+        Page<Object> page = jobRepository.findAllDisableByCompanyId(hr.getCompany().getId(), PageRequest.of(no, limit))
+                .map(j -> jobMapper.toDTOShow(j));
+
+        return new PaginationDTO(page.getContent(), page.isFirst(), page.isLast(), page.getTotalPages(),
+                page.getTotalElements(), page.getSize(), page.getNumber());
+    }
+
+    @Override
+    public PaginationDTO findAllByCompanyIdShowForHr(int no, int limit) {
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        HR hr = this.hrRepository.findByUsername(username).orElseThrow(
+                () -> new AccessDeniedException("FORBIDDEN"));
+
+        Page<Object> page = jobRepository.findAllByCompanyId(hr.getCompany().getId(), PageRequest.of(no, limit))
+                .map(j -> jobMapper.toDTOShow(j));
+
+        return new PaginationDTO(page.getContent(), page.isFirst(), page.isLast(), page.getTotalPages(),
+                page.getTotalElements(), page.getSize(), page.getNumber());
+    }
+
+    @Override
+    public long countAllActiveByCompanyIdShowForHr() {
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        HR hr = this.hrRepository.findByUsername(username).orElseThrow(
+                () -> new AccessDeniedException("FORBIDDEN"));
+
+        return jobRepository.countAllActiveByCompanyId(hr.getCompany().getId());
+    }
+
+    @Override
+    public long countAllDisableByCompanyIdShowForHr() {
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        HR hr = this.hrRepository.findByUsername(username).orElseThrow(
+                () -> new AccessDeniedException("FORBIDDEN"));
+
+        return jobRepository.countAllDisableByCompanyId(hr.getCompany().getId());
+    }
+
+    @Override
+    public long countAllByCompanyId() {
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        HR hr = this.hrRepository.findByUsername(username).orElseThrow(
+                () -> new AccessDeniedException("FORBIDDEN"));
+
+        return jobRepository.countAllByCompanyId(hr.getCompany().getId());
+    }
+
 //    @Override
 //    public Long countByCreatedDate(LocalDateTime from, LocalDateTime to) {
 //
@@ -461,180 +464,180 @@ public class JobServiceImpl implements JobService {
 //            return jobPositionService.count();
 //        }
 //    }
-//
-//    @Override
-//    public PaginationDTO findAllActiveByCompanyId(long companyId, int no, int limit) {
-//        // check companyId exits
-//        Company company = companyService.getById(companyId);
-//        Page<Object> page = jobRepository.findAllByCompanyId(companyId, PageRequest.of(no, limit))
-//                .map(j -> jobMapper.toDTOShow(j));
-//
-//        return new PaginationDTO(page.getContent(), page.isFirst(), page.isLast(), page.getTotalPages(),
-//                page.getTotalElements(), page.getSize(), page.getNumber());
-//    }
-//
-//
+
+    @Override
+    public PaginationDTO findAllActiveByCompanyId(long companyId, int no, int limit) {
+        // check companyId exits
+        Company company = companyService.getById(companyId);
+        Page<Object> page = jobRepository.findAllByCompanyId(companyId, PageRequest.of(no, limit))
+                .map(j -> jobMapper.toDTOShow(j));
+
+        return new PaginationDTO(page.getContent(), page.isFirst(), page.isLast(), page.getTotalPages(),
+                page.getTotalElements(), page.getSize(), page.getNumber());
+    }
+
+
 //    @Override
 //    public List<Object[]> getNewStatistics() { // created date within 1 month
 //        return jobRepository
 //                .getNewStatistics(DateTimeHelper.getEarliestTimeOfDate(DateTimeHelper.getDateTimeOfMonthAgo(1)));
 //    }
-//
-//    @Override
-//    public Map<YearMonth, int[]> countByMonth() {
-//
-//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-//        HR hr = this.hrRepository.findByUsername(username).orElseThrow(
-//                () -> new AccessDeniedException("FORBIDDEN"));
-//
-//        Map<YearMonth, int[]> counts = new HashMap<>();
-//
-//        final int NUMBER_OF_MONTHS = 12;
-//        YearMonth endMonth = YearMonth.now();
-//        YearMonth startMonth = endMonth.minusMonths(NUMBER_OF_MONTHS);
-//
-//        for (YearMonth month = startMonth; !month.isAfter(endMonth); month = month.plusMonths(1)) {
-//            counts.put(month, new int[2]);
-//        }
-//
-//        for (Object[] result : jobRepository.countJobsByMonth(hr.getCompany().getId())) {
-//            YearMonth month = YearMonth.of((int) result[0], (int) result[1]);
-//            int jobCount = ((Number) result[2]).intValue();
-//            if (counts.containsKey(month)) {
-//                counts.get(month)[0] = jobCount;
-//            }
-//        }
-//
-//        for (Object[] result : candidateApplicationRepository.countApplicationsByMonth(hr.getCompany().getId())) {
-//            YearMonth month = YearMonth.of((int) result[0], (int) result[1]);
-//            int applicationCount = ((Number) result[2]).intValue();
-//            if (counts.containsKey(month)) {
-//                counts.get(month)[1] = applicationCount;
-//            }
-//        }
-//
-//        return counts;
-//    }
-//
-//    @Override
-//    public Map<Integer, int[]> countByYear() {
-//
-//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-//        HR hr = this.hrRepository.findByUsername(username).orElseThrow(
-//                () -> new AccessDeniedException("FORBIDDEN"));
-//        Map<Integer, int[]> counts = new HashMap<>();
-//
-//        final int NUMBER_OF_YEARS = 3;
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.add(Calendar.YEAR, -NUMBER_OF_YEARS);
-//
-//        for (int i = 0; i <= NUMBER_OF_YEARS; i++) {
-//            int year = calendar.get(Calendar.YEAR);
-//            counts.put(year, new int[2]);
-//            calendar.add(Calendar.YEAR, 1);
-//        }
-//
-//        for (Object[] result : jobRepository.countJobsByYear(hr.getCompany().getId())) {
-//            int year = (int) result[0];
-//            int jobCount = ((Number) result[1]).intValue();
-//
-//            if (counts.containsKey(year)) {
-//                counts.get(year)[0] = jobCount;
-//            }
-//        }
-//
-//        for (Object[] result : candidateApplicationRepository.countApplicationsByYear(hr.getCompany().getId())) {
-//            int year = (int) result[0];
-//            int applicationCount = ((Number) result[1]).intValue();
-//
-//            if (counts.containsKey(year)) {
-//                counts.get(year)[1] = applicationCount;
-//            }
-//        }
-//
-//        return counts;
-//    }
-//
 
-//
+    @Override
+    public Map<YearMonth, int[]> countByMonth() {
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        HR hr = this.hrRepository.findByUsername(username).orElseThrow(
+                () -> new AccessDeniedException("FORBIDDEN"));
+
+        Map<YearMonth, int[]> counts = new HashMap<>();
+
+        final int NUMBER_OF_MONTHS = 12;
+        YearMonth endMonth = YearMonth.now();
+        YearMonth startMonth = endMonth.minusMonths(NUMBER_OF_MONTHS);
+
+        for (YearMonth month = startMonth; !month.isAfter(endMonth); month = month.plusMonths(1)) {
+            counts.put(month, new int[2]);
+        }
+
+        for (Object[] result : jobRepository.countJobsByMonth(hr.getCompany().getId())) {
+            YearMonth month = YearMonth.of((int) result[0], (int) result[1]);
+            int jobCount = ((Number) result[2]).intValue();
+            if (counts.containsKey(month)) {
+                counts.get(month)[0] = jobCount;
+            }
+        }
+
+        for (Object[] result : candidateApplicationRepository.countApplicationsByMonth(hr.getCompany().getId())) {
+            YearMonth month = YearMonth.of((int) result[0], (int) result[1]);
+            int applicationCount = ((Number) result[2]).intValue();
+            if (counts.containsKey(month)) {
+                counts.get(month)[1] = applicationCount;
+            }
+        }
+
+        return counts;
+    }
+
+    @Override
+    public Map<Integer, int[]> countByYear() {
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        HR hr = this.hrRepository.findByUsername(username).orElseThrow(
+                () -> new AccessDeniedException("FORBIDDEN"));
+        Map<Integer, int[]> counts = new HashMap<>();
+
+        final int NUMBER_OF_YEARS = 3;
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.YEAR, -NUMBER_OF_YEARS);
+
+        for (int i = 0; i <= NUMBER_OF_YEARS; i++) {
+            int year = calendar.get(Calendar.YEAR);
+            counts.put(year, new int[2]);
+            calendar.add(Calendar.YEAR, 1);
+        }
+
+        for (Object[] result : jobRepository.countJobsByYear(hr.getCompany().getId())) {
+            int year = (int) result[0];
+            int jobCount = ((Number) result[1]).intValue();
+
+            if (counts.containsKey(year)) {
+                counts.get(year)[0] = jobCount;
+            }
+        }
+
+        for (Object[] result : candidateApplicationRepository.countApplicationsByYear(hr.getCompany().getId())) {
+            int year = (int) result[0];
+            int applicationCount = ((Number) result[1]).intValue();
+
+            if (counts.containsKey(year)) {
+                counts.get(year)[1] = applicationCount;
+            }
+        }
+
+        return counts;
+    }
+
+
+
+    @Override
+    public boolean isAppliable(JobDTO jobDTO) {
+        return jobDTO.getStatusDTO().getName().equals(String.valueOf(Estatus.Active));
+    }
+
+
 //    @Override
-//    public boolean isAppliable(JobDTO jobDTO) {
-//        return jobDTO.getStatusDTO().getName().equals(String.valueOf(Estatus.Active));
-//    }
+//    public List<JobDTO> createByExcelFile(MultipartFile file) {
+//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+//        HR hr = this.hrRepository.findByUsername(username).orElseThrow(
+//                () -> new AccessDeniedException("FORBIDDEN"));
+//        try {
+//            //Check version before read excel file
+//            boolean isValid = excelHelper.checkFileVersion(file.getInputStream());
+//            if (isValid) {
+//                //Read and map job from excel file
+//                List<Job> jobs = excelHelper.excelToJob(file.getInputStream());
 //
+//                for (Job job : jobs) {
+//                    if (job != null) {
+//                        //set value and save a new job
+//                        job.setCreatedDate(new Date());
+//                        job.setStatus(statusService.findByName(Estatus.Active));
+//                        job.setCompany(hr.getCompany());
+//                        Job newJob = jobRepository.save(job);
 //
-////    @Override
-////    public List<JobDTO> createByExcelFile(MultipartFile file) {
-////        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-////        HR hr = this.hrRepository.findByUsername(username).orElseThrow(
-////                () -> new AccessDeniedException("FORBIDDEN"));
-////        try {
-////            //Check version before read excel file
-////            boolean isValid = excelHelper.checkFileVersion(file.getInputStream());
-////            if (isValid) {
-////                //Read and map job from excel file
-////                List<Job> jobs = excelHelper.excelToJob(file.getInputStream());
-////
-////                for (Job job : jobs) {
-////                    if (job != null) {
-////                        //set value and save a new job
-////                        job.setCreatedDate(new Date());
-////                        job.setStatus(statusService.findByName(Estatus.Active));
-////                        job.setCompany(hr.getCompany());
-////                        Job newJob = jobRepository.save(job);
-////
-////                        //Set list positions, schedules, majors to new job
-////                        addJobMajors(newJob, job.getJobMajors().stream().map(JobMajor::getMajor).collect(Collectors.toList()));
-////                        addJobPositions(newJob, job.getJobPositions().stream().map(JobPosition::getPosition).collect(Collectors.toList()));
-////                        addJobSchedules(newJob, job.getJobSchedules().stream().map(JobSchedule::getSchedule).collect(Collectors.toList()));
-////                    }
-////                }
-////                return jobs.stream().map(job -> jobMapper.toDTO(job)).collect(Collectors.toList());
-////            } else throw new IOException("This excel file is outdated! Please download the newest version!");
-////        } catch (IOException e) {
-////            throw new RuntimeException("fail to store excel data: " + e.getMessage());
-////
-////        }
-////    }
+//                        //Set list positions, schedules, majors to new job
+//                        addJobMajors(newJob, job.getJobMajors().stream().map(JobMajor::getMajor).collect(Collectors.toList()));
+//                        addJobPositions(newJob, job.getJobPositions().stream().map(JobPosition::getPosition).collect(Collectors.toList()));
+//                        addJobSchedules(newJob, job.getJobSchedules().stream().map(JobSchedule::getSchedule).collect(Collectors.toList()));
+//                    }
+//                }
+//                return jobs.stream().map(job -> jobMapper.toDTO(job)).collect(Collectors.toList());
+//            } else throw new IOException("This excel file is outdated! Please download the newest version!");
+//        } catch (IOException e) {
+//            throw new RuntimeException("fail to store excel data: " + e.getMessage());
 //
-//    private void addJobMajors(Job job, List<Major> majors) {
-//
-//        if (majors != null && majors.size() > 0) {
-//            for (Major major : majors) {
-//                Major existingMajor = majorRepository.findByName(major.getName());
-//                JobMajor newJobMajor = new JobMajor();
-//                newJobMajor.setMajor(existingMajor);
-//                newJobMajor.setJob(job);
-//                job.getJobMajors().add(newJobMajor);
-//                jobMajorRepository.save(newJobMajor);
-//            }
 //        }
 //    }
-//
-//    private void addJobPositions(Job job, List<Position> positions) {
-//        if (positions != null && positions.size() > 0) {
-//            for (Position position : positions) {
-//                Position existingPosition = positionRepository.findByName((position.getName()));
-//                JobPosition newJobPosition = new JobPosition();
-//                newJobPosition.setPosition(existingPosition);
-//                newJobPosition.setJob(job);
-//                job.getJobPositions().add(newJobPosition);
-//                jobPositionRepository.save(newJobPosition);
-//            }
-//        }
-//
-//    }
-//
-//    private void addJobSchedules(Job job, List<Schedule> schedules) {
-//        if (schedules != null && schedules.size() > 0) {
-//            for (Schedule schedule : schedules) {
-//                Schedule existingSchedule = scheduleRepository.findByName(schedule.getName());
-//                JobSchedule newJobSchedule = new JobSchedule();
-//                newJobSchedule.setSchedule(existingSchedule);
-//                newJobSchedule.setJob(job);
-//                job.getJobSchedules().add(newJobSchedule);
-//                jobScheduleRepository.save(newJobSchedule);
-//            }
-//        }
-//    }
+
+    private void addJobMajors(Job job, List<Major> majors) {
+
+        if (majors != null && majors.size() > 0) {
+            for (Major major : majors) {
+                Major existingMajor = majorRepository.findByName(major.getName());
+                JobMajor newJobMajor = new JobMajor();
+                newJobMajor.setMajor(existingMajor);
+                newJobMajor.setJob(job);
+                job.getJobMajors().add(newJobMajor);
+                jobMajorRepository.save(newJobMajor);
+            }
+        }
+    }
+
+    private void addJobPositions(Job job, List<Position> positions) {
+        if (positions != null && positions.size() > 0) {
+            for (Position position : positions) {
+                Position existingPosition = positionRepository.findByName((position.getName()));
+                JobPosition newJobPosition = new JobPosition();
+                newJobPosition.setPosition(existingPosition);
+                newJobPosition.setJob(job);
+                job.getJobPositions().add(newJobPosition);
+                jobPositionRepository.save(newJobPosition);
+            }
+        }
+
+    }
+
+    private void addJobSchedules(Job job, List<Schedule> schedules) {
+        if (schedules != null && schedules.size() > 0) {
+            for (Schedule schedule : schedules) {
+                Schedule existingSchedule = scheduleRepository.findByName(schedule.getName());
+                JobSchedule newJobSchedule = new JobSchedule();
+                newJobSchedule.setSchedule(existingSchedule);
+                newJobSchedule.setJob(job);
+                job.getJobSchedules().add(newJobSchedule);
+                jobScheduleRepository.save(newJobSchedule);
+            }
+        }
+    }
 }
