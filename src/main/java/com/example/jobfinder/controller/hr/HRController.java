@@ -53,11 +53,9 @@ public class HRController {
     @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> create(@Valid @RequestPart HRCreationDTO hrCreationDTO,
                                     @RequestPart(name = "fileAvatar", required = false) MultipartFile fileAvatar) throws IOException {
-        try {
+
             return new ResponseEntity<>(hrService.create(hrCreationDTO, fileAvatar), HttpStatus.CREATED);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+
     }
 
 
