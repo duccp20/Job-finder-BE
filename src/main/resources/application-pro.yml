@@ -1,5 +1,6 @@
 server:
   port: 8080
+  address: 0.0.0.0
 db:
   port: 16986
   name: job_finder
@@ -15,7 +16,7 @@ spring:
 
 
 domain:
-  path: https://job-finder-be.onrender.com
+  path: https://job-finder-be-production.up.railway.app
 
 url:
   server:
