@@ -64,69 +64,69 @@ public interface JobRepository extends JpaRepository<Job, Long> {
 
 
 
-//   boolean existsByStartDate(Date startDate);
+   boolean existsByStartDate(Date startDate);
 
     @Query("SELECT j FROM Job j WHERE j.status.statusId = 1")
     List<Job> findJobActive();
-//
-//    @Query("SELECT COUNT(j) FROM Job j WHERE MONTH(j.startDate) = :month")
-//    Long recruitmentNews(@Param("month") int month);
-//
+
+    @Query("SELECT COUNT(j) FROM Job j WHERE MONTH(j.startDate) = :month")
+    Long recruitmentNews(@Param("month") int month);
+
     @Query(value = "SELECT j FROM Job j WHERE j.status.statusId = 1 ORDER BY j.createdDate DESC")
     Page<Job> findAllActive(Pageable pageable);
-//
-//    @Query("SELECT j FROM Job j WHERE j.status.id = 1 AND j.company.id = :companyId ORDER BY j.createdDate DESC")
-//    List<Job> findAllActiveByCompanyId(@Param("companyId") long companyId);
-//
-//    @Query("SELECT j FROM Job j WHERE  j.status.id = 1 and j.company.id= :companyId ORDER BY j.createdDate DESC")
-//    Page<Job> findAllActiveByCompanyId(@Param("companyId") long companyId, Pageable pageable);
-//
-//    @Query("SELECT j FROM Job j WHERE  j.status.id = 4 and j.company.id= :companyId ORDER BY j.createdDate DESC")
-//    Page<Job> findAllDisableByCompanyId(@Param("companyId") long companyId, Pageable pageable);
-//
-//    @Query("SELECT j FROM Job j WHERE j.company.id= :companyId ORDER BY j.createdDate DESC")
-//    Page<Job> findAllByCompanyId(@Param("companyId") long companyId, Pageable pageable);
-//
-//    @Query("SELECT COUNT(*) FROM Job j WHERE  j.status.id = 1 and j.company.id= :companyId")
-//    long countAllActiveByCompanyId(@Param("companyId") long companyId);
-//
-//    @Query("SELECT COUNT(*) FROM Job j WHERE  j.status.id = 4 and j.company.id= :companyId")
-//    long countAllDisableByCompanyId(@Param("companyId") long companyId);
-//
-//    @Query("SELECT COUNT(*) FROM Job j WHERE j.company.id= :companyId")
-//    long countAllByCompanyId(@Param("companyId") long companyId);
-//
-//    Long countByCreatedDateBetween(LocalDateTime from, LocalDateTime to);
-//
-//    @Query("SELECT j.id, j.name, j.createdDate FROM Job j WHERE j.createdDate >= :timeAgo")
-//    List<Object[]> getNewStatistics(@Param("timeAgo") LocalDateTime timeAgo);
-//
-//    @Query("SELECT j.status.name, COUNT(j.id) FROM Job j GROUP BY j.status.name")
-//    List<Object[]> getStatusStatistics();
-//
-//    @Query("SELECT YEAR(j.createdDate), MONTH(j.createdDate), COUNT(j) FROM Job j WHERE j.company.id = :companyId GROUP BY YEAR(j.createdDate), MONTH(j.createdDate)")
-//    List<Object[]> countJobsByMonth(@Param("companyId") long companyId);
-//
-//    @Query("SELECT YEAR(j.createdDate), COUNT(j) FROM Job j WHERE j.company.id = :companyId GROUP BY YEAR(j.createdDate)")
-//    List<Object[]> countJobsByYear(@Param("companyId") long companyId);
+
+    @Query("SELECT j FROM Job j WHERE j.status.statusId = 1 AND j.company.id = :companyId ORDER BY j.createdDate DESC")
+    List<Job> findAllActiveByCompanyId(@Param("companyId") long companyId);
+
+    @Query("SELECT j FROM Job j WHERE  j.status.statusId = 1 and j.company.id= :companyId ORDER BY j.createdDate DESC")
+    Page<Job> findAllActiveByCompanyId(@Param("companyId") long companyId, Pageable pageable);
+
+    @Query("SELECT j FROM Job j WHERE  j.status.statusId = 4 and j.company.id= :companyId ORDER BY j.createdDate DESC")
+    Page<Job> findAllDisableByCompanyId(@Param("companyId") long companyId, Pageable pageable);
+
+    @Query("SELECT j FROM Job j WHERE j.company.id= :companyId ORDER BY j.createdDate DESC")
+    Page<Job> findAllByCompanyId(@Param("companyId") long companyId, Pageable pageable);
+
+    @Query("SELECT COUNT(*) FROM Job j WHERE  j.status.statusId = 1 and j.company.id= :companyId")
+    long countAllActiveByCompanyId(@Param("companyId") long companyId);
+
+    @Query("SELECT COUNT(*) FROM Job j WHERE  j.status.statusId = 4 and j.company.id= :companyId")
+    long countAllDisableByCompanyId(@Param("companyId") long companyId);
+
+    @Query("SELECT COUNT(*) FROM Job j WHERE j.company.id= :companyId")
+    long countAllByCompanyId(@Param("companyId") long companyId);
+
+    Long countByCreatedDateBetween(LocalDateTime from, LocalDateTime to);
+
+    @Query("SELECT j.id, j.name, j.createdDate FROM Job j WHERE j.createdDate >= :timeAgo")
+    List<Object[]> getNewStatistics(@Param("timeAgo") LocalDateTime timeAgo);
+
+    @Query("SELECT j.status.name, COUNT(j.id) FROM Job j GROUP BY j.status.name")
+    List<Object[]> getStatusStatistics();
+
+    @Query("SELECT YEAR(j.createdDate), MONTH(j.createdDate), COUNT(j) FROM Job j WHERE j.company.id = :companyId GROUP BY YEAR(j.createdDate), MONTH(j.createdDate)")
+    List<Object[]> countJobsByMonth(@Param("companyId") long companyId);
+
+    @Query("SELECT YEAR(j.createdDate), COUNT(j) FROM Job j WHERE j.company.id = :companyId GROUP BY YEAR(j.createdDate)")
+    List<Object[]> countJobsByYear(@Param("companyId") long companyId);
 
 //     @Query("SELECT j.jobPositions FROM Job j")
 //     List<Object[]> findAllJob();
 //     @Query("SELECT j FROM Job j WHERE j.hr.id =:hrId ORDER BY j.createdDate ASC")
 //     List<Job> findAllByHRId(@Param("hrId") int hrId);
-
+//
 //     @Query("SELECT j FROM Job j WHERE j.hr.user.id = :userId ORDER BY j.createdDate ASC")
 //     List<Job> findAllByUserId(@Param("userId") long userId);
-
+//
 //     @Query("SELECT j FROM Job j WHERE j.hr.user.username = :username ORDER BY j.createdDate ASC")
 //     List<Job> findAllByUsername(@Param("username") String username);
-
+//
 //     @Query("SELECT j.jobPosition.name, COUNT(j.id) FROM Job j GROUP BY j.jobPosition.name")
 //     List<Object[]> getPositionStatistics();
-
+//
 //     @Query("SELECT j.major.name, COUNT(j.id) FROM Job j GROUP BY j.major.name")
 //     List<Object[]> getMajorStatistics();
-
+//
 //     @Query("SELECT j FROM Job j"
 //             + " WHERE j.hr.company.id = :companyId"
 //             + " AND (:quickSearch IS NULL"

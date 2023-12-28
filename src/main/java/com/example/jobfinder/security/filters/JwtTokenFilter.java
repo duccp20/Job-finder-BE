@@ -82,6 +82,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private boolean isByPassToken(HttpServletRequest request) {
         LOGGER.info("By pass token: " + request.getServletPath());
         List<Pair<String, String>> byPassTokens = Arrays.asList(
+                Pair.of(ApiURL.AUTH + "/login", "POST"),
                 Pair.of(ApiURL.USER + "/login", "POST"),
                 Pair.of(ApiURL.AUTH + "/register", "POST"),
                 Pair.of(ApiURL.USER + "/forget-password", "POST"),
@@ -103,7 +104,18 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(ApiURL.COMPANY + "", "GET"),
                 Pair.of("^" + ApiURL.FILE + "/display/.*$", "GET"),
                 Pair.of("^" + ApiURL.FILE + "/raw/.*$", "GET"),
-                Pair.of("^" + ApiURL.FILE + "/upload/image", "POST")
+                Pair.of("^" + ApiURL.FILE + "/upload/image", "POST"),
+
+                // Swagger
+                Pair.of("/api-docs","GET"),
+                Pair.of("/api-docs/.*$","GET"),
+                Pair.of("/swagger-resources","GET"),
+                Pair.of("/swagger-resources/.*$","GET"),
+                Pair.of("/configuration/ui","GET"),
+                Pair.of("/configuration/security","GET"),
+                Pair.of("/swagger-ui/.*$","GET"),
+                Pair.of("/swagger-ui.html", "GET"),
+                Pair.of("/swagger-ui/index.html", "GET")
         );
 
 
