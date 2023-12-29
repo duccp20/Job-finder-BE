@@ -61,7 +61,11 @@ public interface JobMapper {
     @Mapping(source = "startDate", target = "startDate")
     @Mapping(source = "endDate", target = "endDate")
     @Mapping(source = "location", target = "location")
+<<<<<<< Updated upstream
     @Mapping(source = "status", target = "statusDTO")
+=======
+
+>>>>>>> Stashed changes
     JobShowDTO toDTOShow(Job job);
 
     List<JobShowDTO> toDtoList(List<Job> jobs);

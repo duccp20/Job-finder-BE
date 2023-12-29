@@ -24,28 +24,18 @@ public class CandidateApplicationController {
 	@Autowired
 	MessageSource messageSource;
 
-	@SecurityRequirement(name = "Bearer Authentication")
-	@PreAuthorize("hasAuthority('Role_Candidate')")
-	@GetMapping("/candidate")
-	public ResponseEntity<?> findAllByCandidateId(
-			@RequestParam(defaultValue = PageDefault.NO) int no,
-			@RequestParam(defaultValue = PageDefault.LIMIT) int limit) {
-		return ResponseEntity.ok(this.candidateApplicationService.findAllByCandidateId(no, limit));
-	}
-
-	@SecurityRequirement(name = "Bearer Authentication")
-	@PreAuthorize("hasAuthority('Role_HR')")
-	@GetMapping("/job/{id}")
-	public ResponseEntity<?> findAllByJobId(@PathVariable int id, @RequestParam(defaultValue = PageDefault.NO) int no,
-			@RequestParam(defaultValue = PageDefault.LIMIT) int limit) {
-		return ResponseEntity.ok(this.candidateApplicationService.findAllByJobId(id, no, limit));
-	}
-
+	/**
+	 * Creates a new candidate application.
+	 *
+	 * @param  candidateApplication  the candidate application data in JSON format
+	 * @param  fileCV                the CV file (optional)
+	 * @return                       the response entity containing the result of the creation process
+	 */
 	@SecurityRequirement(name = "Bearer Authentication")
 	@PreAuthorize("hasAuthority('Role_Candidate')")
 	@PostMapping(value = "", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE })
 	public ResponseEntity<?> create(@RequestPart("candidateApplication") String candidateApplication,
-			@RequestPart(name = "fileCV", required = false) MultipartFile fileCV) {
+									@RequestPart(name = "fileCV", required = false) MultipartFile fileCV) {
 
 		CandidateApplicationDTO candidateApplicationDTO = candidateApplicationService.readJson(candidateApplication,
 				fileCV);
@@ -63,6 +53,39 @@ public class CandidateApplicationController {
 		return new ResponseEntity<>(this.candidateApplicationService.create(candidateApplicationDTO),
 				HttpStatus.CREATED);
 	}
+
+    /**
+     * Retrieves all candidate applications by candidate ID.
+     *
+     * @param  no    the page number to retrieve (default: 0)
+     * @param  limit the maximum number of results to return (default: 10)
+     * @return       the response entity containing the candidate applications
+     */
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasAuthority('Role_Candidate')")
+    @GetMapping("/candidate")
+    public ResponseEntity<?> findAllByCandidateId(
+            @RequestParam(defaultValue = PageDefault.NO) int no,
+            @RequestParam(defaultValue = PageDefault.LIMIT) int limit) {
+        return ResponseEntity.ok(this.candidateApplicationService.findAllByCandidateId(no, limit));
+    }
+
+
+
+	@SecurityRequirement(name = "Bearer Authentication")
+	@PreAuthorize("hasAuthority('Role_HR')")
+	@GetMapping("/job/{id}")
+	public ResponseEntity<?> findAllByJobId(@PathVariable int id, @RequestParam(defaultValue = PageDefault.NO) int no,
+			@RequestParam(defaultValue = PageDefault.LIMIT) int limit) {
+		return ResponseEntity.ok(this.candidateApplicationService.findAllByJobId(id, no, limit));
+	}
+
+	/**
+	 * Checks if a candidate application exists for a given job ID.
+	 *
+	 * @param  idJob  the ID of the job to check the candidate application for
+	 * @return        true if a candidate application exists, false otherwise
+	 */
 	@SecurityRequirement(name = "Bearer Authentication")
 	@GetMapping("/check")
 	public boolean checkCandidateApplication (@RequestParam("idJob") int idJob) {

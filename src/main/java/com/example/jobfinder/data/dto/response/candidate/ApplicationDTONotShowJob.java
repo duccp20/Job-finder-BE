@@ -18,7 +18,7 @@ public class ApplicationDTONotShowJob {
 	private String candidateLastName;
 	private String candidatePhoneNumber;
 	private String candidateEmail;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constant.DATE_TIME_FORMAT)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constant.DATE_TIME_FORMAT, timezone = "Asia/Ho_Chi_Minh")
 	private Date createdDate;
 	private String referenceLetter;
 	private String CV;
