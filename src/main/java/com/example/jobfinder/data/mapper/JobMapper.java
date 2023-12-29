@@ -3,7 +3,9 @@ package com.example.jobfinder.data.mapper;
 import com.example.jobfinder.data.dto.request.job.JobCreationDTO;
 import com.example.jobfinder.data.dto.request.job.JobDTO;
 import com.example.jobfinder.data.dto.request.job.JobShowDTO;
+import com.example.jobfinder.data.dto.response.job.JobShowDTOv2;
 import com.example.jobfinder.data.entity.Job;
+import com.example.jobfinder.data.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
@@ -12,7 +14,7 @@ import java.util.List;
 
 
 @Mapper(componentModel = "spring", uses = { HRMapper.class, PositionMapper.class,
-        ScheduleMapper.class, MajorMapper.class, StatusMapper.class , CompanyMapper.class})
+        ScheduleMapper.class, MajorMapper.class, StatusMapper.class , CompanyMapper.class, UserMapper.class})
 @Component
 public interface JobMapper {
 
@@ -46,6 +48,7 @@ public interface JobMapper {
 //	 @Mapping(expression = "java(job.getCandidateApplications().size())", target = "amountOfAppliedCandidates")
 //	 @Mapping(source = "location", target = "locationDTO")
 //	 @Mapping(source = "status.name", target = "status")
+    @Mapping(target = "createBy", ignore = true)
     @Mapping(source = "company", target = "companyDTO")
     @Mapping(source = "jobMajors", target = "majorDTOs")
     @Mapping(source = "jobPositions", target = "positionDTOs")
@@ -61,12 +64,11 @@ public interface JobMapper {
     @Mapping(source = "startDate", target = "startDate")
     @Mapping(source = "endDate", target = "endDate")
     @Mapping(source = "location", target = "location")
-<<<<<<< Updated upstream
     @Mapping(source = "status", target = "statusDTO")
-=======
-
->>>>>>> Stashed changes
+    @Mapping(source = "lastModifiedDate", target = "lastModifiedDate")
     JobShowDTO toDTOShow(Job job);
+
+
 
     List<JobShowDTO> toDtoList(List<Job> jobs);
 

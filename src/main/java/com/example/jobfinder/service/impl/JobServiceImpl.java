@@ -8,6 +8,7 @@ import com.example.jobfinder.data.dto.request.job.JobShowDTO;
 import com.example.jobfinder.data.dto.request.major.MajorDTO;
 import com.example.jobfinder.data.dto.request.position.PositionDTO;
 import com.example.jobfinder.data.dto.request.schedule.ScheduleDTO;
+import com.example.jobfinder.data.dto.response.job.JobShowDTOv2;
 import com.example.jobfinder.data.entity.*;
 import com.example.jobfinder.data.mapper.*;
 import com.example.jobfinder.data.repository.*;
@@ -32,6 +33,7 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.*;
 import java.util.stream.Collectors;
+
 
 @Service
 public class JobServiceImpl implements JobService {
@@ -82,6 +84,9 @@ public class JobServiceImpl implements JobService {
     private JobScheduleMapper jobScheduleMapper;
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
+
 
     @Autowired
     private CandidateRepository candidateRepository;
@@ -390,8 +395,15 @@ public class JobServiceImpl implements JobService {
         HR hr = this.hrRepository.findByUsername(username).orElseThrow(
                 () -> new AccessDeniedException("FORBIDDEN"));
 
-        Page<JobShowDTO> page = jobRepository.findAllActiveByCompanyId(hr.getCompany().getId(), PageRequest.of(no, limit))
-                .map(item -> jobMapper.toDTOShow(item));
+        Page<JobShowDTO> page = jobRepository.findAllActiveByCompanyId(hr.getCompany().getId(), PageRequest.of(no, limit)).map(
+                job -> {
+                    User creator = userRepository.findById(job.getCreatedBy()).orElseThrow(
+                            () -> new ResourceNotFoundException(Collections.singletonMap("id", job.getCreatedBy())));
+                    JobShowDTO jobDTO = jobMapper.toDTOShow(job);
+                    jobDTO.setCreateBy(creator.getFirstName() + " " + creator.getLastName());
+                    return jobDTO;
+                }
+        );
 
         return new PaginationDTO(page.getContent(), page.isFirst(), page.isLast(), page.getTotalPages(),
                 page.getTotalElements(), page.getSize(), page.getNumber());
@@ -405,7 +417,13 @@ public class JobServiceImpl implements JobService {
                 () -> new AccessDeniedException("FORBIDDEN"));
 
         Page<Object> page = jobRepository.findAllDisableByCompanyId(hr.getCompany().getId(), PageRequest.of(no, limit))
-                .map(j -> jobMapper.toDTOShow(j));
+                .map(job -> {
+                    User creator = userRepository.findById(job.getCreatedBy()).orElseThrow(
+                            () -> new ResourceNotFoundException(Collections.singletonMap("id", job.getCreatedBy())));
+                    JobShowDTO jobDTO = jobMapper.toDTOShow(job);
+                    jobDTO.setCreateBy(creator.getFirstName() + " " + creator.getLastName());
+                    return jobDTO;
+                });
 
         return new PaginationDTO(page.getContent(), page.isFirst(), page.isLast(), page.getTotalPages(),
                 page.getTotalElements(), page.getSize(), page.getNumber());
@@ -419,7 +437,13 @@ public class JobServiceImpl implements JobService {
                 () -> new AccessDeniedException("FORBIDDEN"));
 
         Page<Object> page = jobRepository.findAllByCompanyId(hr.getCompany().getId(), PageRequest.of(no, limit))
-                .map(j -> jobMapper.toDTOShow(j));
+                .map(job -> {
+                    User creator = userRepository.findById(job.getCreatedBy()).orElseThrow(
+                            () -> new ResourceNotFoundException(Collections.singletonMap("id", job.getCreatedBy())));
+                    JobShowDTO jobDTO = jobMapper.toDTOShow(job);
+                    jobDTO.setCreateBy(creator.getFirstName() + " " + creator.getLastName());
+                    return jobDTO;
+                });
 
         return new PaginationDTO(page.getContent(), page.isFirst(), page.isLast(), page.getTotalPages(),
                 page.getTotalElements(), page.getSize(), page.getNumber());
