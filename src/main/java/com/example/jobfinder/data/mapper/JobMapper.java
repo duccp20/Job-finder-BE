@@ -61,6 +61,7 @@ public interface JobMapper {
     @Mapping(source = "startDate", target = "startDate")
     @Mapping(source = "endDate", target = "endDate")
     @Mapping(source = "location", target = "location")
+    @Mapping(source = "status", target = "statusDTO")
     JobShowDTO toDTOShow(Job job);
 
     List<JobShowDTO> toDtoList(List<Job> jobs);
