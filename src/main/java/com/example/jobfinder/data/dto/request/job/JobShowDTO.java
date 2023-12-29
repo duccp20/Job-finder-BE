@@ -1,5 +1,6 @@
 package com.example.jobfinder.data.dto.request.job;
 
+import com.example.jobfinder.data.dto.request.StatusDTO;
 import com.example.jobfinder.data.dto.request.company.CompanyDTO;
 import com.example.jobfinder.data.dto.request.major.MajorDTO;
 import com.example.jobfinder.data.dto.request.position.PositionDTO;
@@ -30,4 +31,5 @@ public class JobShowDTO {
     private String otherInfo;
     private String province;
     private String location;
+    private StatusDTO statusDTO;
 }
