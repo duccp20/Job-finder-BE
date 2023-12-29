@@ -97,8 +97,7 @@ public class CandidateApplicationServiceImpl implements CandidateApplicationServ
     @Override
     public boolean checkCandidateApplication(int idJob) {
 
-        String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-        User user = userRepository.findByEmail(email).orElseThrow();
+        UserDTO user = userService.getCurrentLoginUser();
         Candidate candidateDTO = candidateRepository
                 .findByUserId(user.getId())
                 .orElseThrow(() ->
@@ -112,8 +111,10 @@ public class CandidateApplicationServiceImpl implements CandidateApplicationServ
     @Override
     public CandidateApplicationDTO create(CandidateApplicationDTO candidateApplicationDTO) {
         //Get cadidate from current login user
-        String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-        User user = userRepository.findByEmail(email).orElseThrow();
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new ResourceNotFoundException(Collections.singletonMap("email", email))
+        );
         CandidateDTO candidateDTO = candidateService.findByUserId(user.getId());
 
         // check apply
@@ -123,10 +124,10 @@ public class CandidateApplicationServiceImpl implements CandidateApplicationServ
         }
 
         // check job apply
-        JobDTO jobDTO = jobService.findById(Math.toIntExact(candidateApplicationDTO.getJobDTO().getId()));
+        JobDTO jobDTO = jobService.findById(candidateApplicationDTO.getJobDTO().getId());
         candidateApplicationDTO.setJobDTO(jobDTO);
         if (!jobService.isAppliable(jobDTO))
-            throw new InternalServerErrorException("");
+            throw new InternalServerErrorException("Job is not appliable");
 
 
         // set value candidate apply
