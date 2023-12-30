@@ -30,6 +30,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Collections;
 
 @Service
@@ -109,7 +110,7 @@ public class CandidateApplicationServiceImpl implements CandidateApplicationServ
     }
 
     @Override
-    public CandidateApplicationDTO create(CandidateApplicationDTO candidateApplicationDTO) {
+    public CandidateApplicationDTO create(CandidateApplicationDTO candidateApplicationDTO, MultipartFile file) throws IOException {
         //Get cadidate from current login user
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElseThrow(
@@ -130,12 +131,13 @@ public class CandidateApplicationServiceImpl implements CandidateApplicationServ
             throw new InternalServerErrorException("Job is not appliable");
 
 
+
         // set value candidate apply
         candidateApplicationDTO.setCandidateDTO(candidateDTO);
         candidateApplicationDTO.setEmail(candidateDTO.getUserDTO().getEmail());
         candidateApplicationDTO.setFullName(candidateDTO.getUserDTO().getLastName() + " " + candidateDTO.getUserDTO().getFirstName());
         candidateApplicationDTO.setPhone(candidateDTO.getUserDTO().getPhone());
-
+        candidateApplicationDTO.setCV(updateFile.uploadCV(file));
         // map value to enetity to save
         CandidateApplication candidateApplication = candidateApplicationMapper.toEntity(candidateApplicationDTO);
         candidateApplication.setId(zeroValue);
