@@ -5,6 +5,7 @@ import com.example.jobfinder.data.dto.request.candidate.CandidateApplicationDTO;
 import com.example.jobfinder.data.dto.request.candidate.CandidateDTO;
 import com.example.jobfinder.data.dto.request.job.JobDTO;
 import com.example.jobfinder.data.dto.request.user.UserDTO;
+import com.example.jobfinder.data.dto.response.ResponseMessage;
 import com.example.jobfinder.data.dto.response.candidate.ApplicationDTONotShowJob;
 import com.example.jobfinder.data.entity.Candidate;
 import com.example.jobfinder.data.entity.CandidateApplication;
@@ -96,7 +97,7 @@ public class CandidateApplicationServiceImpl implements CandidateApplicationServ
 
 
     @Override
-    public boolean checkCandidateApplication(int idJob) {
+    public ResponseMessage checkCandidateApplication(int idJob) {
 
         UserDTO user = userService.getCurrentLoginUser();
         Candidate candidateDTO = candidateRepository
@@ -104,9 +105,12 @@ public class CandidateApplicationServiceImpl implements CandidateApplicationServ
                 .orElseThrow(() ->
                         new ResourceNotFoundException
                                 (Collections.singletonMap("userID", user.getId())));
+        return ResponseMessage.builder()
+                .httpCode(200)
+                .message("success")
+                .data(this.existsByJobIdAndCandidateId(idJob, candidateDTO.getId()))
+                .build();
 
-        return this.existsByJobIdAndCandidateId(idJob,
-                candidateDTO.getId());
     }
 
     @Override
@@ -148,26 +152,6 @@ public class CandidateApplicationServiceImpl implements CandidateApplicationServ
         return applicationDTO;
     }
 
-    @Override
-    public CandidateApplicationDTO readJson(String value, MultipartFile fileCV) {
-
-        CandidateApplicationDTO candidateApplicationDTO = new CandidateApplicationDTO();
-
-        try {
-            ObjectMapper ob = new ObjectMapper();
-            candidateApplicationDTO = ob.readValue(value, CandidateApplicationDTO.class);
-        } catch (JsonProcessingException e) {
-            System.out.println(e.getMessage());
-            throw new InternalServerErrorException(this.messageSource.getMessage("error.readJson", null, null));
-        }
-
-        if (fileCV != null) {// Set file Logo
-            String fileCVName = fileService.uploadFile(fileCV);
-            candidateApplicationDTO.setCV(fileCVName);
-        }
-
-        return candidateApplicationDTO;
-    }
 
     @Override
     public boolean existsByJobIdAndCandidateId(long jobId, long candidateId) {
