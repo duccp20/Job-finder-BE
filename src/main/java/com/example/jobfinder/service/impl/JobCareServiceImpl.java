@@ -14,6 +14,7 @@ import com.example.jobfinder.data.repository.JobCareRepository;
 import com.example.jobfinder.data.repository.JobRepository;
 import com.example.jobfinder.data.repository.UserRepository;
 import com.example.jobfinder.exception.AccessDeniedException;
+import com.example.jobfinder.exception.ConflictException;
 import com.example.jobfinder.exception.ResourceNotFoundException;
 import com.example.jobfinder.service.CandidateService;
 import com.example.jobfinder.service.JobCareService;
@@ -110,6 +111,13 @@ public class JobCareServiceImpl implements JobCareService {
         JobDTO jobDTO = jobServiceImpl.findById(idJob);
         CandidateDTO candidateDTO = candidateService.findByUserId(userService.getCurrentUserId());
         // verify that candidate and job in database
+
+       List<Integer> listJobId = this.jobCareRepository.finJobSave(candidateDTO.getId());
+        listJobId.forEach(item -> {
+            if (item == (int) (idJob)) {
+                throw new ConflictException(Collections.singletonMap("idJob", idJob));
+            }
+        });
 
         if (jobDTO.getStatusDTO().getStatusId() != ActiveStatic)
             throw new IllegalArgumentException();
