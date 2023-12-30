@@ -113,4 +113,12 @@ public class FileController {
         return ResponseEntity.status(HttpStatus.OK).body(updateFile.uploadImage(multipartFile));
     }
 
+    @PostMapping(value = "/upload/cv", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> uploadCV(@RequestParam("file") MultipartFile multipartFile) throws IOException {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(updateFile.uploadCV(multipartFile));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }

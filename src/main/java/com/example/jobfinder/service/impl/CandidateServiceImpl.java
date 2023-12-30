@@ -142,7 +142,7 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     @Transactional
-    public Object updateProfile(long id, CandidateProfileDTO candidateProfileDTO, MultipartFile fileCV, MultipartFile fileAvatar) throws IOException {
+    public Object updateProfile(long id, CandidateProfileDTO candidateProfileDTO, MultipartFile fileCV) throws IOException {
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -158,7 +158,7 @@ public class CandidateServiceImpl implements CandidateService {
         }
 
         UserDTO showUserDTO = userService.update(oldCandidate.getUser().getId(),
-                candidateProfileDTO.getUserProfileDTO(), fileAvatar);
+                candidateProfileDTO.getUserProfileDTO(), null);
 
         oldCandidate.setSearchable(candidateProfileDTO.getCandidateOtherInfoDTO().isSearchable());
         oldCandidate.setUniversity(candidateProfileDTO.getCandidateOtherInfoDTO().getUniversity());
@@ -167,12 +167,13 @@ public class CandidateServiceImpl implements CandidateService {
         oldCandidate.setDesiredWorkingProvince(candidateProfileDTO.getCandidateOtherInfoDTO().getDesiredWorkingProvince());
 
         // check update file CV
-        if (fileCV != null) {
-            fileService.deleteFile(oldCandidate.getCV());
-            oldCandidate.setCV(fileService.uploadFile(fileCV));
-        } else {
-            oldCandidate.setCV(oldCandidate.getCV());
-        }
+//        if (fileCV != null) {
+//            fileService.deleteFile(oldCandidate.getCV());
+////            oldCandidate.setCV(fileService.uploadFile(fileCV));
+//            oldCandidate.setCV(updateFile.uploadCV(fileCV));
+//        } else {
+//            oldCandidate.setCV(oldCandidate.getCV());
+//        }
 
 
 

@@ -13,7 +13,7 @@ public interface CandidateService {
 
     Object activeCandidate(String token);
 
-    Object updateProfile(long id, CandidateProfileDTO candidateProfileDTO , MultipartFile file, MultipartFile fileAvatar) throws IOException;
+    Object updateProfile(long id, CandidateProfileDTO candidateProfileDTO , MultipartFile file) throws IOException;
 
     Object getCandidateByUserId(long id);
 

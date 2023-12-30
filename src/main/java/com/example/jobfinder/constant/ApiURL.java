@@ -18,4 +18,5 @@ public class ApiURL {
 
     public static final String FILE = PREFIX + Constant.FILE;
     public static final String CANDIDATE_APPLICATION =  PREFIX + Constant.CANDIDATE + Constant.APPLICATION;
+    public static final String CANDIDATE_JOB_CARE = PREFIX + Constant.CANDIDATE + Constant.JOB_CARE;
 }

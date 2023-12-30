@@ -9,8 +9,8 @@ public interface UpdateFile {
 
 
 	String uploadImage(MultipartFile multipartFile) throws IOException;
-	void uploadCV(FileUpload fileUpload);
-	void uploadCVApplication(FileUpload fileUpload);
+	String uploadCV(MultipartFile fileUpload) throws IOException;
+//	void uploadCVApplication(FileUpload fileUpload);
 //	void uploadExcel(FileUpload fileUp);
-	void deleteFile(String url);
+//	void deleteFile(String url);
 }

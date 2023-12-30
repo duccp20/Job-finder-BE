@@ -54,7 +54,9 @@ public class CandidateController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-    };
+    }
+
+    ;
 
 
     @GetMapping("/active")
@@ -68,29 +70,27 @@ public class CandidateController {
     }
 
 
-    @SecurityRequirement(name = "Bearer Authenticat Vion")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize(value = "hasAuthority('Role_Candidate')")
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> update(
             @PathVariable long id,
             @RequestPart(name = "candidateProfileDTO") String candidateProfileDTOJson,
-            @RequestPart(name = "fileCV", required = false) MultipartFile fileCV,
-            @RequestPart(name = "fileAvatar", required = false) MultipartFile fileAvatar
-            ) throws IOException {
+            @RequestPart(name = "fileCV", required = false) MultipartFile fileCV
+    ) {
         try {
             if (!candidateService.isCurrentAuthor(id)) {
                 throw new AccessDeniedException();
             }
             CandidateProfileDTO candidateProfileDTO = jsonReaderService.readValue(
                     candidateProfileDTOJson, CandidateProfileDTO.class);
-            return ResponseEntity.ok(candidateService.updateProfile(id, candidateProfileDTO, fileCV, fileAvatar));
-        }
-        catch (Exception e) {
+            return ResponseEntity.ok(candidateService.updateProfile(id, candidateProfileDTO, fileCV));
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @SecurityRequirement(name = "Bearer Authenticat Vion")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize(value = "hasAuthority('Role_Candidate')")
     @PutMapping(value = "/update/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateImage(
@@ -102,8 +102,7 @@ public class CandidateController {
                 throw new AccessDeniedException();
             }
             return ResponseEntity.ok(candidateService.updateAvatar(id, fileAvatar));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

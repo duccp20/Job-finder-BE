@@ -30,7 +30,7 @@ spring:
     properties:
       mail:
         mime:
-          charset=UTF-8:
+          charset=UTF-8: true
         smtp:
           auth: true
           starttls.enable: true
@@ -59,3 +59,12 @@ springdoc:
   show-actuator: true
 
   #swagger url: http://host/context-path/swagger-ui/index.html
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+  tomcat:
+    uri-encoding: UTF-8
