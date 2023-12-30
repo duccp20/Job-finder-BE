@@ -104,7 +104,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(ApiURL.COMPANY + "", "GET"),
                 Pair.of("^" + ApiURL.FILE + "/display/.*$", "GET"),
                 Pair.of("^" + ApiURL.FILE + "/raw/.*$", "GET"),
-                Pair.of("^" + ApiURL.FILE + "/upload/image", "POST"),
+                Pair.of("^" + ApiURL.FILE + "/upload/.*$", "POST"),
 
                 // Swagger
                 Pair.of("/api-docs","GET"),
