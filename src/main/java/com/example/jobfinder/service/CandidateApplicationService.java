@@ -5,6 +5,8 @@ import com.example.jobfinder.data.dto.request.candidate.CandidateApplicationDTO;
 import com.example.jobfinder.data.entity.CandidateApplication;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 public interface CandidateApplicationService {
 
 	PaginationDTO findAll(int no, int limit);
@@ -23,7 +25,7 @@ public interface CandidateApplicationService {
 
 	boolean checkCandidateApplication(int idJob);
 
-	CandidateApplicationDTO create(CandidateApplicationDTO candidateApplicationDTO);
+	CandidateApplicationDTO create(CandidateApplicationDTO candidateApplicationDTO, MultipartFile fileCV) throws IOException;
 
 	CandidateApplicationDTO update(long id, CandidateApplicationDTO candidateApplicationDTO);
 
