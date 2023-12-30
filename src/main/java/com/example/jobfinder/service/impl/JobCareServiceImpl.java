@@ -121,6 +121,7 @@ public class JobCareServiceImpl implements JobCareService {
         jobCareRepository.save(care);
 
         return ResponseMessage.builder()
+                .httpCode(200)
                 .data(jobCareMapper.toDTO(care))
                 .message("Create job care successfully")
                 .build();
