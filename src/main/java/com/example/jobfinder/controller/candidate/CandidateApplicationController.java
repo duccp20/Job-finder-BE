@@ -94,8 +94,13 @@ public class CandidateApplicationController {
      */
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/check")
-    public boolean checkCandidateApplication(@RequestParam("idJob") int idJob) {
-        return this.candidateApplicationService.checkCandidateApplication(idJob);
+    public ResponseEntity<?> checkCandidateApplication(@RequestParam("idJob") int idJob) {
+        try {
+            return ResponseEntity.ok(this.candidateApplicationService.checkCandidateApplication(idJob));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
 
 }
