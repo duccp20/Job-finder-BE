@@ -8,6 +8,7 @@ import com.example.jobfinder.data.dto.request.job.JobShowDTO;
 import com.example.jobfinder.data.dto.request.major.MajorDTO;
 import com.example.jobfinder.data.dto.request.position.PositionDTO;
 import com.example.jobfinder.data.dto.request.schedule.ScheduleDTO;
+import com.example.jobfinder.data.dto.response.ResponseMessage;
 import com.example.jobfinder.data.dto.response.job.JobShowDTOv2;
 import com.example.jobfinder.data.entity.*;
 import com.example.jobfinder.data.mapper.*;
@@ -16,6 +17,8 @@ import com.example.jobfinder.exception.ConflictException;
 import com.example.jobfinder.exception.ResourceNotFoundException;
 import com.example.jobfinder.service.*;
 import com.example.jobfinder.utils.enumeration.Estatus;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +26,11 @@ import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -70,8 +75,8 @@ public class JobServiceImpl implements JobService {
     private ScheduleRepository scheduleRepository;
     @Autowired
     private JobScheduleRepository jobScheduleRepository;
-//    @Autowired
-//    private ExcelHelper excelHelper;
+    @PersistenceContext
+    private EntityManager entityManager;
     @Autowired
     private HRRepository hrRepository;
     @Autowired
@@ -86,6 +91,12 @@ public class JobServiceImpl implements JobService {
     private UserService userService;
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private JobCareService jobCareService;
+
+    @Autowired
+    private CandidateApplicationService candidateApplicationService;
 
 
     @Autowired
@@ -320,36 +331,36 @@ public class JobServiceImpl implements JobService {
     }
 
 
-//    @Override
-//    public JobDTO replicate(long id, JobDTO jobDTO) {
-//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-//
-//        HR hr = this.hrRepository.findByUsername(username).orElseThrow(
-//                () -> new AccessDeniedException("FORBIDDEN"));
-//
-//        Job oldJob = jobRepository.findById(id)
-//                .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("id", id)));
-//
-//        if (oldJob.getCompany().getId() == hr.getCompany().getId()) {
-//            if (oldJob.getStatus().getId() == JOB_STATUS_ACTIVE_ID) {
-//                Job newJob = jobMapper.jobUpdateDTOToJob(jobDTO);
-//                newJob.setStatus(statusService.findByName(Estatus.Active.toString()).orElseThrow(
-//                        () -> new ResourceNotFoundException(Collections.singletonMap("name", Estatus.Active.name()))
-//                ));
-//                newJob.setCompany(oldJob.getCompany());
-//                newJob = jobRepository.save(newJob);
-//                createJobMajors(newJob, jobDTO.getMajorDTOs());
-//                createJobPositions(newJob, jobDTO.getPositionDTOs());
-//                createJobSchedules(newJob, jobDTO.getScheduleDTOs());
-//
-//                return this.jobMapper.toDTO(newJob);
-//            } else {
-//                throw new IllegalArgumentException("BAD_REQUEST");
-//            }
-//        } else {
-//            throw new AccessDeniedException("FORBIDDEN");
-//        }
-//    }
+    @Override
+    public JobDTO replicate(long id, JobDTO jobDTO) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        HR hr = this.hrRepository.findByUsername(username).orElseThrow(
+                () -> new AccessDeniedException("FORBIDDEN"));
+
+        Job oldJob = jobRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("id", id)));
+
+        if (oldJob.getCompany().getId() == hr.getCompany().getId()) {
+            if (oldJob.getStatus().getStatusId() == JOB_STATUS_ACTIVE_ID) {
+                Job newJob = jobMapper.jobUpdateDTOToJob(jobDTO);
+                newJob.setStatus(statusService.findByName(Estatus.Active.toString()).orElseThrow(
+                        () -> new ResourceNotFoundException(Collections.singletonMap("name", Estatus.Active.name()))
+                ));
+                newJob.setCompany(oldJob.getCompany());
+                newJob = jobRepository.save(newJob);
+                createJobMajors(newJob, jobDTO.getMajorDTOs());
+                createJobPositions(newJob, jobDTO.getPositionDTOs());
+                createJobSchedules(newJob, jobDTO.getScheduleDTOs());
+
+                return this.jobMapper.toDTO(newJob);
+            } else {
+                throw new IllegalArgumentException("BAD_REQUEST");
+            }
+        } else {
+            throw new AccessDeniedException("FORBIDDEN");
+        }
+    }
 
 
 
@@ -582,6 +593,84 @@ public class JobServiceImpl implements JobService {
         return counts;
     }
 
+    @Transactional
+    @Override
+    public ResponseMessage delete(long id) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        HR hr = this.hrRepository.findByUsername(username).orElseThrow(
+                () -> new AccessDeniedException("FORBIDDEN"));
+
+        Job job = this.jobRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(Collections.singletonMap("id", id)));
+
+        if (job.getStatus().getName().equals(Estatus.Delete.toString())) {
+            throw new ResourceNotFoundException(Collections.singletonMap("id", id));
+        }
+
+        if (job.getCompany().getId() != hr.getCompany().getId()) {
+            throw new AccessDeniedException("FORBIDDEN");
+        }
+
+        Status deleteStatus = statusService.findByName(Estatus.Delete.toString()).orElseThrow();
+
+        job.setStatus(deleteStatus);
+
+        jobRepository.save(job);
+
+        entityManager.clear();
+        return ResponseMessage.builder()
+                .httpCode(HttpStatus.OK.value())
+                .message("Delete success")
+                .data(jobMapper.toDTOShow(job))
+                .build();
+    }
+
+    private void deleteCandidateApplications(List<CandidateApplication> candidateApplications) {
+        for (CandidateApplication candidateApplication : candidateApplications) {
+            Job job = candidateApplication.getJob();
+            job.setStatus(statusService.findByName(Estatus.Delete.toString()).orElseThrow());
+            candidateApplication.setJob(job);
+            candidateApplicationRepository.save(candidateApplication);
+        }
+    }
+
+
+
+    @Override
+    public ResponseMessage disable(long id) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        HR hr = this.hrRepository.findByUsername(username).orElseThrow(
+                () -> new AccessDeniedException("FORBIDDEN"));
+
+        Job job = this.jobRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(Collections.singletonMap("id", id)));
+
+        if (job.getCompany().getId() != hr.getCompany().getId()) {
+            throw new AccessDeniedException("FORBIDDEN");
+        }
+
+        if (job.getStatus().getName().equals(Estatus.Delete.toString())) {
+            throw new ResourceNotFoundException(Collections.singletonMap("id", id));
+        }
+
+        Status disableStatus = statusService.findByName(Estatus.Disable.toString()).orElseThrow();
+
+
+        job.setStatus(disableStatus);
+
+
+        this.jobRepository.save(job);
+        return ResponseMessage.builder()
+                .httpCode(HttpStatus.OK.value())
+                .message("Disable success")
+                .data(null)
+                .build();
+    }
+
+
+
+
+
 
 
     @Override
@@ -590,39 +679,7 @@ public class JobServiceImpl implements JobService {
     }
 
 
-//    @Override
-//    public List<JobDTO> createByExcelFile(MultipartFile file) {
-//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-//        HR hr = this.hrRepository.findByUsername(username).orElseThrow(
-//                () -> new AccessDeniedException("FORBIDDEN"));
-//        try {
-//            //Check version before read excel file
-//            boolean isValid = excelHelper.checkFileVersion(file.getInputStream());
-//            if (isValid) {
-//                //Read and map job from excel file
-//                List<Job> jobs = excelHelper.excelToJob(file.getInputStream());
-//
-//                for (Job job : jobs) {
-//                    if (job != null) {
-//                        //set value and save a new job
-//                        job.setCreatedDate(new Date());
-//                        job.setStatus(statusService.findByName(Estatus.Active));
-//                        job.setCompany(hr.getCompany());
-//                        Job newJob = jobRepository.save(job);
-//
-//                        //Set list positions, schedules, majors to new job
-//                        addJobMajors(newJob, job.getJobMajors().stream().map(JobMajor::getMajor).collect(Collectors.toList()));
-//                        addJobPositions(newJob, job.getJobPositions().stream().map(JobPosition::getPosition).collect(Collectors.toList()));
-//                        addJobSchedules(newJob, job.getJobSchedules().stream().map(JobSchedule::getSchedule).collect(Collectors.toList()));
-//                    }
-//                }
-//                return jobs.stream().map(job -> jobMapper.toDTO(job)).collect(Collectors.toList());
-//            } else throw new IOException("This excel file is outdated! Please download the newest version!");
-//        } catch (IOException e) {
-//            throw new RuntimeException("fail to store excel data: " + e.getMessage());
-//
-//        }
-//    }
+
 
     private void addJobMajors(Job job, List<Major> majors) {
 

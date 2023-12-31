@@ -86,6 +86,16 @@ public class CandidateApplicationController {
         return ResponseEntity.ok(this.candidateApplicationService.findAllByJobId(id, no, limit));
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasAuthority('Role_HR')")
+    @GetMapping("/delete/{id}")
+    public ResponseEntity<?> delete(@PathVariable int id) {
+        return ResponseEntity.ok(this.candidateApplicationService.deleteById(id));
+    }
+
+
+
+
     /**
      * Checks if a candidate application exists for a given job ID.
      *
