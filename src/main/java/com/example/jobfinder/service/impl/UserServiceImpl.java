@@ -1,5 +1,6 @@
 package com.example.jobfinder.service.impl;
 
+import com.example.jobfinder.data.dto.request.ChangePasswordDTO;
 import com.example.jobfinder.data.dto.request.user.*;
 import com.example.jobfinder.data.dto.response.ErrorMessageDTO;
 import com.example.jobfinder.data.dto.response.ResponseMessage;
@@ -203,6 +204,33 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    @Override
+    public ResponseMessage changePassword(ChangePasswordDTO changePasswordDTO) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new InternalServerErrorException(Collections.singletonMap("email", email)));
+
+        if (checkValidOldPassword(user.getPassword(), changePasswordDTO.getOldPassword())) {
+            if (!validation.passwordValid(changePasswordDTO.getNewPassword()))
+                throw new InternalServerErrorException(messageSource.getMessage("error.passwordRegex",
+                        null, null));
+            user.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
+            userRepository.save(user);
+        } else {
+            throw new ValidationException(Collections.singletonMap("oldPassword", changePasswordDTO.getOldPassword()));
+        }
+
+        return ResponseMessage.builder()
+                .httpCode(200)
+                .message("Change password successfully")
+                .data(userMapper.toDTO(user))
+                .build();
+    }
+
+    @Override
+    public boolean checkValidOldPassword(String oldPass, String confirmPass) {
+        return passwordEncoder.matches(confirmPass, oldPass);
+    }
 
     @Override
     public Object activeForgetPassword(String token) {

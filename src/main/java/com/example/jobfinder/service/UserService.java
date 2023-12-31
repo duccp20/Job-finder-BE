@@ -1,7 +1,9 @@
 package com.example.jobfinder.service;
 
 
+import com.example.jobfinder.data.dto.request.ChangePasswordDTO;
 import com.example.jobfinder.data.dto.request.user.*;
+import com.example.jobfinder.data.dto.response.ResponseMessage;
 import com.example.jobfinder.data.dto.response.user.ShowUserDTO;
 import com.example.jobfinder.utils.enumeration.ERole;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +23,9 @@ public interface UserService {
     Object activeForgetPassword(String token);
 
     void resetPasswordByToken(ResetPasswordByToken resetPasswordByTokenDTO);
+
+    ResponseMessage changePassword(ChangePasswordDTO changePasswordDTO);
+    boolean checkValidOldPassword(String oldPass, String newPass);
 
     Object getUserProfile();
 
