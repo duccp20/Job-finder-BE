@@ -71,33 +71,40 @@ public class JobController {
     }
 
 
-//    @SecurityRequirement(name = "Bearer Authentication")
-//    @PreAuthorize("hasAuthority('Role_HR')")
-//    @PostMapping("/excel")
-//    public ResponseEntity<?> create(@RequestPart("file") MultipartFile file) {
-//        String message = "";
-//
-//        if (ExcelHelper.hasExcelFormat(file)) {
-//            try {
-//                return new ResponseEntity<>(this.jobService.createByExcelFile(file), HttpStatus.CREATED);
-//
-//            } catch (Exception e) {
-//                message = "Could not upload the file: " + file.getOriginalFilename() + "!";
-//                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(e.getMessage());
-//            }
-//        }
-//        message = "Please upload an excel file!";
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-//    }
 
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasAuthority('Role_HR')")
+    @PutMapping("/replicate/{id}")
+    public ResponseEntity<?> replicate(@PathVariable long id, @RequestBody JobDTO jobDTO) {
+        try {
+            return ResponseEntity.ok(this.jobService.replicate(id, jobDTO));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasAuthority('Role_HR')")
+    @PutMapping("/delete/{id}")
+    public ResponseEntity<?> delete(@PathVariable long id) {
+        try {
+            return ResponseEntity.ok(this.jobService.delete(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    };
 
-//    @SecurityRequirement(name = "Bearer Authentication")
-//    @PreAuthorize("hasAuthority('Role_HR')")
-//    @PutMapping("/replicate/{id}")
-//    public ResponseEntity<?> replicate(@PathVariable long id, @RequestBody JobDTO jobDTO) {
-//        return ResponseEntity.ok(this.jobService.replicate(id, jobDTO));
-//    }
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasAuthority('Role_HR')")
+    @PutMapping("/disable/{id}")
+    public ResponseEntity<?> disable(@PathVariable long id) {
+        try {
+            return ResponseEntity.ok(this.jobService.disable(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    };
+
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('Role_HR')")

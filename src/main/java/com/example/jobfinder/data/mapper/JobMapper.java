@@ -42,6 +42,8 @@ public interface JobMapper {
     @Mapping(expression = "java(job.getCandidateApplications().size())", target = "numOfApplication")
     JobDTO toDTO(Job job);
 
+
+
     //	 @Mapping(source = "hr.id", target = "hrId")
 //	 @Mapping(source = "hr.user.firstName", target = "hrFirstName")
 //	 @Mapping(source = "hr.user.lastName", target = "hrLastName")

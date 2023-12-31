@@ -4,6 +4,7 @@ import com.example.jobfinder.data.dto.request.PaginationDTO;
 import com.example.jobfinder.data.dto.request.job.JobCreationDTO;
 import com.example.jobfinder.data.dto.request.job.JobDTO;
 import com.example.jobfinder.data.dto.request.job.JobFilterDTO;
+import com.example.jobfinder.data.dto.response.ResponseMessage;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,7 +27,7 @@ public interface JobService {
     PaginationDTO findAllActive(int no, int limit);
 
     JobDTO update(long id, JobDTO jobDTO);
-//    JobDTO replicate(long id, JobDTO jobDTO);
+    JobDTO replicate(long id, JobDTO jobDTO);
 
     PaginationDTO findAllActiveByCompanyIdShowForHr(int no, int limit);
 
@@ -53,5 +54,9 @@ public interface JobService {
 
     Map<Integer, int[]> countByYear();
 
-//    List<JobDTO> createByExcelFile(MultipartFile file);
+    @Transactional
+    ResponseMessage delete(long id);
+
+    @Transactional
+    ResponseMessage disable(long id);
 }
