@@ -99,7 +99,11 @@ public class UserController {
     @PutMapping("/change-password")
     public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordDTO passwordChangeDTO) {
 
-    return ResponseEntity.ok(userService.changePassword(passwordChangeDTO));
+        try{
+            return ResponseEntity.ok(userService.changePassword(passwordChangeDTO));
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     /**
