@@ -1,6 +1,4 @@
 spring:
-  cloud:
-    appId: springboot-dreamxwork
   main:
     allow-circular-references: true #allowing beans to have circular references.
   profiles:
@@ -17,7 +15,7 @@ spring:
         current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
         format_sql: true
         jdbc.time_zone: GMT+7
-        default_schema: public
+
     open-in-view: false
     hibernate:
       ddl-auto: update

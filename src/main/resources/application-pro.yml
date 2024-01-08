@@ -1,7 +1,9 @@
 server:
   port: 8080
   address: 0.0.0.0
-  
+
+database: mysql
+
 db:
   port: 3306
   name: dream_x_work
@@ -15,17 +17,21 @@ spring:
   sql:
     init:
       mode: always
+      continue-on-error: true
   cloud:
     gcp:
+      project-id: springboot-dreamxwork
       sql:
         instance-connection-name: ${db.connection-name}
         database-name: ${db.name}
+
   datasource:
     url: jdbc:mysql://${db.endpoint}:${db.port}/${db.name}
-#    url: jdbc:mysql://google/${db.name}?cloudSqlInstance=${db.connection-name}&socketFactory=
+    #    url: jdbc:mysql://google/${db.name}?cloudSqlInstance=${db.connection-name}&socketFactory=com.google.cloud.sql.mysql.SocketFactory
     username: ${db.username}
     password: ${db.password}
-#    driver-class-name: com.mysql.cj.jdbc.Driver
+  hikari:
+    maximum-pool-size: 10
 
 
 
