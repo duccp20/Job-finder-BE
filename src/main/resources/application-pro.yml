@@ -1,6 +1,6 @@
 server:
   port: 8080
-
+  address: 0.0.0.0
 db:
   port: 3306
   name: dream_x_work
@@ -20,8 +20,8 @@ spring:
         instance-connection-name: ${db.connection-name}
         database-name: ${db.name}
   datasource:
-    url: jdbc:mysql://${db.endpoint}:${db.port}/${db.name}
-#    url: jdbc:mysql://google/${db.name}?cloudSqlInstance=${db.connection-name}&socketFactory=
+#    url: jdbc:mysql://${db.endpoint}:${db.port}/${db.name}
+    url: jdbc:mysql://google/${db.name}?cloudSqlInstance=${db.connection-name}&socketFactory=com.google.cloud.sql.mysql.SocketFactory&useSSL=false
     username: ${db.username}
     password: ${db.password}
 #    driver-class-name: com.mysql.cj.jdbc.Driver
