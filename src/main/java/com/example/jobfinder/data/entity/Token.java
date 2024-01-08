@@ -18,7 +18,11 @@ public class Token extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "token", nullable = false, unique = true)
     private String token;
+
+    @Column(name = "expiration_time", nullable = false)
     private Date expirationTime;
     @OneToOne(
             fetch = FetchType.EAGER,

@@ -1,22 +1,37 @@
 server:
   port: 8080
-  address: 0.0.0.0
+
 db:
-  port: 16986
-  name: job_finder
-  endpoint: monorail.proxy.rlwy.net
+  port: 3306
+  name: dream_x_work
+  endpoint: 34.143.186.42
   username: root
-  password: A63E4A4bGeCcg45HA1cdF3GEbaAAfeg4
+  password: Ducvc123123!@#$%
+  connection-name: springboot-dreamxwork:asia-southeast1:dreamxwork
+
+
 spring:
+  sql:
+    init:
+      mode: always
+  cloud:
+    gcp:
+      sql:
+        instance-connection-name: ${db.connection-name}
+        database-name: ${db.name}
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${db.endpoint}:${db.port}/${db.name}
+#    url: jdbc:mysql://google/${db.name}?cloudSqlInstance=${db.connection-name}&socketFactory=
     username: ${db.username}
     password: ${db.password}
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
 
 
 domain:
   path: https://job-finder-be-production.up.railway.app
+  #https://springboot-dreamxwork.et.r.appspot.com/
 
 url:
   server:
