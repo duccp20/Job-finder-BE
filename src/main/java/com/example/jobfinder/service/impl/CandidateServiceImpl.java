@@ -16,6 +16,7 @@ import com.example.jobfinder.data.mapper.UserMapper;
 import com.example.jobfinder.data.repository.*;
 import com.example.jobfinder.exception.AccessDeniedException;
 import com.example.jobfinder.exception.ResourceNotFoundException;
+import com.example.jobfinder.security.jwt.JwtTokenUtils;
 import com.example.jobfinder.service.*;
 import com.example.jobfinder.utils.common.UpdateFile;
 import com.example.jobfinder.utils.enumeration.Estatus;
@@ -25,6 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -99,6 +101,10 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Autowired
     private CandidatePositionRepository candidatePositionRepository;
+    @Autowired
+    private JwtTokenUtils jwtTokenUtils;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UpdateFile updateFile;
@@ -106,38 +112,34 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     public Object activeCandidate(String token) {
 
-        Token theToken = tokenService.findByToken(token).orElseThrow(() -> {
-            throw new ResourceNotFoundException(Collections.singletonMap("token", token));
-        });
+        User user = userRepository.findByTokenActive(token);
 
-        if (theToken.getStatus().getName().equals(Estatus.Delete.toString())) {
+
+        if (user.getStatus().getName().equals(Estatus.Active.toString())) {
             String redirectUrl = "http://localhost:3000/verify-email?status=completed";
             return new RedirectView(redirectUrl);
         }
 
+        String activeToken = user.getTokenActive();
 
-        Instant expirationTime = theToken.getExpirationTime().toInstant();
-        Instant now = Instant.now();
-
-        boolean tokenExpired = expirationTime.isBefore(now);
+        boolean tokenExpired = jwtTokenUtils.isTokenExpired(activeToken);
 
         if (tokenExpired) {
-            return new RedirectView("http://localhost:3000/verify-email?status=fail");
+            return new RedirectView("http://localhost:3000/verify-email?email=" + user.getEmail() + "&status=fail&message=token-expired");
         }
-
-        User user = this.userRepository.findByTokenActive(token);
 
         Status statusActive = this.statusService.findByName(Estatus.Active.toString()).orElseThrow(
                 () -> new ResourceNotFoundException(Collections.singletonMap("name", Estatus.Active.name()))
         );
-        user.setStatus(statusActive);
 
+        //set password encode when active
+        String encodePassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodePassword);
+        user.setStatus(statusActive);
         user.setTokenActive("");
-        theToken.setStatus(this.statusService.findByName(Estatus.Delete.toString()).orElseThrow(
-                () -> new ResourceNotFoundException(Collections.singletonMap("name", Estatus.Delete.name()))
-        ));
+
         this.userRepository.save(user);
-        return new RedirectView("http://localhost:3000/verify-email?status=success");
+        return new RedirectView("http://localhost:3000/verify-email?status=success&code=" + token);
     }
 
     @Override

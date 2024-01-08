@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "algebraic-rider-410613",
+  "private_key_id": "1fe50741b1f4f12b3b38d0a542356be30018bd73",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDLKjRRvjkLXLJ0\n2v9IVpdDlJKIbJfcOG1wEt1kidJ33On55qRu+D2GvElwAFX3bBffcAldomJIXoR5\nkGUCEFOHyCe5bbyO/gWCxO539PHmOUCUq6Rhy26BCsvfoe4chposrhbRCibtE8Gx\nc2yt1SXuf4l5xqB2wBwbKaOAb5Hf29TyuiW5j/cWoqID/o2cZ3p8x+qB7WXA/5de\nAXRdCuyfZiAblmXvUOWKgaF7Ru1kFvZsUWSAUkQP/TbBHVABbltWqpGUwqrjUdgv\nkWThbnb9wr1LeDHtCQskpuTWjakt8ZiU3s/7wGphk3b1yrCrmJ1Kfn7BRe328cfk\n7TZd+3ktAgMBAAECggEAAIXU+T6KexekjgaXA/cb9wkGh9XzCGvXhyN+ny4inAmg\noJ1MoC/rZUb/7Cebnz6Pi3+r42MZOLNI5V8Sm+kOWDEEk5hEqnjAeZnAhB2r71hc\n3pifQAZk2In+UrI+clxmazegBMtL3Z+yXOzy3B2KYN0JbcZRfI2g8VSeA/MsqEfj\nKGUT9lJpbZtIyOhPs76vWFKinmpGc+KUOFWwgt1ux0b9KZ+y2BGt0HAD2GGZzt2U\nHxh8PT8tyL2TCfeJvzIUACUGXhnS7nhRafciUagLe4YzIhg/uy52cHk9XPUSHBBq\nvuq79DiwXrmT7v+n8RrKq0aE8jCmGeoZSOQavi+AIQKBgQD9aqJ0b/5JJHqyhLvw\n9GHyFyiDd+z/ZRFKFnDjvPtUcP9ZSpDItwitBJdeVnSMjhKDuXXyHgdfmf2U9IXf\nCv1naJ8eXzMWdgLDsTSIgXY1iFBv76z2hd/6Su8+pYXmWSc66FQBR0jM7Yr2myr2\n9eZTuj+41Nw9AEBsjCH3Gn5fDQKBgQDNPGxUSnomWVAeGLBgcJ20vuElbxykWvSC\ndR3ZiOliOaJIOgTyM/0AjvH4qhyETtTGr2fyeXDBFAE7WnQIfvNf9nCMss2kw3VK\noN4Nex8iXFVDQVKkzR9v0xQIkJkuHKVg1fBqqo08F6N64e40nMIbPum41DDpwHTs\nYIKZhqv6oQKBgDMYcxUDF8RrpImmFbbpr23+mV6YqaJ9IFVN3QkuK4bFGddJH5Q4\nw3kPOe39hJZqdvU0ScG9qELwa57DBtMIBjv5bkvTahuXQ8ttSWhUoh79EyreqoMy\nTwzKWx7IhQ0C4NQR0A5J7zXSl3hNpQYSYpRzMzHzSUzLZjH8t0R5hQ1pAoGAXUv6\nctbocEZphUTz6ONIzcF31+yKuKwgOq3CxADZFy3b97loRjIb8QUKOmAaVor/btKO\nDkvmVd8iMDkORk5vlFATGeKuWRgBWcuHJdmybYxLticbyo70m4D4umwBNlUPWNXo\nVJTzXz3fsxzBjGk2U+xlkv/ivGAgxtOYivINfAECgYEA0sOtxMAu09gy8ogNri9d\nLfNe/FnpiGvnGZv3NocaZf7aFfMIn8v0BUHkzGKkjDupIfyMzWsA3Z6lXb1j0rvl\nrUB6krYI3xpDvVO71K8YfMXoRv4VAdQ5xPbnw9hdo1aDwI3iPe2pFuiCNp+lwdGh\nakPKK/qyp4RPwqDSkz4zKGg=\n-----END PRIVATE KEY-----\n",
+  "client_email": "duccp-20@algebraic-rider-410613.iam.gserviceaccount.com",
+  "client_id": "101408399281436161221",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/duccp-20%40algebraic-rider-410613.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

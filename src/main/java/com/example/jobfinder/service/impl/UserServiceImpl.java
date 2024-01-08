@@ -165,23 +165,20 @@ public class UserServiceImpl implements UserService {
 
         User existingUser = userRepository.findByEmail(loginDTO.getEmail())
                 .orElseThrow(() -> {
-                    throw new ResourceNotFoundException(Collections.singletonMap("email or password not valid", loginDTO.getEmail()));
+                    throw new ResourceNotFoundException(Collections.singletonMap("Email không tồn tại", loginDTO.getEmail()));
                 });
 
         boolean checkPassword = passwordEncoder.matches(loginDTO.getPassword(), existingUser.getPassword());
         if (!checkPassword) {
-            throw new ValidationException(Collections.singletonMap("email or password not valid", loginDTO.getEmail()));
+            throw new ValidationException(Collections.singletonMap("Sai mật khẩu", loginDTO.getEmail()));
         }
 
         boolean isStatusActive = existingUser.getStatus().getName().equals(Estatus.Active.toString());
         if (!isStatusActive) {
-            return new ResponseEntity<>(
-                    ErrorMessageDTO.builder()
-                            .message("Account Not Active")
-                            .errors(Collections.singletonMap("email", existingUser.getEmail()))
-                            .build(),
-                    HttpStatus.BAD_REQUEST
-            );
+            return ResponseMessage.builder()
+                    .httpCode(HttpStatus.UNAUTHORIZED.value())
+                    .message("Email chưa được kích hoạt")
+                    .build();
         }
 
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =

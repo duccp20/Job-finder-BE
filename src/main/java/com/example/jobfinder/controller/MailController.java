@@ -17,12 +17,12 @@ public class MailController {
     @Autowired
     private MailService mailService;
 
-    @GetMapping("/active-user")
-    public ResponseEntity<?> sendMailActive(@RequestParam String email) throws MessagingException, UnsupportedEncodingException {
-        try {
-           return  ResponseEntity.ok(mailService.sendMailActive(email));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    };
+//    @GetMapping("/active-user")
+//    public ResponseEntity<?> sendMailActive(@RequestParam String email) throws MessagingException, UnsupportedEncodingException {
+//        try {
+//           return  ResponseEntity.ok(mailService.sendMailActive(email));
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().body(e.getMessage());
+//        }
+//    };
 }

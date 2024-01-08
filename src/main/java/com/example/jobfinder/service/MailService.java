@@ -1,5 +1,6 @@
 package com.example.jobfinder.service;
 
+import com.example.jobfinder.data.dto.request.mail.EmailRequest;
 import com.example.jobfinder.data.dto.response.ResponseMessage;
 import com.example.jobfinder.data.dto.response.mail.MailResponse;
 import jakarta.mail.MessagingException;
