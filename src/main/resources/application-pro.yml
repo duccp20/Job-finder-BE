@@ -1,26 +1,32 @@
 server:
-  port: 10280
-  address: 0.0.0.0
-
+  port: 8080
 
 db:
   port: 3306
   name: dream_x_work
-  endpoint: 34.87.10.95
+  endpoint: 34.143.186.42
   username: root
   password: Ducvc123123!@#$%
-  connection-name: algebraic-rider-410613:asia-southeast1:dreamxwork
+  connection-name: springboot-dreamxwork:asia-southeast1:dreamxwork
+
 
 spring:
-  datasource:
-    url: jdbc:mysql://${db.endpoint}:${db.port}/${db.name}
-    username: ${db.username}
-    password: ${db.password}
+  sql:
+    init:
+      mode: always
   cloud:
     gcp:
       sql:
         instance-connection-name: ${db.connection-name}
         database-name: ${db.name}
+  datasource:
+    url: jdbc:mysql://${db.endpoint}:${db.port}/${db.name}
+#    url: jdbc:mysql://google/${db.name}?cloudSqlInstance=${db.connection-name}&socketFactory=
+    username: ${db.username}
+    password: ${db.password}
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
 
 
 domain:
