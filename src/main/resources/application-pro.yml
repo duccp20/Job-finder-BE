@@ -2,8 +2,8 @@ server:
   port: 8080
   address: 0.0.0.0
 
-
 database: mysql
+
 db:
   port: 3306
   name: dream_x_work
