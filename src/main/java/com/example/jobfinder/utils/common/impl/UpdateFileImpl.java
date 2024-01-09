@@ -2,8 +2,11 @@ package com.example.jobfinder.utils.common.impl;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.UUID;
 
+import com.example.jobfinder.data.dto.response.ResponseMessage;
 import com.example.jobfinder.utils.common.UpdateFile;
 import com.google.auth.Credentials;
 import com.google.cloud.storage.*;
@@ -12,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Value;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import com.google.auth.oauth2.GoogleCredentials;
@@ -110,6 +114,25 @@ public class UpdateFileImpl implements UpdateFile {
             return "PDF couldn't upload, Something went wrong";
         }
 
+    }
+
+
+    @Override
+    public Object downloadCV(String fileName) throws IOException {
+        String destFileName = UUID.randomUUID().toString().concat(this.getExtension(fileName));     // to set random strinh for destination file name
+        String destFilePath = "classpath:path/files/" + destFileName;                                    // to set destination file path
+
+        InputStream inputStream = UpdateFileImpl.class.getClassLoader().getResourceAsStream("job-worked-firebase.json"); // change the file name with your one
+        Credentials credentials = GoogleCredentials.fromStream(inputStream);
+        Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
+        Blob blob = storage.get(BlobId.of(bucketName, fileName));
+        blob.downloadTo(Paths.get(destFilePath));
+        log.info("destFilePath" + destFilePath);
+        return ResponseMessage.builder()
+                .httpCode(HttpStatus.OK.value())
+                .message("Downloaded successfully")
+                .data(destFilePath)
+                .build();
     }
 }
 

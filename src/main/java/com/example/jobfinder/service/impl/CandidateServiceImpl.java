@@ -169,13 +169,13 @@ public class CandidateServiceImpl implements CandidateService {
         oldCandidate.setDesiredWorkingProvince(candidateProfileDTO.getCandidateOtherInfoDTO().getDesiredWorkingProvince());
 
         // check update file CV
-//        if (fileCV != null) {
+        if (fileCV != null) {
 //            fileService.deleteFile(oldCandidate.getCV());
-////            oldCandidate.setCV(fileService.uploadFile(fileCV));
-//            oldCandidate.setCV(updateFile.uploadCV(fileCV));
-//        } else {
-//            oldCandidate.setCV(oldCandidate.getCV());
-//        }
+//            oldCandidate.setCV(fileService.uploadFile(fileCV));
+            oldCandidate.setCV(updateFile.uploadCV(fileCV));
+        } else {
+            oldCandidate.setCV(oldCandidate.getCV());
+        }
 
 
 

@@ -13,10 +13,13 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.IOUtils;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.*;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -28,10 +31,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
+import java.util.Objects;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping(ApiURL.FILE)
+@RequiredArgsConstructor
+@Component
 public class FileController {
     @Autowired
     private FileService fileService;
@@ -41,6 +47,10 @@ public class FileController {
 
     @Autowired
     private JsonReaderService<Object> jsonReaderService;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
 
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
@@ -80,30 +90,27 @@ public class FileController {
     }
 
     @GetMapping("/raw/{fileName}") // Returns file as Base64 string
-    public ResponseEntity<String> displayRawFile(@PathVariable String fileName) {
+    public ResponseEntity<Object> displayRawFile(@PathVariable String fileName) {
+
         try {
-            // Correctly construct the path to the files directory.
-            // If your path/files directory is inside the project directory and not in src/main/resources,
-            // you can construct the path relative to the project directory like this:
-            Path currentRelativePath = Paths.get("");
-            String s = currentRelativePath.toAbsolutePath().toString();
-            System.out.println("Current relative path is: " + s);
-            Path filePath = Paths.get(s, "path", "files", fileName);
-
-            if (!Files.exists(filePath)) {
-                return ResponseEntity.notFound().build();
-            }
-
-            byte[] fileData = Files.readAllBytes(filePath);
-            String base64Data = Base64.getEncoder().encodeToString(fileData);
-            String dataUri = "data:application/pdf;base64," + base64Data;
-
-            return ResponseEntity.ok(dataUri);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().body("Không thể đọc file: " + fileName);
+//            String fileUrl = "https://firebasestorage.googleapis.com/v0/b/job-worked.appspot.com/o/pdfs%2F976563fc-2cb3-440e-b58e-c5b89ad47b3f.pdf?alt=media";
+//            ResponseEntity<byte[]> response = restTemplate.exchange(
+//                    fileUrl,
+//                    HttpMethod.GET,
+//                    new HttpEntity<>(new HttpHeaders()),
+//                    byte[].class
+//            );
+//
+//            ByteArrayResource resource = new ByteArrayResource(Objects.requireNonNull(response.getBody()));
+            return ResponseEntity.ok(updateFile.downloadCV(fileName));
+//            return ResponseEntity.ok()
+//                    .contentType(MediaType.APPLICATION_PDF)
+//                    .body(resource);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+
+
     }
 
 
