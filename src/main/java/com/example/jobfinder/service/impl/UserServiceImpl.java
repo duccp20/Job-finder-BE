@@ -232,19 +232,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public Object activeForgetPassword(String token) {
 
-        Token theToken = tokenService.findByToken(token).orElseThrow(() -> {
-            throw new ResourceNotFoundException(Collections.singletonMap("token", token));
-        });
+        User user = userRepository.findByPasswordForgotToken(token).orElseThrow(
+                () -> new InternalServerErrorException(this.messageSource.getMessage("Token not found", null, null)));
 
-        if (theToken.getStatus().getName().equals(Estatus.Delete.toString())) {
-            String redirectUrl = "http://localhost:3000/forgot-password/verify?status=completed";
-            return new RedirectView(redirectUrl);
-        }
+        String activeToken = user.getTokenActive();
 
-        Instant expirationTime = theToken.getExpirationTime().toInstant();
-        Instant now = Instant.now();
-
-        boolean tokenExpired = expirationTime.isBefore(now);
+        boolean tokenExpired = jwtTokenUtils.isTokenExpired(activeToken);
 
         if (tokenExpired) {
             return new RedirectView("http://localhost:3000/forgot-password/verify?status=fail");
@@ -259,13 +252,10 @@ public class UserServiceImpl implements UserService {
         User user = this.userRepository.findByPasswordForgotToken(resetPasswordByTokenDTO.getToken()).orElseThrow(
                 () -> new InternalServerErrorException(this.messageSource.getMessage("error.tokenNotFound", null, null)));
 
-        Token theToken = this.tokenRepository.findByToken(resetPasswordByTokenDTO.getToken()).orElseThrow(
-                () -> new InternalServerErrorException(this.messageSource.getMessage("error.tokenNotFound", null, null)));
+        String activeToken = user.getTokenActive();
 
-        Instant expirationTime = theToken.getExpirationTime().toInstant();
-        Instant now = Instant.now();
+        boolean tokenExpired = jwtTokenUtils.isTokenExpired(activeToken);
 
-        boolean tokenExpired = expirationTime.isBefore(now);
         if (tokenExpired) {
             throw new InternalServerErrorException(this.messageSource.getMessage("error.tokenIsExpired", null, null));
         }
@@ -277,9 +267,6 @@ public class UserServiceImpl implements UserService {
         user.setPassword(newPasswordEncoder);
         user.setPasswordForgotToken("");
 
-        theToken.setStatus(this.statusService.findByName(Estatus.Delete.toString()).orElseThrow(
-                () -> new ResourceNotFoundException(Collections.singletonMap("status", Estatus.Delete.toString()))
-        ));
         this.userRepository.save(user);
     }
 

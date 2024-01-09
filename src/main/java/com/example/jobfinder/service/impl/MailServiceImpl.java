@@ -104,8 +104,8 @@ public class MailServiceImpl implements MailService {
             throw new ResourceNotFoundException(Collections.singletonMap("email", email));
         }
 
-//        String accessToken = this.generateActiveToken(user, emailRequest.getPassword());
-        String accessToken = UUID.randomUUID().toString();
+        String accessToken = this.generateActiveToken(user);
+//        String accessToken = UUID.randomUUID().toString();
         MailResponse mailResponse = new MailResponse();
         mailResponse.setNamePost("job-finder");
         mailResponse.setNameReceive(user.getFirstName());
