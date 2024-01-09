@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 public class JobFinderApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(JobFinderApplication.class, args);
     }

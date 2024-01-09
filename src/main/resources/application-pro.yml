@@ -1,44 +1,70 @@
+#server:
+#  port: 8080
+#  address: 0.0.0.0
+#
+#
+#db:
+#  port: 3306
+#  name: dream_x_work
+#  endpoint: 34.143.186.42
+#  username: root
+#  password: Ducvc123123!@#$%
+#  connection-name: springboot-dreamxwork:asia-southeast1:dreamxwork
+#
+#
+#spring:
+#  main:
+#    web-application-type: none
+#  sql:
+#    init:
+#      mode: always
+#      continue-on-error: true
+#  cloud:
+#    gcp:
+#      project-id: springboot-dreamxwork
+#      sql:
+#        instance-connection-name: ${db.connection-name}
+#        database-name: ${db.name}
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#      #    url: jdbc:mysql://${db.endpoint}:${db.port}/${db.name}
+#    url: jdbc:mysql://google/${db.name}?cloudSqlInstance=${db.connection-name}&socketFactory=com.google.cloud.sql.mysql.SocketFactory
+#    username: ${db.username}
+#    password: ${db.password}
+#
+#
+#
+#
+#
+#domain:
+#  path: https://job-finder-be-production.up.railway.app
+#  #https://springboot-dreamxwork.et.r.appspot.com/
+#
+#url:
+#  server:
+#    path: ${domain.path}
+#  client:
+#    path: http://localhost:3000/
+
 server:
   port: 8080
   address: 0.0.0.0
-
-database: mysql
-
 db:
-  port: 3306
-  name: dream_x_work
-  endpoint: 34.143.186.42
+  port: 16986
+  name: job_finder
+  endpoint: monorail.proxy.rlwy.net
   username: root
-  password: Ducvc123123!@#$%
-  connection-name: springboot-dreamxwork:asia-southeast1:dreamxwork
-
-
+  password: A63E4A4bGeCcg45HA1cdF3GEbaAAfeg4
 spring:
-  sql:
-    init:
-      mode: always
-      continue-on-error: true
-  cloud:
-    gcp:
-      project-id: springboot-dreamxwork
-      sql:
-        instance-connection-name: ${db.connection-name}
-        database-name: ${db.name}
-
   datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${db.endpoint}:${db.port}/${db.name}
-    #    url: jdbc:mysql://google/${db.name}?cloudSqlInstance=${db.connection-name}&socketFactory=com.google.cloud.sql.mysql.SocketFactory
     username: ${db.username}
     password: ${db.password}
-  hikari:
-    maximum-pool-size: 10
-
-
 
 
 domain:
   path: https://job-finder-be-production.up.railway.app
-  #https://springboot-dreamxwork.et.r.appspot.com/
 
 url:
   server:
