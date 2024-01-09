@@ -56,8 +56,6 @@ public class CandidateController {
         }
     }
 
-    ;
-
 
     @GetMapping("/active")
     public Object activeAccountCandidate(@RequestParam(name = "active-token") String token) {
