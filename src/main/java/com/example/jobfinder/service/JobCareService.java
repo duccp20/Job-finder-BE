@@ -26,6 +26,8 @@ public interface JobCareService {
 
     ResponseMessage deleteById(long idJobCare);
 
+    ResponseMessage deleteByJobId(long jobId);
+
     boolean checkCandidateApplication(int idJob);
 
     boolean existsByJobIdAndCandidateId(long jobId, long candidateId);

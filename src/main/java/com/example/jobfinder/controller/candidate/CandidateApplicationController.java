@@ -33,7 +33,6 @@ public class CandidateApplicationController {
     /**
      * Creates a new candidate application.
      *
-     * @param candidateApplication the candidate application data in JSON format
      * @param fileCV               the CV file (optional)
      * @return the response entity containing the result of the creation process
      */

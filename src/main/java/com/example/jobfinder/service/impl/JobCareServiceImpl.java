@@ -6,6 +6,7 @@ import com.example.jobfinder.data.dto.request.job.JobCareDTO;
 import com.example.jobfinder.data.dto.request.job.JobDTO;
 import com.example.jobfinder.data.dto.response.ResponseMessage;
 import com.example.jobfinder.data.entity.Candidate;
+import com.example.jobfinder.data.entity.Job;
 import com.example.jobfinder.data.entity.JobCare;
 import com.example.jobfinder.data.entity.User;
 import com.example.jobfinder.data.mapper.JobCareMapper;
@@ -19,6 +20,7 @@ import com.example.jobfinder.exception.ResourceNotFoundException;
 import com.example.jobfinder.service.CandidateService;
 import com.example.jobfinder.service.JobCareService;
 import com.example.jobfinder.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +28,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 
 import java.util.*;
@@ -112,7 +119,7 @@ public class JobCareServiceImpl implements JobCareService {
         CandidateDTO candidateDTO = candidateService.findByUserId(userService.getCurrentUserId());
         // verify that candidate and job in database
 
-       List<Integer> listJobId = this.jobCareRepository.finJobSave(candidateDTO.getId());
+        List<Integer> listJobId = this.jobCareRepository.finJobSave(candidateDTO.getId());
         listJobId.forEach(item -> {
             if (item == (int) (idJob)) {
                 throw new ConflictException(Collections.singletonMap("idJob", idJob));
@@ -158,6 +165,21 @@ public class JobCareServiceImpl implements JobCareService {
             throw new AccessDeniedException();
         }
     }
+
+    @Override
+    @Transactional
+    public ResponseMessage deleteByJobId(long jobId) {
+
+        Job job = jobRepository.findById(jobId).orElseThrow(
+                () -> new ResourceNotFoundException(Collections.singletonMap("id", jobId)));
+
+        this.jobCareRepository.deleteJobCareByJob(job);
+        return ResponseMessage.builder()
+                .httpCode(200)
+                .message("Delete job care successfully")
+                .build();
+    }
+
 
     @Override
     public boolean checkCandidateApplication(int idJob) {

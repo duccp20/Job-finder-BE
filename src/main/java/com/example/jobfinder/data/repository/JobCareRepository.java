@@ -1,5 +1,6 @@
 package com.example.jobfinder.data.repository;
 
+import com.example.jobfinder.data.entity.Job;
 import com.example.jobfinder.data.entity.JobCare;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +25,8 @@ public interface JobCareRepository extends JpaRepository<JobCare, Long> {
 
     @Query("SELECT jc.job.id FROM JobCare jc WHERE jc.candidate.id = :candidateId GROUP BY jc.job.id")
     List<Integer> finJobSave(@Param("candidateId") long candidateId);
+
+    void deleteJobCareByJob(Job job);
 
 
     // @Query("SELECT jc FROM JobCare jc WHERE jc.job.id = :jobId")
