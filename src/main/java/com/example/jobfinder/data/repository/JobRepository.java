@@ -1,8 +1,11 @@
 package com.example.jobfinder.data.repository;
 
 import com.example.jobfinder.data.dto.request.job.JobCreationDTO;
+import com.example.jobfinder.data.dto.request.job.JobFilterDTO;
+import com.example.jobfinder.data.dto.request.job.JobShowDTO;
 import com.example.jobfinder.data.entity.Job;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,12 +15,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface JobRepository extends JpaRepository<Job, Long> {
+public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificationExecutor<Job> {
 
     Page<Job> findAll(Specification<Job> filter, Pageable pageable);
 
@@ -109,6 +113,26 @@ public interface JobRepository extends JpaRepository<Job, Long> {
 
     @Query("SELECT YEAR(j.createdDate), COUNT(j) FROM Job j WHERE j.company.id = :companyId GROUP BY YEAR(j.createdDate)")
     List<Object[]> countJobsByYear(@Param("companyId") long companyId);
+
+ @Query("SELECT DISTINCT j FROM Job j " +
+         "LEFT JOIN j.jobPositions jp " +
+         "LEFT JOIN j.jobSchedules js " +
+         "LEFT JOIN j.jobMajors jm " +
+         "WHERE (j.name LIKE CONCAT('%', :name, '%')) " +
+         "AND (:provinceName IS NULL OR j.province LIKE CONCAT('%', :provinceName, '%')) " +
+         "AND (COALESCE(SIZE(:positionIds), 0) = 0 OR jp.position.id IN :positionIds) " +
+         "AND (COALESCE(SIZE(:scheduleIds), 0) = 0 OR js.schedule.id IN :scheduleIds) " +
+         "AND (COALESCE(SIZE(:majorIds), 0) = 0 OR jm.major.id IN :majorIds) " +
+         "AND j.status.statusId = 1 " +
+         "ORDER BY j.createdDate DESC")
+ Page<Job> findJobsWithFilters(@Param("name") String name,
+                               @Param("provinceName") String provinceName,
+                               @Param("positionIds") List<Integer> positionIds,
+                               @Param("scheduleIds") List<Integer> scheduleIds,
+                               @Param("majorIds") List<Integer> majorIds,
+                               Pageable pageable);
+
+
 
 //     @Query("SELECT j.jobPositions FROM Job j")
 //     List<Object[]> findAllJob();

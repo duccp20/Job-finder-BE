@@ -115,5 +115,3 @@ public class CandidateJobCareController {
         return this.jobCareService.checkCandidateApplication(idJob);
     }
 }
-
-
