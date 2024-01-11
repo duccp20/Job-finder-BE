@@ -28,6 +28,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -113,7 +114,7 @@ public class JobServiceImpl implements JobService {
     public PaginationDTO filterJob(JobFilterDTO jobFilterDTO, int no, int limit) {
             Specification<Job> spec = Specification.where(JobSpecification.hasName(jobFilterDTO.getName()))
                     .and(JobSpecification.hasProvinceName(jobFilterDTO.getProvinceName()))
-                    .and(JobSpecification.hasPositionIds(jobFilterDTO.getPositionIds()))
+                    .and(JobSpecification.hasPositionIds((jobFilterDTO.getPositionIds())))
                     .and(JobSpecification.hasScheduleIds(jobFilterDTO.getScheduleIds()))
                     .and(JobSpecification.hasMajorIds(jobFilterDTO.getMajorIds()))
                     .and(JobSpecification.hasStatusId(JOB_STATUS_ACTIVE_ID));

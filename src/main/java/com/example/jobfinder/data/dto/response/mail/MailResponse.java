@@ -30,196 +30,202 @@ public class MailResponse {
 
         String link = urlRedirect + ApiURL.CANDIDATE + "/active?active-token=" + token;
         log.info(link, "link active");
-        this.mailTemplate = "<!DOCTYPE html>\r\n"
-                + "<html lang=\"en\">\r\n"
-                + "<head>\r\n"
-                + "    <meta charset=\"UTF-8\">\r\n"
-                + "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\r\n"
-                + "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n"
-                + "    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\r\n"
-                + "<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\r\n"
-                + "<link href=\"https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500&display=swap\" rel=\"stylesheet\">\r\n"
-                + "    <title>Email</title>\r\n"
-                + "    <style>\r\n"
-                + "        .email-container{\r\n"
-                + "            width: 50%;\r\n"
-                + "            padding:  0px;\r\n"
-                + "            margin: 20px auto;\r\n"
-                + "            font-family: 'Poppins', sans-serif;\r\n"
-                + "            color: #000;\r\n"
-                + "            font-size: 15px\r\n"
-                + "        }\r\n"
-                + "        img {\r\n"
-                + "            width: 100%;\r\n"
-                + "            height: 80%;\r\n"
-                + "        }\r\n"
-                + "        .email-container__new-pass{\r\n"
-                + "            width: 40%;\r\n"
-                + "            margin: 20px auto;\r\n"
-                + "            text-align: center;\r\n"
-                + "            /* padding: 5px 0px; */\r\n"
-                + "            /* border: 2px solid #f4b459; */\r\n"
-                + "            background-color: #FE5656;\r\n"
-                + "            border-radius: 15px;\r\n"
-                + "            color: #000;\r\n"
-                + "            border: none;\r\n"
-                + "        }\r\n"
-                + "        .btn-redirect{\r\n"
-                + "            background-color: #f4b459;\r\n"
-                + "            border: none;\r\n"
-                + "        }\r\n"
-                + "        .txt-redirect{\r\n"
-                + "           color: white !important;\r\n"
-                + "            text-decoration: none;\r\n"
-                + "            display: block;\r\n"
-                + "            padding: 20px 0;\r\n"
-                + "            font-size: 18px;\r\n"
-                + "        }\r\n"
-                + "        h4{\r\n"
-                + "            font-size: 20px;\r\n"
-                + "            font-weight: bold\r\n"
-                + "        }\r\n"
-                + "        span{\r\n"
-                + "            font-weight: bold \r\n"
-                + "        }\r\n"
-                + "        h5{\r\n"
-                + "            line-height: 5px;\r\n"
-                + "            font-size: 15px;\r\n"
-                + "        }\r\n"
-                + "\r\n"
-                + "        @media screen and (max-width: 750px) {\r\n"
-                + "            .email-container {\r\n"
-                + "                width: 90%;\r\n"
-                + "            }\r\n"
-                + "        }\r\n"
-                + "    </style>\r\n"
-                + "</head>\r\n"
-                + "<body>\r\n"
-                + "    <div class=\"email-container\">\r\n"
-                + "        <div class=\"email-container__image\">\r\n"
-                + "            <img src=\"https://firebasestorage.googleapis.com/v0/b/storageimg-36153.appspot.com/o/images%2FLOGO_JOB.jpg?alt=media&token=ffd185c2-5b6f-4441-8038-37b6e1f40e0b\" alt=\"image-forgot-password\">\r\n"
-                + "        </div>\r\n"
-                + "        <div class=\"email-container__content\">\r\n"
-                + "            <h3 class=\"email-container__title\">Chào mừng bạn đến với <strong>Jobsit.vn</strong></h3>\r\n"
-                + "            <p><strong>Jobsit.vn</strong> là một nền tảng tuyển dụng công việc thực tập dành cho ngành công nghệ thông tin tại Việt Nam. Mang đến cho các bạn sinh viên hoặc các bạn mới ra trường có cơ hội tiếp cận các công việc thực tập nhanh chóng và dễ dàng.</p>\r\n"
-                + "            <p>Để hoàn tất quá trình đăng ký tài khoản, mời bạn nhấp chuột vào nút bên dưới để kích hoạt tài khoản.</p>\r\n"
-//                + "           <button class=\"btn-redirect\"> \r\n"
-                + "            <button class=\"email-container__new-pass\">\r\n"
-//				+ "                <h4>"+token+"</h4>\r\n"
-                + "               <a class=\"txt-redirect\" href=" + link + ">Xác nhận email</a>\r\n"
-
-                + "            </button>\r\n"
-                + "            \r\n"
-                + "\r\n"
-                + "            <p>Cảm ơn bạn đã sử dụng dịch vụ của Jobsit.vn </p>\r\n"
-                + "            <p>Thân mến </p>\r\n"
-                + "        </div>\r\n"
-                + "    </div>\r\n"
-                + "</body>\r\n"
-                + "</html>";
+        this.mailTemplate = "<!DOCTYPE html>\n" +
+                "<html lang=\"vi\">\n" +
+                "\n" +
+                "<head>\n" +
+                "    <meta charset=\"UTF-8\">\n" +
+                "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
+                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                "    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n" +
+                "    <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n" +
+                "    <link href=\"https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500&display=swap\" rel=\"stylesheet\">\n" +
+                "    <title>Email</title>\n" +
+                "    <style>\n" +
+                "        .email-container {\n" +
+                "            width: 50%;\n" +
+                "            padding: 0px;\n" +
+                "            margin: 20px auto;\n" +
+                "            font-family: 'Poppins', sans-serif;\n" +
+                "            color: #000;\n" +
+                "            font-size: 15px;\n" +
+                "        }\n" +
+                "\n" +
+                "        img {\n" +
+                "            width: 100%;\n" +
+                "            height: 80%;\n" +
+                "        }\n" +
+                "\n" +
+                "        .email-container__new-pass {\n" +
+                "            width: 40%;\n" +
+                "            margin: 20px auto;\n" +
+                "            text-align: center;\n" +
+                "            background-color: #FE5656;\n" +
+                "            border-radius: 15px;\n" +
+                "            color: #000;\n" +
+                "            border: none;\n" +
+                "        }\n" +
+                "\n" +
+                "        .btn-redirect {\n" +
+                "            background-color: #f4b459;\n" +
+                "            border: none;\n" +
+                "        }\n" +
+                "\n" +
+                "        .txt-redirect {\n" +
+                "            color: white !important;\n" +
+                "            text-decoration: none;\n" +
+                "            display: block;\n" +
+                "            padding: 20px 0;\n" +
+                "            font-size: 18px;\n" +
+                "        }\n" +
+                "\n" +
+                "        h4 {\n" +
+                "            font-size: 20px;\n" +
+                "            font-weight: bold;\n" +
+                "        }\n" +
+                "\n" +
+                "        span {\n" +
+                "            font-weight: bold;\n" +
+                "        }\n" +
+                "\n" +
+                "        h5 {\n" +
+                "            line-height: 5px;\n" +
+                "            font-size: 15px;\n" +
+                "        }\n" +
+                "\n" +
+                "        @media screen and (max-width: 750px) {\n" +
+                "            .email-container {\n" +
+                "                width: 90%;\n" +
+                "            }\n" +
+                "        }\n" +
+                "    </style>\n" +
+                "</head>\n" +
+                "\n" +
+                "<body>\n" +
+                "    <div class=\"email-container\">\n" +
+                "        <div class=\"email-container__image\">\n" +
+                "            <img src=\"https://firebasestorage.googleapis.com/v0/b/job-worked.appspot.com/o/images%2Flogo.png?alt=media&token=17d1b6d9-0d85-45b9-9c5b-7b35d00ab50f\"\n" +
+                "                alt=\"Hình ảnh quên mật khẩu\">\n" +
+                "        </div>\n" +
+                "        <div class=\"email-container__content\">\n" +
+                "            <h3 class=\"email-container__title\">Chào mừng bạn đến với <strong>DreamxWork</strong></h3>\n" +
+                "            <p><strong>DreamxWork</strong> là một nền tảng tuyển dụng công việc thực tập dành cho ngành công nghệ thông\n" +
+                "                tin tại Việt Nam. Mang đến cho các bạn sinh viên hoặc các bạn mới ra trường có cơ hội tiếp cận các công\n" +
+                "                việc thực tập nhanh chóng và dễ dàng.</p>\n" +
+                "            <p>Để hoàn tất quá trình đăng ký tài khoản, mời bạn nhấp chuột vào nút bên dưới để kích hoạt tài khoản.</p>\n" +
+                "            <button class=\"email-container__new-pass\">\n" +
+                "                <a class=\"txt-redirect\" href=\"`+ link +`\">Xác nhận email</a>\n" +
+                "            </button>\n" +
+                "            <p>Cảm ơn bạn đã sử dụng dịch vụ của DreamxWork</p>\n" +
+                "            <p>Thân mến</p>\n" +
+                "        </div>\n" +
+                "    </div>\n" +
+                "</body>\n" +
+                "\n" +
+                "</html>";
     }
 
     public void createMailForgotPassword(String urlRedirect, String token) {
 
         String link = urlRedirect + ApiURL.USER + "/active-forget-password?token=" + token;
         log.info(link, "link forget password");
-        this.mailTemplate =
-               "<!DOCTYPE html>\n" +
-                       "<html lang=\"en\">\n" +
-                       "\n" +
-                       "<head>\n" +
-                       "    <meta charset=\"UTF-8\">\n" +
-                       "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
-                       "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
-                       "    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n" +
-                       "    <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n" +
-                       "    <link href=\"https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500&display=swap\" rel=\"stylesheet\">\n" +
-                       "    <title>Email</title>\n" +
-                       "    <style>\n" +
-                       "        .email-container {\n" +
-                       "            width: 50%;\n" +
-                       "            padding: 30px 0px;\n" +
-                       "            margin: 20px auto;\n" +
-                       "            font-family: 'Poppins', sans-serif;\n" +
-                       "            color: #555;\n" +
-                       "            font-size: 15px\n" +
-                       "        }\n" +
-                       "\n" +
-                       "        img {\n" +
-                       "            width: 100%;\n" +
-                       "            height: 80%;\n" +
-                       "        }\n" +
-                       "\n" +
-                       "        .email-container__new-pass {\n" +
-                       "            width: 40%;\n" +
-                       "            margin: 20px auto;\n" +
-                       "            text-align: center;\n" +
-                       "            background-color: #00b074;\n" +
-                       "            border-radius: 15px;\n" +
-                       "            color: #000;\n" +
-                       "            border: none;\n" +
-                       "        }\n" +
-                       "\n" +
-                       "        .btn-redirect {\n" +
-                       "            background-color: #00b074 !important;\n" +
-                       "            border: none;\n" +
-                       "        }\n" +
-                       "\n" +
-                       "        .txt-redirect {\n" +
-                       "            color: white !important;\n" +
-                       "            text-decoration: none;\n" +
-                       "            display: block;\n" +
-                       "            padding: 20px 0;\n" +
-                       "            font-size: 18px;\n" +
-                       "        }\n" +
-                       "\n" +
-                       "        h4 {\n" +
-                       "            font-size: 20px;\n" +
-                       "            font-weight: bold\n" +
-                       "        }\n" +
-                       "\n" +
-                       "        span {\n" +
-                       "            font-weight: bold\n" +
-                       "        }\n" +
-                       "\n" +
-                       "        h5 {\n" +
-                       "            line-height: 5px;\n" +
-                       "            font-size: 15px;\n" +
-                       "        }\n" +
-                       "\n" +
-                       "        @media screen and (max-width: 750px) {\n" +
-                       "            .email-container {\n" +
-                       "                width: 90%;\n" +
-                       "            }\n" +
-                       "        }\n" +
-                       "    </style>\n" +
-                       "</head>\n" +
-                       "\n" +
-                       "<body>\n" +
-                       "    <div class=\"email-container\">\n" +
-                       "        <div class=\"email-container__image\">\n" +
-                       "            <img src=\"https://firebasestorage.googleapis.com/v0/b/storageimg-36153.appspot.com/o/images%2FLOGO_JOB.jpg?alt=media&token=ffd185c2-5b6f-4441-8038-37b6e1f40e0b\"\n" +
-                       "                alt=\"image-forgot-password\">\n" +
-                       "        </div>\n" +
-                       "        <div class=\"email-container__content\">\n" +
-                       "            <h1 class=\"email-container__title\">Bạn quên mật khẩu?</h1>\n" +
-                       "            <p>Chúng tôi nhận được yêu cầu bạn muốn đổi mật khẩu tài khoản trên <strong>Jobsit.vn</strong></p>\n" +
-                       "            <p>Để thay đổi mật khẩu, bạn vui lòng bấm vào nút dưới đây:</p>\n" +
-                       "            <button class=\"email-container__new-pass\">\n" +
-                       "                <a class=\"txt-redirect\" href=" + link + ">Đặt lại mật khẩu</a>\r\n" +
-                       "            </button>\n" +
-                       "            <p>Email yêu cầu đổi mật khẩu này sẽ hết hạn trong 10 phút.</p>\n" +
-                       "            <p>Nếu không yêu cầu đổi mật khẩu, bạn có thể yên tâm bỏ qua email này. Chỉ người có quyền truy cập vào\n" +
-                       "                email của bạn mới có thể thay đổi mật khẩu.</p>\n" +
-                       "            <p>Email yêu cầu đổi mật khẩu này sẽ hết hạn trong 10 phút.</p>\n" +
-                       "\n" +
-                       "            <p>Cảm ơn bạn đã sử dụng dịch vụ của Jobsit.vn</p>\n" +
-                       "            <p>Thân mến </p>\n" +
-                       "        </div>\n" +
-                       "    </div>\n" +
-                       "</body>\n" +
-                       "\n" +
-                       "</html>";
+        this.mailTemplate = "<!DOCTYPE html>\n" +
+                "<html lang=\"vi\">\n" +
+                "\n" +
+                "<head>\n" +
+                "    <meta charset=\"UTF-8\">\n" +
+                "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
+                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                "    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n" +
+                "    <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n" +
+                "    <link href=\"https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500&display=swap\" rel=\"stylesheet\">\n" +
+                "    <title>Email</title>\n" +
+                "    <style>\n" +
+                "        .email-container {\n" +
+                "            width: 50%;\n" +
+                "            padding: 30px 0px;\n" +
+                "            margin: 20px auto;\n" +
+                "            font-family: 'Poppins', sans-serif;\n" +
+                "            color: #555;\n" +
+                "            font-size: 15px;\n" +
+                "        }\n" +
+                "\n" +
+                "        img {\n" +
+                "            width: 100%;\n" +
+                "            height: 80%;\n" +
+                "        }\n" +
+                "\n" +
+                "        .email-container__new-pass {\n" +
+                "            width: 40%;\n" +
+                "            margin: 20px auto;\n" +
+                "            text-align: center;\n" +
+                "            background-color: #FE5656;\n" +
+                "            border-radius: 15px;\n" +
+                "            color: #000;\n" +
+                "            border: none;\n" +
+                "        }\n" +
+                "\n" +
+                "        .btn-redirect {\n" +
+                "            background-color: #00b074 !important;\n" +
+                "            border: none;\n" +
+                "        }\n" +
+                "\n" +
+                "        .txt-redirect {\n" +
+                "            color: white !important;\n" +
+                "            text-decoration: none;\n" +
+                "            display: block;\n" +
+                "            padding: 20px 0;\n" +
+                "            font-size: 18px;\n" +
+                "        }\n" +
+                "\n" +
+                "        h4 {\n" +
+                "            font-size: 20px;\n" +
+                "            font-weight: bold;\n" +
+                "        }\n" +
+                "\n" +
+                "        span {\n" +
+                "            font-weight: bold;\n" +
+                "        }\n" +
+                "\n" +
+                "        h5 {\n" +
+                "            line-height: 5px;\n" +
+                "            font-size: 15px;\n" +
+                "        }\n" +
+                "\n" +
+                "        @media screen and (max-width: 750px) {\n" +
+                "            .email-container {\n" +
+                "                width: 90%;\n" +
+                "            }\n" +
+                "        }\n" +
+                "    </style>\n" +
+                "</head>\n" +
+                "\n" +
+                "<body>\n" +
+                "    <div class=\"email-container\">\n" +
+                "        <div class=\"email-container__image\">\n" +
+                "            <img src=\"https://firebasestorage.googleapis.com/v0/b/job-worked.appspot.com/o/images%2Flogo.png?alt=media&token=17d1b6d9-0d85-45b9-9c5b-7b35d00ab50f\"\n" +
+                "                alt=\"Hình ảnh quên mật khẩu\">\n" +
+                "        </div>\n" +
+                "        <div class=\"email-container__content\">\n" +
+                "            <h1 class=\"email-container__title\">Bạn quên mật khẩu?</h1>\n" +
+                "            <p>Chúng tôi nhận được yêu cầu bạn muốn đổi mật khẩu tài khoản trên <strong>DreamxWork</strong></p>\n" +
+                "            <p>Để thay đổi mật khẩu, bạn vui lòng bấm vào nút dưới đây:</p>\n" +
+                "            <button class=\"email-container__new-pass\">\n" +
+                "                <a class=\"txt-redirect\" href=\"`+ link +`\">Đặt lại mật khẩu</a>\n" +
+                "            </button>\n" +
+                "            <p>Email yêu cầu đổi mật khẩu này sẽ hết hạn trong 10 phút.</p>\n" +
+                "            <p>Nếu không yêu cầu đổi mật khẩu, bạn có thể yên tâm bỏ qua email này. Chỉ người có quyền truy cập vào\n" +
+                "                email của bạn mới có thể thay đổi mật khẩu.</p>\n" +
+                "            <p>Email yêu cầu đổi mật khẩu này sẽ hết hạn trong 10 phút.</p>\n" +
+                "\n" +
+                "            <p>Cảm ơn bạn đã sử dụng dịch vụ của DreamxWork</p>\n" +
+                "            <p>Thân mến </p>\n" +
+                "        </div>\n" +
+                "    </div>\n" +
+                "</body>\n" +
+                "\n" +
+                "</html>";
+
     }
 
 
