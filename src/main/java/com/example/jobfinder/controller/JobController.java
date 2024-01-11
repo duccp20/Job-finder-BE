@@ -61,9 +61,9 @@ public class JobController {
     @GetMapping("/filter") // filter in home page
     public ResponseEntity<?> filter(@RequestParam(defaultValue = PageDefault.NO) int no,
                                     @RequestParam(defaultValue = PageDefault.LIMIT) int limit,
-                                    @RequestParam(required = false) List<Integer> schedule,
-                                    @RequestParam(required = false) List<Integer> position,
-                                    @RequestParam(required = false) List<Integer> major,
+                                    @RequestParam(required = false) List<String> schedule,
+                                    @RequestParam(required = false) List<String> position,
+                                    @RequestParam(required = false) List<String> major,
                                     @RequestParam(required = false) String name,
                                     @RequestParam(required = false) String provinceName) {
         JobFilterDTO jobFilterDTO = new JobFilterDTO(name, position, schedule, major, provinceName);

@@ -18,7 +18,7 @@ public class JobSpecification {
                         : criteriaBuilder.like(root.get("province"), "%" + provinceName + "%");
     }
 
-    public static Specification<Job> hasPositionIds(List<Integer> positionIds) {
+    public static Specification<Job> hasPositionIds(List<String> positionIds) {
         return (root, query, criteriaBuilder) -> {
             if (positionIds == null || positionIds.isEmpty()) {
                 return criteriaBuilder.isTrue(criteriaBuilder.literal(true));
@@ -27,7 +27,7 @@ public class JobSpecification {
         };
     }
 
-    public static Specification<Job> hasScheduleIds(List<Integer> scheduleIds) {
+    public static Specification<Job> hasScheduleIds(List<String> scheduleIds) {
         return (root, query, criteriaBuilder) -> {
             if (scheduleIds == null || scheduleIds.isEmpty()) {
                 return criteriaBuilder.isTrue(criteriaBuilder.literal(true));
@@ -36,7 +36,7 @@ public class JobSpecification {
         };
     }
 
-    public static Specification<Job> hasMajorIds(List<Integer> majorIds) {
+    public static Specification<Job> hasMajorIds(List<String> majorIds) {
         return (root, query, criteriaBuilder) -> {
             if (majorIds == null || majorIds.isEmpty()) {
                 return criteriaBuilder.isTrue(criteriaBuilder.literal(true));

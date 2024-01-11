@@ -15,8 +15,8 @@ public class JobFilterDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String name;
-    private List<Integer> positionIds;
-    private List<Integer> scheduleIds;
-    private List<Integer> majorIds;
+    private List<String> positionIds;
+    private List<String> scheduleIds;
+    private List<String> majorIds;
     private String provinceName;
 }

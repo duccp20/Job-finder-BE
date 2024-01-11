@@ -107,7 +107,7 @@ public class MailServiceImpl implements MailService {
         String accessToken = this.generateActiveToken(user);
 //        String accessToken = UUID.randomUUID().toString();
         MailResponse mailResponse = new MailResponse();
-        mailResponse.setNamePost("job-finder");
+        mailResponse.setNamePost("dreamxwork");
         mailResponse.setNameReceive(user.getFirstName());
         mailResponse.setTo(email);
 
