@@ -114,7 +114,7 @@ public class MailResponse {
                 "                việc thực tập nhanh chóng và dễ dàng.</p>\n" +
                 "            <p>Để hoàn tất quá trình đăng ký tài khoản, mời bạn nhấp chuột vào nút bên dưới để kích hoạt tài khoản.</p>\n" +
                 "            <button class=\"email-container__new-pass\">\n" +
-                "                <a class=\"txt-redirect\" href=\"`+ link +`\">Xác nhận email</a>\n" +
+                "                <a class=\"txt-redirect\" href=\"" + link + "\">Xác nhận email</a>\n" +
                 "            </button>\n" +
                 "            <p>Cảm ơn bạn đã sử dụng dịch vụ của DreamxWork</p>\n" +
                 "            <p>Thân mến</p>\n" +
@@ -211,7 +211,7 @@ public class MailResponse {
                 "            <p>Chúng tôi nhận được yêu cầu bạn muốn đổi mật khẩu tài khoản trên <strong>DreamxWork</strong></p>\n" +
                 "            <p>Để thay đổi mật khẩu, bạn vui lòng bấm vào nút dưới đây:</p>\n" +
                 "            <button class=\"email-container__new-pass\">\n" +
-                "                <a class=\"txt-redirect\" href=\"`+ link +`\">Đặt lại mật khẩu</a>\n" +
+                "                <a class=\"txt-redirect\" href=\""+ link +"\">Đặt lại mật khẩu</a>\n" +
                 "            </button>\n" +
                 "            <p>Email yêu cầu đổi mật khẩu này sẽ hết hạn trong 10 phút.</p>\n" +
                 "            <p>Nếu không yêu cầu đổi mật khẩu, bạn có thể yên tâm bỏ qua email này. Chỉ người có quyền truy cập vào\n" +
