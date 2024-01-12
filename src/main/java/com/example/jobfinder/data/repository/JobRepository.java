@@ -88,7 +88,7 @@ public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificatio
     @Query("SELECT j FROM Job j WHERE  j.status.statusId = 4 and j.company.id= :companyId ORDER BY j.createdDate DESC")
     Page<Job> findAllDisableByCompanyId(@Param("companyId") long companyId, Pageable pageable);
 
-    @Query("SELECT j FROM Job j WHERE j.company.id= :companyId AND j.status.statusId = 1 AND j.status.statusId = 4 ORDER BY j.createdDate DESC ")
+    @Query("SELECT j FROM Job j WHERE j.company.id= :companyId AND j.status.statusId = 1 or j.status.statusId = 4 ORDER BY j.createdDate DESC ")
     Page<Job> findAllByCompanyId(@Param("companyId") long companyId, Pageable pageable);
 
     @Query("SELECT COUNT(*) FROM Job j WHERE  j.status.statusId = 1 and j.company.id= :companyId")
