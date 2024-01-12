@@ -626,7 +626,7 @@ public class JobServiceImpl implements JobService {
 
             jobRepository.save(job);
 
-            entityManager.clear();
+//            entityManager.clear();
             return ResponseMessage.builder()
                     .httpCode(HttpStatus.OK.value())
                     .message("Delete success")
