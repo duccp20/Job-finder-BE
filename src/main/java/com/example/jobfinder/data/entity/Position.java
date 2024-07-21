@@ -1,12 +1,11 @@
 package com.example.jobfinder.data.entity;
 
 import jakarta.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-
 
 @AllArgsConstructor
 @Data
@@ -14,14 +13,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "position")
-public class Position extends Auditable{
+public class Position extends Auditable {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private int id;
 
-	@Column(name = "name", nullable = false, unique = true)
-	private String name;
-
+    @Column(name = "name", nullable = false, unique = true)
+    private String name;
 }

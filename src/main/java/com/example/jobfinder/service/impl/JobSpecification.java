@@ -1,21 +1,23 @@
 package com.example.jobfinder.service.impl;
 
-import com.example.jobfinder.data.entity.Job;
-import org.springframework.data.jpa.domain.Specification;
 import java.util.List;
+
+import org.springframework.data.jpa.domain.Specification;
+
+import com.example.jobfinder.data.entity.Job;
 
 public class JobSpecification {
 
     public static Specification<Job> hasName(String name) {
-        return (root, query, criteriaBuilder) ->
-                name == null ? criteriaBuilder.isTrue(criteriaBuilder.literal(true))
-                        : criteriaBuilder.like(root.get("name"), "%" + name + "%");
+        return (root, query, criteriaBuilder) -> name == null
+                ? criteriaBuilder.isTrue(criteriaBuilder.literal(true))
+                : criteriaBuilder.like(root.get("name"), "%" + name + "%");
     }
 
     public static Specification<Job> hasProvinceName(String provinceName) {
-        return (root, query, criteriaBuilder) ->
-                provinceName == null ? criteriaBuilder.isTrue(criteriaBuilder.literal(true))
-                        : criteriaBuilder.like(root.get("province"), "%" + provinceName + "%");
+        return (root, query, criteriaBuilder) -> provinceName == null
+                ? criteriaBuilder.isTrue(criteriaBuilder.literal(true))
+                : criteriaBuilder.like(root.get("province"), "%" + provinceName + "%");
     }
 
     public static Specification<Job> hasPositionIds(List<String> positionIds) {
@@ -49,5 +51,4 @@ public class JobSpecification {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("status").get("statusId"), statusId);
     }
-
 }

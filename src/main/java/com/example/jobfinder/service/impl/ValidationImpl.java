@@ -1,10 +1,11 @@
 package com.example.jobfinder.service.impl;
 
-import com.example.jobfinder.service.Validation;
-import org.springframework.stereotype.Component;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.springframework.stereotype.Component;
+
+import com.example.jobfinder.service.Validation;
 
 @Component
 public class ValidationImpl implements Validation {

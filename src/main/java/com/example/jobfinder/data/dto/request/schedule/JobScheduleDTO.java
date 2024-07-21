@@ -1,11 +1,12 @@
 package com.example.jobfinder.data.dto.request.schedule;
 
+import java.io.Serializable;
+
 import com.example.jobfinder.data.dto.request.job.JobDTO;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,4 +16,3 @@ public class JobScheduleDTO implements Serializable {
 
     private ScheduleDTO scheduleDTO;
 }
-

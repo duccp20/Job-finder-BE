@@ -1,14 +1,16 @@
 package com.example.jobfinder.controller.candidate;
 
-import com.example.jobfinder.constant.ApiURL;
-import com.example.jobfinder.constant.PageDefault;
-import com.example.jobfinder.service.JobCareService;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import com.example.jobfinder.constant.ApiURL;
+import com.example.jobfinder.constant.PageDefault;
+import com.example.jobfinder.service.JobCareService;
+
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping(ApiURL.CANDIDATE_JOB_CARE)
@@ -53,9 +55,10 @@ public class CandidateJobCareController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('Role_Candidate')")
     @GetMapping("/candidate/{id}")
-    public ResponseEntity<?> findAllByCandidateId(@PathVariable("id") long candidateId,
-                                                  @RequestParam(defaultValue = PageDefault.NO) int no,
-                                                  @RequestParam(defaultValue = PageDefault.LIMIT) int limit) {
+    public ResponseEntity<?> findAllByCandidateId(
+            @PathVariable("id") long candidateId,
+            @RequestParam(defaultValue = PageDefault.NO) int no,
+            @RequestParam(defaultValue = PageDefault.LIMIT) int limit) {
         return ResponseEntity.ok(this.jobCareService.findAllByCandidateId(candidateId, no, limit));
     }
 
@@ -67,10 +70,9 @@ public class CandidateJobCareController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('Role_Candidate')")
     @GetMapping("/job-save")
-    public ResponseEntity<?> findAllJobSave(){
+    public ResponseEntity<?> findAllJobSave() {
         return ResponseEntity.ok(this.jobCareService.findJobSaveOfCandidateID());
     }
-
 
     /**
      * Retrieves all CANDIDATE JOB CARE.
@@ -106,12 +108,11 @@ public class CandidateJobCareController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/check")
-    public boolean checkCandidateJobCare (@RequestParam("idJob") int idJob) {
+    public boolean checkCandidateJobCare(@RequestParam("idJob") int idJob) {
         return this.jobCareService.checkCandidateApplication(idJob);
     }
 }

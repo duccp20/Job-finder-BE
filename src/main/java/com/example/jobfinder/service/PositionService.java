@@ -1,12 +1,9 @@
 package com.example.jobfinder.service;
 
+import java.util.List;
+
 import com.example.jobfinder.data.dto.request.position.PositionDTO;
 import com.example.jobfinder.data.dto.response.ResponseMessage;
-import com.example.jobfinder.data.entity.Position;
-
-
-import java.util.List;
-import java.util.Map;
 
 public interface PositionService {
     PositionDTO findById(Integer id);
@@ -17,5 +14,5 @@ public interface PositionService {
 
     ResponseMessage deleteById(Integer id);
 
-//    Map<Position, int[]> statisticsPositionTheNumberOfPostsAndJoins();
+    //    Map<Position, int[]> statisticsPositionTheNumberOfPostsAndJoins();
 }

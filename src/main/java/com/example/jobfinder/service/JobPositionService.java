@@ -1,23 +1,22 @@
 package com.example.jobfinder.service;
 
-import com.example.jobfinder.data.dto.request.position.PositionDTO;
-
 import java.util.List;
+
+import com.example.jobfinder.data.dto.request.position.PositionDTO;
 
 public interface JobPositionService {
 
-	void deleteById(Integer id);
+    void deleteById(Integer id);
 
-	long count();
+    long count();
 
-	boolean existsById(Integer id);
+    boolean existsById(Integer id);
 
-	PositionDTO findById(Integer id);
+    PositionDTO findById(Integer id);
 
-	List<PositionDTO> findAll();
+    List<PositionDTO> findAll();
 
-	PositionDTO create(PositionDTO jobPositionDTO);
+    PositionDTO create(PositionDTO jobPositionDTO);
 
-	boolean existsByName(String name);
-
+    boolean existsByName(String name);
 }

@@ -1,6 +1,7 @@
 package com.example.jobfinder.data.entity;
 
 import jakarta.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @Table(name = "role")
-public class Role extends Auditable{
+public class Role extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,5 +20,4 @@ public class Role extends Auditable{
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
-
 }

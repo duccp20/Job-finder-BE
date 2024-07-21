@@ -1,12 +1,10 @@
 package com.example.jobfinder.service;
 
-
+import java.util.List;
 
 import com.example.jobfinder.data.dto.request.PaginationDTO;
 import com.example.jobfinder.data.dto.request.job.JobCareDTO;
 import com.example.jobfinder.data.dto.response.ResponseMessage;
-
-import java.util.List;
 
 public interface JobCareService {
 

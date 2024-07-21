@@ -2,11 +2,7 @@ spring:
   main:
     allow-circular-references: true #allowing beans to have circular references.
   profiles:
-    active: pro #Active DEV or PRO Environment
-  jackson:
-    time-zone: GMT+7
-    serialization:
-      fail-on-empty-beans: false
+    active: dev #Active DEV or PRO Environment
 
   jpa:
     properties:
@@ -41,10 +37,10 @@ spring:
 application:
   security:
     jwt:
-      secret-key: kiGtJXhv5R86NBx8gS7kO9TRq6XKP5Pzs44cEpgAzNA=
-      expiration: 20000 # a day
-      refresh:
-        expiration: 604800000 # 7 days
+      secret-key: +yWcUBR+6S/qFsT5WNV7sN8v+md0o68L72mTZkmyBxOssvaZxXNBb5jakzlXIXGYgYBLvqLpXNgH1uQAPB71DQ==
+      expiration:
+        access: 20000 # a day
+        refresh: 604800000 # 7 days
 
 # Firebase
 url:

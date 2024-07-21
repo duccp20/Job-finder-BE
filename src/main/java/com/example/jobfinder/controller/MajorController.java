@@ -1,14 +1,16 @@
 package com.example.jobfinder.controller;
-import com.example.jobfinder.constant.ApiURL;
-import com.example.jobfinder.data.dto.request.major.MajorDTO;
-import com.example.jobfinder.data.dto.response.ResponseMessage;
-import com.example.jobfinder.service.MajorService;
+
 import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.jobfinder.constant.ApiURL;
+import com.example.jobfinder.data.dto.request.major.MajorDTO;
+import com.example.jobfinder.data.dto.response.ResponseMessage;
+import com.example.jobfinder.service.MajorService;
 
 @RestController
 @RequestMapping(ApiURL.MAJOR)
@@ -26,8 +28,7 @@ public class MajorController {
                         .message("Get all majors successfully")
                         .data(this.majorService.findAll())
                         .build(),
-                HttpStatus.OK
-        );
+                HttpStatus.OK);
     }
 
     @PostMapping("")

@@ -1,10 +1,11 @@
 package com.example.jobfinder.data.repository;
 
-import com.example.jobfinder.data.entity.Status;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import com.example.jobfinder.data.entity.Status;
 
 @Repository
 public interface StatusRepository extends JpaRepository<Status, Long> {

@@ -1,28 +1,10 @@
 package com.example.jobfinder.service.impl;
 
-import com.example.jobfinder.data.dto.request.candidate.CandidateDTO;
-import com.example.jobfinder.data.dto.request.candidate.CandidateOtherInfoDTO;
-import com.example.jobfinder.data.dto.request.candidate.CandidateProfileDTO;
-import com.example.jobfinder.data.dto.request.major.MajorDTO;
-import com.example.jobfinder.data.dto.request.position.PositionDTO;
-import com.example.jobfinder.data.dto.request.schedule.ScheduleDTO;
-import com.example.jobfinder.data.dto.request.user.UserDTO;
-import com.example.jobfinder.data.dto.response.ResponseMessage;
-import com.example.jobfinder.data.dto.response.candidate.ShowCandidateDTO;
-import com.example.jobfinder.data.dto.response.user.ShowUserDTO;
-import com.example.jobfinder.data.entity.*;
-import com.example.jobfinder.data.mapper.CandidateMapper;
-import com.example.jobfinder.data.mapper.UserMapper;
-import com.example.jobfinder.data.repository.*;
-import com.example.jobfinder.exception.AccessDeniedException;
-import com.example.jobfinder.exception.ResourceNotFoundException;
-import com.example.jobfinder.security.jwt.JwtTokenUtils;
-import com.example.jobfinder.service.*;
-import com.example.jobfinder.utils.common.UpdateFile;
-import com.example.jobfinder.utils.enumeration.Estatus;
+import java.io.IOException;
+import java.util.*;
+
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,11 +14,21 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.io.IOException;
-import java.time.Instant;
-import java.util.*;
-import java.util.stream.Collectors;
+import com.example.jobfinder.data.dto.request.candidate.CandidateDTO;
+import com.example.jobfinder.data.dto.request.candidate.CandidateProfileDTO;
+import com.example.jobfinder.data.dto.request.user.UserDTO;
+import com.example.jobfinder.data.dto.response.ResponseMessage;
+import com.example.jobfinder.data.entity.*;
+import com.example.jobfinder.data.mapper.CandidateMapper;
+import com.example.jobfinder.data.mapper.UserMapper;
+import com.example.jobfinder.data.repository.*;
+import com.example.jobfinder.exception.AccessDeniedException;
+import com.example.jobfinder.exception.ResourceNotFoundException;
+import com.example.jobfinder.service.*;
+import com.example.jobfinder.utils.common.UpdateFile;
+import com.example.jobfinder.utils.enumeration.Estatus;
 
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
@@ -56,7 +48,6 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Autowired
     private MessageSource messageSource;
-
 
     @Autowired
     private CandidateRepository candidateRepository;
@@ -101,8 +92,7 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Autowired
     private CandidatePositionRepository candidatePositionRepository;
-    @Autowired
-    private JwtTokenUtils jwtTokenUtils;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -114,7 +104,6 @@ public class CandidateServiceImpl implements CandidateService {
 
         User user = userRepository.findByTokenActive(token);
 
-
         if (user.getStatus().getName().equals(Estatus.Active.toString())) {
             String redirectUrl = "http://localhost:3000/verify-email?status=completed";
             return new RedirectView(redirectUrl);
@@ -122,17 +111,16 @@ public class CandidateServiceImpl implements CandidateService {
 
         String activeToken = user.getTokenActive();
 
-        boolean tokenExpired = jwtTokenUtils.isTokenExpired(activeToken);
+        //        boolean tokenExpired = jwtTokenUtils.isTokenExpired(activeToken);
 
-        if (tokenExpired) {
-            return new RedirectView("http://localhost:3000/verify-email?email=" + user.getEmail() + "&status=fail&message=token-expired");
-        }
+        //        if (tokenExpired) {
+        //            return new RedirectView("http://localhost:3000/verify-email?email=" + user.getEmail() +
+        // "&status=fail&message=token-expired");
+        //        }
 
-        Status statusActive = this.statusService.findByName(Estatus.Active.toString()).orElseThrow(
-                () -> new ResourceNotFoundException(Collections.singletonMap("name", Estatus.Active.name()))
-        );
+        Status statusActive = this.statusService.findByName(Estatus.Active.toString());
 
-        //set password encode when active
+        // set password encode when active
         String encodePassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodePassword);
         user.setStatus(statusActive);
@@ -144,11 +132,13 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     @Transactional
-    public Object updateProfile(long id, CandidateProfileDTO candidateProfileDTO, MultipartFile fileCV) throws IOException {
+    public Object updateProfile(long id, CandidateProfileDTO candidateProfileDTO, MultipartFile fileCV)
+            throws IOException {
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        Candidate oldCandidate = candidateRepository.findById(id)
+        Candidate oldCandidate = candidateRepository
+                .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("id", id)));
 
         Map<String, Object> errors = new HashMap<>();
@@ -159,40 +149,49 @@ public class CandidateServiceImpl implements CandidateService {
             throw new AccessDeniedException(errors);
         }
 
-        UserDTO showUserDTO = userService.update(oldCandidate.getUser().getId(),
-                candidateProfileDTO.getUserProfileDTO(), null);
+        UserDTO showUserDTO =
+                userService.update(oldCandidate.getUser().getId(), candidateProfileDTO.getUserProfileDTO(), null);
 
-        oldCandidate.setSearchable(candidateProfileDTO.getCandidateOtherInfoDTO().isSearchable());
-        oldCandidate.setUniversity(candidateProfileDTO.getCandidateOtherInfoDTO().getUniversity());
-        oldCandidate.setReferenceLetter(candidateProfileDTO.getCandidateOtherInfoDTO().getReferenceLetter());
-        oldCandidate.setDesiredJob(candidateProfileDTO.getCandidateOtherInfoDTO().getDesiredJob());
-        oldCandidate.setDesiredWorkingProvince(candidateProfileDTO.getCandidateOtherInfoDTO().getDesiredWorkingProvince());
+        oldCandidate.setSearchable(
+                candidateProfileDTO.getCandidateOtherInfoDTO().isSearchable());
+        oldCandidate.setUniversity(
+                candidateProfileDTO.getCandidateOtherInfoDTO().getUniversity());
+        oldCandidate.setReferenceLetter(
+                candidateProfileDTO.getCandidateOtherInfoDTO().getReferenceLetter());
+        oldCandidate.setDesiredJob(
+                candidateProfileDTO.getCandidateOtherInfoDTO().getDesiredJob());
+        oldCandidate.setDesiredWorkingProvince(
+                candidateProfileDTO.getCandidateOtherInfoDTO().getDesiredWorkingProvince());
 
         // check update file CV
         if (fileCV != null) {
-//            fileService.deleteFile(oldCandidate.getCV());
-//            oldCandidate.setCV(fileService.uploadFile(fileCV));
+            //            fileService.deleteFile(oldCandidate.getCV());
+            //            oldCandidate.setCV(fileService.uploadFile(fileCV));
             oldCandidate.setCV(updateFile.uploadCV(fileCV));
         } else {
             oldCandidate.setCV(oldCandidate.getCV());
         }
 
-
-
-        candidatePositionService.update(oldCandidate.getId(),
+        candidatePositionService.update(
+                oldCandidate.getId(),
                 candidateProfileDTO.getCandidateOtherInfoDTO().getPositionDTOs());
-        candidateMajorService.update(oldCandidate.getId(),
+        candidateMajorService.update(
+                oldCandidate.getId(),
                 candidateProfileDTO.getCandidateOtherInfoDTO().getMajorDTOs());
-        candidateScheduleService.update(oldCandidate.getId(),
+        candidateScheduleService.update(
+                oldCandidate.getId(),
                 candidateProfileDTO.getCandidateOtherInfoDTO().getScheduleDTOs());
 
         CandidateDTO updatedCandidateDTO = candidateMapper.toDTO(candidateRepository.save(oldCandidate));
         updatedCandidateDTO.setUserDTO(showUserDTO);
-        updatedCandidateDTO.getCandidateOtherInfoDTO()
+        updatedCandidateDTO
+                .getCandidateOtherInfoDTO()
                 .setPositionDTOs(candidateProfileDTO.getCandidateOtherInfoDTO().getPositionDTOs());
-        updatedCandidateDTO.getCandidateOtherInfoDTO()
+        updatedCandidateDTO
+                .getCandidateOtherInfoDTO()
                 .setMajorDTOs(candidateProfileDTO.getCandidateOtherInfoDTO().getMajorDTOs());
-        updatedCandidateDTO.getCandidateOtherInfoDTO()
+        updatedCandidateDTO
+                .getCandidateOtherInfoDTO()
                 .setScheduleDTOs(candidateProfileDTO.getCandidateOtherInfoDTO().getScheduleDTOs());
 
         return ResponseMessage.builder()
@@ -206,20 +205,20 @@ public class CandidateServiceImpl implements CandidateService {
     public Object getCandidateByUserId(long id) {
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Candidate candidate = candidateRepository.findByUserId(id).orElseThrow(
-                () -> new ResourceNotFoundException(Collections.singletonMap("id", id))
-        );
+        Candidate candidate = candidateRepository
+                .findByUserId(id)
+                .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("id", id)));
 
         if (!candidate.getUser().getEmail().equals(email)) {
             throw new AccessDeniedException(Collections.singletonMap("id", id));
         }
 
-        List<CandidateMajor> existingCandidateMajors = new ArrayList<>(
-                candidateMajorRepository.findAllByCandidate_Id(candidate.getId()));
-        List<CandidatePosition> existingCandidatePositions = new ArrayList<>(
-                candidatePositionRepository.findAllByCandidate_Id(candidate.getId()));
-        List<CandidateSchedule> existingCandidateSchedules = new ArrayList<>(
-                candidateScheduleRepository.findAllByCandidate_Id(candidate.getId()));
+        List<CandidateMajor> existingCandidateMajors =
+                new ArrayList<>(candidateMajorRepository.findAllByCandidate_Id(candidate.getId()));
+        List<CandidatePosition> existingCandidatePositions =
+                new ArrayList<>(candidatePositionRepository.findAllByCandidate_Id(candidate.getId()));
+        List<CandidateSchedule> existingCandidateSchedules =
+                new ArrayList<>(candidateScheduleRepository.findAllByCandidate_Id(candidate.getId()));
 
         candidate.setCandidatePositions(existingCandidatePositions);
         candidate.setCandidateMajors(existingCandidateMajors);
@@ -233,7 +232,8 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     public boolean isCurrentAuthor(long id) {
-        Long candidateUserId = candidateRepository.findById(id).map(c -> c.getUser().getId()).orElse(null);
+        Long candidateUserId =
+                candidateRepository.findById(id).map(c -> c.getUser().getId()).orElse(null);
         Long currentUserId = userService.getCurrentUserId();
 
         return (candidateUserId != null) && (currentUserId != null) && candidateUserId.equals(currentUserId);
@@ -244,22 +244,21 @@ public class CandidateServiceImpl implements CandidateService {
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        Candidate candidate = candidateRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException(Collections.singletonMap("id", id))
-        );
-
+        Candidate candidate = candidateRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("id", id)));
 
         if (!candidate.getUser().getEmail().equals(email)) {
             throw new AccessDeniedException(Collections.singletonMap("id", id));
         }
 
-        User user = userRepository.findByEmail(email).orElseThrow(
-                () -> new ResourceNotFoundException(Collections.singletonMap("email", email))
-        );
+        User user = userRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("email", email)));
 
         if (fileAvatar != null) {
-//            fileService.deleteFile(candidate.getUser().getAvatar());
-//            candidate.getUser().setAvatar(fileService.uploadFile(fileAvatar));
+            //            fileService.deleteFile(candidate.getUser().getAvatar());
+            //            candidate.getUser().setAvatar(fileService.uploadFile(fileAvatar));
             updateFile.uploadImage(fileAvatar);
             user.setAvatar(updateFile.uploadImage(fileAvatar));
         } else {
@@ -280,14 +279,14 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     public ResponseMessage updateSearchable(long id) {
 
-        Candidate candidate = candidateRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        Collections.singletonMap("id", id)));
+        Candidate candidate = candidateRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("id", id)));
 
         candidate.setSearchable(!candidate.isSearchable());
         candidateRepository.save(candidate);
 
-        return  ResponseMessage.builder()
+        return ResponseMessage.builder()
                 .httpCode(200)
                 .data(candidate.isSearchable())
                 .message("Update searchable successfully")
@@ -297,13 +296,8 @@ public class CandidateServiceImpl implements CandidateService {
     @Override
     public CandidateDTO findByUserId(long userId) {
 
-        return candidateMapper.toDTO(
-                candidateRepository.findByUserId(userId)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                Collections.singletonMap("userId", userId))));
+        return candidateMapper.toDTO(candidateRepository
+                .findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("userId", userId))));
     }
-
-
 }
-
-

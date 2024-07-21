@@ -1,9 +1,10 @@
 package com.example.jobfinder.data.mapper;
 
-import com.example.jobfinder.data.dto.request.StatusDTO;
-import com.example.jobfinder.data.entity.Status;
 import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
+
+import com.example.jobfinder.data.dto.request.StatusDTO;
+import com.example.jobfinder.data.entity.Status;
 
 @Component
 @Mapper(componentModel = "spring")

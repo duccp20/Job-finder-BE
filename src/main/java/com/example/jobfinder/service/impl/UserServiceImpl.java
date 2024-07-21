@@ -1,11 +1,30 @@
 package com.example.jobfinder.service.impl;
 
+import java.io.IOException;
+import java.util.*;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.MessageSource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.view.RedirectView;
+
+import com.example.jobfinder.config.JwtTokenUtils;
 import com.example.jobfinder.data.dto.request.ChangePasswordDTO;
 import com.example.jobfinder.data.dto.request.user.*;
-import com.example.jobfinder.data.dto.response.ErrorMessageDTO;
 import com.example.jobfinder.data.dto.response.ResponseMessage;
 import com.example.jobfinder.data.dto.response.user.LoginResponseDTO;
-import com.example.jobfinder.data.dto.response.user.ShowUserDTO;
 import com.example.jobfinder.data.entity.*;
 import com.example.jobfinder.data.mapper.UserMapper;
 import com.example.jobfinder.data.repository.CandidateRepository;
@@ -16,90 +35,51 @@ import com.example.jobfinder.exception.ConflictException;
 import com.example.jobfinder.exception.InternalServerErrorException;
 import com.example.jobfinder.exception.ResourceNotFoundException;
 import com.example.jobfinder.exception.ValidationException;
-import com.example.jobfinder.security.jwt.JwtTokenUtils;
 import com.example.jobfinder.service.*;
 import com.example.jobfinder.utils.common.UpdateFile;
 import com.example.jobfinder.utils.enumeration.ERole;
 import com.example.jobfinder.utils.enumeration.Estatus;
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.Builder;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.data.domain.AuditorAware;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.view.RedirectView;
 
-import java.io.IOException;
-import java.time.Instant;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import lombok.Builder;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @Builder
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
-    @Autowired
-    private RoleRepository roleRepository;
+    private final StatusRepository statusRepository;
 
-    @Autowired
-    private StatusRepository statusRepository;
+    private final UserMapper userMapper;
 
-    @Autowired
-    private UserMapper userMapper;
+    private final HttpServletRequest servletRequest;
 
-    @Autowired
-    private HttpServletRequest servletRequest;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final JwtTokenUtils jwtTokenUtils;
 
-    @Autowired
-    private JwtTokenUtils jwtTokenUtils;
+    private final MessageSource messageSource;
 
-    @Autowired
-    private MessageSource messageSource;
+    private final TokenService tokenService;
 
-    @Autowired
-    private TokenService tokenService;
+    private final StatusService statusService;
 
-    @Autowired
-    private StatusService statusService;
+    private final TokenRepository tokenRepository;
 
-    @Autowired
-    private TokenRepository tokenRepository;
+    private final Validation validation;
 
-    @Autowired
-    private Validation validation;
+    private final CandidateRepository candidateRepository;
 
-    @Autowired
-    private CandidateRepository candidateRepository;
+    //    private final AuditorAware<Long> auditorAware;
 
-    @Autowired
-    private AuditorAware<Long> auditorAware;
-    
-    @Autowired
-    private FileService fileService;
+    private final FileService fileService;
 
-    @Autowired
-    private UpdateFile updateFile;
+    private final UpdateFile updateFile;
 
     @Override
     public Object register(UserCreationDTO userCreationDTO) {
@@ -114,15 +94,16 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.toEntity(userCreationDTO);
         user.setPassword(encodePassword);
 
-        Role role = roleRepository.findByName(ERole.Candidate.toString()).orElseThrow(
-                () -> new ResourceNotFoundException(Collections.singletonMap("role", ERole.Candidate.toString()))
-        );
+        Role role = roleRepository
+                .findByName(ERole.Candidate.toString())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(Collections.singletonMap("role", ERole.Candidate.toString())));
         user.setRole(role);
 
         String notActiveStatus = Estatus.Not_Active.toString();
-        Status status = statusRepository.findByName(notActiveStatus).orElseThrow(
-                () -> new ResourceNotFoundException(Collections.singletonMap("status", notActiveStatus))
-        );
+        Status status = statusRepository
+                .findByName(notActiveStatus)
+                .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("status", notActiveStatus)));
 
         user.setStatus(status);
 
@@ -139,7 +120,7 @@ public class UserServiceImpl implements UserService {
                 .message("Register Successfully")
                 .data(user)
                 .build();
-//        return new ResponseMessage(201, "Register Successfully", , servletRequest.getServletPath());
+        //        return new ResponseMessage(201, "Register Successfully", , servletRequest.getServletPath());
     }
 
     @Override
@@ -161,56 +142,98 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Object login(LoginDTO loginDTO) {
+    public void updateRefreshToken(String email, String refreshToken) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> {
+            throw new ResourceNotFoundException(Collections.singletonMap("email", email));
+        });
+        user.setRefreshToken(refreshToken);
+        userRepository.save(user);
+    }
 
-        User existingUser = userRepository.findByEmail(loginDTO.getEmail())
-                .orElseThrow(() -> {
-                    throw new ResourceNotFoundException(Collections.singletonMap("Email không tồn tại", loginDTO.getEmail()));
-                });
+    @Override
+    public ResponseEntity<LoginResponseDTO> login(LoginDTO loginDTO) {
 
-        boolean checkPassword = passwordEncoder.matches(loginDTO.getPassword(), existingUser.getPassword());
-        if (!checkPassword) {
-            throw new ValidationException(Collections.singletonMap("Sai mật khẩu", loginDTO.getEmail()));
-        }
-
-        boolean isStatusActive = existingUser.getStatus().getName().equals(Estatus.Active.toString());
-        if (!isStatusActive) {
-            return ResponseMessage.builder()
-                    .httpCode(HttpStatus.UNAUTHORIZED.value())
-                    .message("Email chưa được kích hoạt")
-                    .build();
-        }
+        User existingUser = userRepository.findByEmail(loginDTO.getEmail()).orElseThrow(() -> {
+            throw new ResourceNotFoundException(Collections.singletonMap("Email không tồn tại", loginDTO.getEmail()));
+        });
+        //
+        //        boolean checkPassword = passwordEncoder.matches(loginDTO.getPassword(), existingUser.getPassword());
+        //        if (!checkPassword) {
+        //            throw new ValidationException(Collections.singletonMap("Sai mật khẩu", loginDTO.getEmail()));
+        //        }
+        //
+        //        boolean isStatusActive = existingUser.getStatus().getName().equals(Estatus.Active.toString());
+        //        if (!isStatusActive) {
+        //            return ResponseMessage.builder()
+        //                    .httpCode(HttpStatus.UNAUTHORIZED.value())
+        //                    .message("Email chưa được kích hoạt")
+        //                    .build();
+        //        }
 
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                new UsernamePasswordAuthenticationToken(existingUser.getEmail(), loginDTO.getPassword(), existingUser.getAuthorities());
+                new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword());
 
-        authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+        Authentication authentication =
+                authenticationManagerBuilder.getObject().authenticate(usernamePasswordAuthenticationToken);
 
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String accessToken = jwtTokenUtils.generateToken(existingUser);
-        String refreshToken = jwtTokenUtils.generateRefreshToken(existingUser);
+        // create access token
+        String accessToken = this.jwtTokenUtils.createAccessToken(existingUser);
+
+        // create refresh token
+        String refreshToken = this.jwtTokenUtils.createRefreshToken(existingUser);
+
+        this.updateRefreshToken(existingUser.getEmail(), refreshToken);
+
+        List<Token> numsToken = tokenRepository.findAllByUser(existingUser);
+
+        // save access token to database
+        //        Token newToken = Token.builder()
+        //                .token(accessToken)
+        //                .user(existingUser)
+        //                .status(statusService.findByName(Estatus.Active.toString()))
+        //                .build();
+        //
+        //        this.tokenRepository.save(newToken);
+        //
+        //        if (numsToken.size() > 3) {
+        //            tokenRepository.delete(numsToken.get(0));
+        //        }
 
         UserDTO showUserDTO = userMapper.toDTO(existingUser);
 
-        return LoginResponseDTO.builder()
-                .httpCode(200)
-                .message(messageSource.getMessage("message.successLogin", null, null))
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .data(showUserDTO)
+        // add refresh token to response and cookies
+
+        //  Set refresh token to cookie
+        ResponseCookie responseCookie = ResponseCookie.from("refresh_token", refreshToken)
+                .httpOnly(true)
+                .secure(true) // only work with https, but localhost thi k co tac dung
+                .path("/") // url set cookie
+                .maxAge(this.jwtTokenUtils.getRefreshTokenExpiration())
+                // .domain("example.com")  nếu không set, thì chỉ chính là same domain (không tính sub domain)
                 .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                .body(LoginResponseDTO.builder()
+                        .httpCode(200)
+                        .message(messageSource.getMessage("message.successLogin", null, null))
+                        .accessToken(accessToken)
+                        .data(showUserDTO)
+                        .build());
     }
 
     @Override
     public ResponseMessage changePassword(ChangePasswordDTO changePasswordDTO) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow(
-                () -> new InternalServerErrorException(Collections.singletonMap("email", email)));
+        User user = userRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new InternalServerErrorException(Collections.singletonMap("email", email)));
 
         if (checkValidOldPassword(user.getPassword(), changePasswordDTO.getOldPassword())) {
             if (!validation.passwordValid(changePasswordDTO.getNewPassword()))
-                throw new InternalServerErrorException(messageSource.getMessage("error.passwordRegex",
-                        null, null));
+                throw new InternalServerErrorException(messageSource.getMessage("error.passwordRegex", null, null));
             user.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
             userRepository.save(user);
         } else {
@@ -232,16 +255,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public Object activeForgetPassword(String token) {
 
-        User user = userRepository.findByPasswordForgotToken(token).orElseThrow(
-                () -> new InternalServerErrorException(this.messageSource.getMessage("Token not found", null, null)));
+        User user = userRepository
+                .findByPasswordForgotToken(token)
+                .orElseThrow(() ->
+                        new InternalServerErrorException(this.messageSource.getMessage("Token not found", null, null)));
 
         String activeToken = user.getTokenActive();
 
-        boolean tokenExpired = jwtTokenUtils.isTokenExpired(activeToken);
+        //        boolean tokenExpired = jwtTokenUtils.isTokenExpired(activeToken);
 
-        if (tokenExpired) {
-            return new RedirectView("http://localhost:3000/forgot-password/verify?status=fail");
-        }
+        //        if (tokenExpired) {
+        //            return new RedirectView("http://localhost:3000/forgot-password/verify?status=fail");
+        //        }
 
         return new RedirectView("http://localhost:3000/reset-password?token=" + token);
     }
@@ -249,19 +274,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public void resetPasswordByToken(ResetPasswordByToken resetPasswordByTokenDTO) {
 
-        User user = this.userRepository.findByPasswordForgotToken(resetPasswordByTokenDTO.getToken()).orElseThrow(
-                () -> new InternalServerErrorException(this.messageSource.getMessage("error.tokenNotFound", null, null)));
+        User user = this.userRepository
+                .findByPasswordForgotToken(resetPasswordByTokenDTO.getToken())
+                .orElseThrow(() -> new InternalServerErrorException(
+                        this.messageSource.getMessage("error.tokenNotFound", null, null)));
 
         String activeToken = user.getTokenActive();
 
-        boolean tokenExpired = jwtTokenUtils.isTokenExpired(activeToken);
+        //        boolean tokenExpired = jwtTokenUtils.isTokenExpired(activeToken);
 
-        if (tokenExpired) {
-            throw new InternalServerErrorException(this.messageSource.getMessage("error.tokenIsExpired", null, null));
-        }
+        //        if (tokenExpired) {
+        //            throw new InternalServerErrorException(this.messageSource.getMessage("error.tokenIsExpired", null,
+        // null));
+        //        }
 
         if (!this.validation.passwordValid(resetPasswordByTokenDTO.getNewPassword())) // Check Password is strong
-            throw new InternalServerErrorException(messageSource.getMessage("error.passwordRegex", null, null));
+        throw new InternalServerErrorException(messageSource.getMessage("error.passwordRegex", null, null));
 
         String newPasswordEncoder = passwordEncoder.encode(resetPasswordByTokenDTO.getNewPassword());
         user.setPassword(newPasswordEncoder);
@@ -275,15 +303,23 @@ public class UserServiceImpl implements UserService {
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
-                new ResourceNotFoundException(Collections.singletonMap("email", email)));
+        User user = userRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("email", email)));
 
         return userMapper.toDTO(user);
     }
 
     @Override
     public Long getCurrentUserId() {
-        return auditorAware.getCurrentAuditor().orElse(null);
+
+        User user = userRepository
+                .findByEmail(
+                        SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap(
+                        "email",
+                        SecurityContextHolder.getContext().getAuthentication().getName())));
+        return user.getId();
     }
 
     @Override
@@ -311,23 +347,22 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(userCreationDTO.getPassword()));
         user.setAvatar(fileService.uploadFile(fileAvatar));
         // set default role and status
-        user.setRole(
-                roleRepository.findByName(eRole.toString())
-                        .orElseThrow(
-                                () -> new InternalServerErrorException(
-                                        Collections.singletonMap(eRole.toString(), "NOT EXISTS"))));
-        user.setStatus(
-                statusRepository.findByName(Estatus.Not_Active.toString())
-                        .orElseThrow(
-                                () -> new InternalServerErrorException(
-                                        Collections.singletonMap(Estatus.Not_Active.toString(), "NOT EXISTS IN"))));
+        user.setRole(roleRepository
+                .findByName(eRole.toString())
+                .orElseThrow(() ->
+                        new InternalServerErrorException(Collections.singletonMap(eRole.toString(), "NOT EXISTS"))));
+        user.setStatus(statusRepository
+                .findByName(Estatus.Not_Active.toString())
+                .orElseThrow(() -> new InternalServerErrorException(
+                        Collections.singletonMap(Estatus.Not_Active.toString(), "NOT EXISTS IN"))));
 
         return userMapper.toDTO(userRepository.save(user));
     }
 
     @Override
     public UserDTO update(long id, UserProfileDTO userProfileDTO, MultipartFile fileAvatar) throws IOException {
-        User oldUser = userRepository.findById(id)
+        User oldUser = userRepository
+                .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("id", id)));
 
         // check existing user info in another one
@@ -345,10 +380,10 @@ public class UserServiceImpl implements UserService {
         updateUser.setPassword(oldUser.getPassword());
         // check update file Avatar
         if (!StringUtils.equals(updateUser.getAvatar(), oldUser.getAvatar()) || (fileAvatar != null)) {
-//            fileService.deleteFile(oldUser.getAvatar());
-//            fileService.uploadFile(fileAvatar);
-//            updateUser.setAvatar(fileAvatar);
-           updateUser.setAvatar(updateFile.uploadImage(fileAvatar));
+            //            fileService.deleteFile(oldUser.getAvatar());
+            //            fileService.uploadFile(fileAvatar);
+            //            updateUser.setAvatar(fileAvatar);
+            updateUser.setAvatar(updateFile.uploadImage(fileAvatar));
         } else {
             updateUser.setAvatar(oldUser.getAvatar());
         }
@@ -358,8 +393,4 @@ public class UserServiceImpl implements UserService {
 
         return userMapper.toDTO(userRepository.save(updateUser));
     }
-
-
-
 }
-

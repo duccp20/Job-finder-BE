@@ -1,5 +1,11 @@
 package com.example.jobfinder.service.impl;
 
+import java.util.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.example.jobfinder.data.dto.request.major.MajorDTO;
 import com.example.jobfinder.data.entity.Candidate;
 import com.example.jobfinder.data.entity.CandidateMajor;
@@ -9,14 +15,6 @@ import com.example.jobfinder.data.repository.CandidateRepository;
 import com.example.jobfinder.data.repository.MajorRepository;
 import com.example.jobfinder.exception.ResourceNotFoundException;
 import com.example.jobfinder.service.CandidateMajorService;
-import com.example.jobfinder.service.MajorService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 public class CandidateMajorServiceImpl implements CandidateMajorService {
@@ -29,13 +27,11 @@ public class CandidateMajorServiceImpl implements CandidateMajorService {
     @Autowired
     private CandidateRepository candidateRepository;
 
-
-
     @Override
     @Transactional
     public boolean update(long candidateId, List<MajorDTO> majorDTOs) {
-        List<CandidateMajor> existingCandidateMajors = new ArrayList<>(
-                candidateMajorRepository.findAllByCandidate_Id(candidateId));
+        List<CandidateMajor> existingCandidateMajors =
+                new ArrayList<>(candidateMajorRepository.findAllByCandidate_Id(candidateId));
         List<CandidateMajor> candidateMajorsToSave = new ArrayList<>();
 
         if (majorDTOs == null || majorDTOs.isEmpty()) {
@@ -50,10 +46,13 @@ public class CandidateMajorServiceImpl implements CandidateMajorService {
                     .orElse(new CandidateMajor());
 
             if (candidateMajor.getId() == 0) {
-                Candidate candidate = candidateRepository.findById(candidateId)
+                Candidate candidate = candidateRepository
+                        .findById(candidateId)
                         .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("id", candidateId)));
-                Major major = majorRepository.findById(newMajorDTO.getId())
-                        .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("id", newMajorDTO.getId())));
+                Major major = majorRepository
+                        .findById(newMajorDTO.getId())
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(Collections.singletonMap("id", newMajorDTO.getId())));
                 candidateMajor.setCandidate(candidate);
                 candidateMajor.setMajor(major);
             }
@@ -73,6 +72,6 @@ public class CandidateMajorServiceImpl implements CandidateMajorService {
 
     @Override
     public List<CandidateMajor> findAllByCandidate_Id(long candidateId) {
-        return  candidateMajorRepository.findAllByCandidate_Id(candidateId);
+        return candidateMajorRepository.findAllByCandidate_Id(candidateId);
     }
 }

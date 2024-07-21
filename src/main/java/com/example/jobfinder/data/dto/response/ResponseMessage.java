@@ -2,9 +2,6 @@ package com.example.jobfinder.data.dto.response;
 
 import lombok.*;
 
-import java.util.Map;
-
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -15,5 +12,4 @@ public class ResponseMessage {
     private String message;
     private Object data;
     private String path;
-
 }

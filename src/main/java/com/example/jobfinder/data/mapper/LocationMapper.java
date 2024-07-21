@@ -5,7 +5,4 @@ import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring")
 @Component
-public interface LocationMapper {
-
-
-}
+public interface LocationMapper {}

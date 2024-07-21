@@ -1,11 +1,11 @@
 package com.example.jobfinder.service;
 
-import com.example.jobfinder.data.dto.request.major.MajorDTO;
-import com.example.jobfinder.data.entity.CandidateMajor;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
-
-import java.util.List;
+import com.example.jobfinder.data.dto.request.major.MajorDTO;
+import com.example.jobfinder.data.entity.CandidateMajor;
 
 @Service
 public interface CandidateMajorService {

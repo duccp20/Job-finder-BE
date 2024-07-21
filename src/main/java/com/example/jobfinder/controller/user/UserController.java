@@ -1,5 +1,17 @@
 package com.example.jobfinder.controller.user;
 
+import java.io.UnsupportedEncodingException;
+
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.example.jobfinder.constant.ApiURL;
 import com.example.jobfinder.data.dto.request.ChangePasswordDTO;
@@ -8,18 +20,8 @@ import com.example.jobfinder.data.dto.request.user.ResetPasswordByToken;
 import com.example.jobfinder.data.dto.response.ResponseMessage;
 import com.example.jobfinder.service.MailService;
 import com.example.jobfinder.service.UserService;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
-import java.io.UnsupportedEncodingException;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -41,10 +43,9 @@ public class UserController {
      * @throws UnsupportedEncodingException description of the exception
      */
     @PostMapping("/forget-password")
-    public ResponseEntity<?> sendTokenForgetPassword(@Valid @RequestBody EmailRequest emailRequest) throws MessagingException, UnsupportedEncodingException {
-        return new ResponseEntity<>(
-                mailService.sendTokenForgetPassword(emailRequest.getEmail()),
-                HttpStatus.OK);
+    public ResponseEntity<?> sendTokenForgetPassword(@Valid @RequestBody EmailRequest emailRequest)
+            throws MessagingException, UnsupportedEncodingException {
+        return new ResponseEntity<>(mailService.sendTokenForgetPassword(emailRequest.getEmail()), HttpStatus.OK);
     }
 
     /**
@@ -56,10 +57,9 @@ public class UserController {
      * @throws UnsupportedEncodingException  if the encoding is not supported
      */
     @PostMapping("/active-account")
-    public ResponseEntity<?> sendMailActive(@Valid @RequestBody EmailRequest emailRequest) throws MessagingException, UnsupportedEncodingException {
-        return new ResponseEntity<>(
-                mailService.sendMailActive(emailRequest.getEmail()),
-                HttpStatus.OK);
+    public ResponseEntity<?> sendMailActive(@Valid @RequestBody EmailRequest emailRequest)
+            throws MessagingException, UnsupportedEncodingException {
+        return new ResponseEntity<>(mailService.sendMailActive(emailRequest.getEmail()), HttpStatus.OK);
     }
 
     /**
@@ -72,8 +72,7 @@ public class UserController {
     public Object activeAccountCandidate(@RequestParam(name = "token") String token) {
         try {
             return userService.activeForgetPassword(token);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             String redirectUrl = "http://localhost:3000/forgot-password/verify?status=fail";
             return new RedirectView(redirectUrl);
         }
@@ -86,22 +85,21 @@ public class UserController {
      * @return                          the response entity with the result of the password reset
      */
     @PostMapping("/reset-password-by-token")
-    public ResponseEntity<?> resetPasswordByToken(
-            @Valid @RequestBody ResetPasswordByToken resetPasswordByTokenDTO) {
+    public ResponseEntity<?> resetPasswordByToken(@Valid @RequestBody ResetPasswordByToken resetPasswordByTokenDTO) {
         this.userService.resetPasswordByToken(resetPasswordByTokenDTO);
 
-        return ResponseEntity.ok(new ResponseMessage(HttpServletResponse.SC_OK, "Đổi mật khẩu thành công!", null, null));
+        return ResponseEntity.ok(
+                new ResponseMessage(HttpServletResponse.SC_OK, "Đổi mật khẩu thành công!", null, null));
     }
-
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize(value = "isAuthenticated()")
     @PutMapping("/change-password")
     public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordDTO passwordChangeDTO) {
 
-        try{
+        try {
             return ResponseEntity.ok(userService.changePassword(passwordChangeDTO));
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -113,8 +111,7 @@ public class UserController {
      */
     @GetMapping
     public ResponseEntity<?> getUserProfile() {
-        return ResponseEntity.ok(new ResponseMessage(HttpServletResponse.SC_OK, "Lấy profile thành công!", userService.getUserProfile(), null));
+        return ResponseEntity.ok(new ResponseMessage(
+                HttpServletResponse.SC_OK, "Lấy profile thành công!", userService.getUserProfile(), null));
     }
-
-
 }

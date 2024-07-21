@@ -1,9 +1,11 @@
 package com.example.jobfinder.data.entity;
-import jakarta.persistence.*;
-import lombok.*;
 
 import java.util.Calendar;
 import java.util.Date;
+
+import jakarta.persistence.*;
+
+import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -19,23 +21,19 @@ public class Token extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "token", nullable = false, unique = true)
+    @Column(columnDefinition = "mediumtext", nullable = false, unique = true)
     private String token;
 
     @Column(name = "expiration_time", nullable = false)
     private Date expirationTime;
-    @OneToOne(
-            fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    @JoinColumn(name = "user_id")
+
+    @ManyToOne
+    @JoinColumn(nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "status_id", nullable = false)
     private Status status;
-
 
     public static Date getTokenExpirationTime() {
         Calendar calendar = Calendar.getInstance();

@@ -1,12 +1,13 @@
 package com.example.jobfinder.data.mapper;
 
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.springframework.stereotype.Component;
+
 import com.example.jobfinder.data.dto.request.job.JobScheduleDTO;
 import com.example.jobfinder.data.dto.request.job.JobShowDTO;
 import com.example.jobfinder.data.dto.request.schedule.ScheduleDTO;
 import com.example.jobfinder.data.entity.JobSchedule;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring")
 @Component
@@ -14,6 +15,7 @@ public interface JobScheduleMapper {
     @Mapping(source = "job", target = "jobDTO")
     @Mapping(source = "schedule", target = "scheduleDTO")
     JobScheduleDTO toDto(JobSchedule jobMajor);
+
     @Mapping(source = "jobSchedule.schedule.id", target = "id")
     @Mapping(source = "jobSchedule.schedule.name", target = "name")
     ScheduleDTO toScheduleDto(JobSchedule jobSchedule);

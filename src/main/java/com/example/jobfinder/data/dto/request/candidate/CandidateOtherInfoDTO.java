@@ -1,13 +1,14 @@
 package com.example.jobfinder.data.dto.request.candidate;
 
+import java.util.List;
+
 import com.example.jobfinder.data.dto.request.major.MajorDTO;
 import com.example.jobfinder.data.dto.request.position.PositionDTO;
 import com.example.jobfinder.data.dto.request.schedule.ScheduleDTO;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @AllArgsConstructor
 @Data
@@ -22,5 +23,4 @@ public class CandidateOtherInfoDTO {
     private List<ScheduleDTO> scheduleDTOs;
     private String desiredJob;
     private String desiredWorkingProvince;
-
 }

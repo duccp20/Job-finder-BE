@@ -1,21 +1,25 @@
 package com.example.jobfinder.service.impl;
 
-import com.example.jobfinder.data.entity.Status;
-import com.example.jobfinder.data.repository.StatusRepository;
-import com.example.jobfinder.service.StatusService;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Collections;
+
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import com.example.jobfinder.data.entity.Status;
+import com.example.jobfinder.data.repository.StatusRepository;
+import com.example.jobfinder.exception.ResourceNotFoundException;
+import com.example.jobfinder.service.StatusService;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class StatusServiceImpl implements StatusService {
+    private final StatusRepository statusRepository;
 
-
-    @Autowired
-    private StatusRepository statusRepository;
     @Override
-    public Optional<Status> findByName(String name) {
-        return statusRepository.findByName(name);
+    public Status findByName(String name) {
+        return this.statusRepository
+                .findByName(name)
+                .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("name", name)));
     }
 }
