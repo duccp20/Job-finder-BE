@@ -1,11 +1,12 @@
 package com.example.jobfinder.data.mapper;
 
-import com.example.jobfinder.data.dto.request.job.JobShowDTO;
-import com.example.jobfinder.data.dto.request.position.PositionDTO;
-import com.example.jobfinder.data.entity.JobPosition;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
+
+import com.example.jobfinder.data.dto.request.job.JobShowDTO;
+import com.example.jobfinder.data.dto.request.position.PositionDTO;
+import com.example.jobfinder.data.entity.JobPosition;
 
 @Mapper(componentModel = "spring")
 @Component
@@ -27,5 +28,4 @@ public interface JobPositionMapper {
     @Mapping(source = "jobPosition.job.location", target = "location")
     @Mapping(source = "jobPosition.job.amount", target = "amount")
     JobShowDTO toJobShowDto(JobPosition jobPosition);
-
 }

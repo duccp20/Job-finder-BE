@@ -1,5 +1,11 @@
 package com.example.jobfinder.service.impl;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.example.jobfinder.data.dto.request.position.PositionDTO;
 import com.example.jobfinder.data.entity.Candidate;
@@ -7,12 +13,6 @@ import com.example.jobfinder.data.entity.CandidatePosition;
 import com.example.jobfinder.data.entity.Position;
 import com.example.jobfinder.data.repository.CandidatePositionRepository;
 import com.example.jobfinder.service.CandidatePositionService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
 
 @Service
 public class CandidatePositionServiceImpl implements CandidatePositionService {
@@ -22,8 +22,8 @@ public class CandidatePositionServiceImpl implements CandidatePositionService {
     @Override
     public boolean update(long candidateId, List<PositionDTO> positionDTOs) {
 
-        Queue<CandidatePosition> oldCandidatePositions = new LinkedList<>(
-                candidatePositionRepository.findAllByCandidate_Id(candidateId));
+        Queue<CandidatePosition> oldCandidatePositions =
+                new LinkedList<>(candidatePositionRepository.findAllByCandidate_Id(candidateId));
 
         if (positionDTOs == null || positionDTOs.isEmpty()) {
             candidatePositionRepository.deleteAll(oldCandidatePositions);
@@ -44,7 +44,7 @@ public class CandidatePositionServiceImpl implements CandidatePositionService {
                 newCandidatePosition.setCandidate(candidate);
                 newCandidatePosition.setPosition(position);
                 candidatePositionRepository.save(newCandidatePosition);
-            } else {    // if old not empty and newPositionDTO exist -> update
+            } else { // if old not empty and newPositionDTO exist -> update
                 CandidatePosition candidatePosition = oldCandidatePositions.poll();
                 Position newPosition = new Position();
                 newPosition.setId(newPositionDTO.getId());
@@ -65,5 +65,4 @@ public class CandidatePositionServiceImpl implements CandidatePositionService {
     public List<CandidatePosition> findAllByCandidate_Id(long candidateId) {
         return candidatePositionRepository.findAllByCandidate_Id(candidateId);
     }
-
 }

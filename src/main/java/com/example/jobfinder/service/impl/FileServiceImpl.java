@@ -1,13 +1,5 @@
 package com.example.jobfinder.service.impl;
 
-import com.example.jobfinder.exception.ResourceNotFoundException;
-import com.example.jobfinder.service.FileService;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -17,9 +9,17 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Collections;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.example.jobfinder.exception.ResourceNotFoundException;
+import com.example.jobfinder.service.FileService;
+
 @Service
 public class FileServiceImpl implements FileService {
-
 
     private String UPLOAD_DIR = "path/files/";
 
@@ -79,5 +79,4 @@ public class FileServiceImpl implements FileService {
             e.printStackTrace();
         }
     }
-
 }

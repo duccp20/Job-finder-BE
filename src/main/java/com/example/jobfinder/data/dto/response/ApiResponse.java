@@ -2,18 +2,14 @@ package com.example.jobfinder.data.dto.response;
 
 import lombok.*;
 
-import java.util.Map;
-
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Builder
-public class ResponseMessage {
+public class ApiResponse<T> {
     private int httpCode;
     private String message;
-    private Object data;
+    private T data;
     private String path;
-
 }

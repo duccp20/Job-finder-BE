@@ -1,11 +1,10 @@
 package com.example.jobfinder.data.repository;
 
-import com.example.jobfinder.data.dto.request.job.JobCreationDTO;
-import com.example.jobfinder.data.dto.request.job.JobFilterDTO;
-import com.example.jobfinder.data.dto.request.job.JobShowDTO;
-import com.example.jobfinder.data.entity.Job;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,11 +13,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import com.example.jobfinder.data.entity.Job;
 
 @Repository
 public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificationExecutor<Job> {
@@ -41,18 +36,17 @@ public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificatio
      * @param endDate     The end date of the job.
      * @return A list of jobs with similar details, except start and end dates.
      */
-    @Query("SELECT j FROM Job j " +
-            "WHERE j.name = :name " +
-            "AND j.location = :location " +
-            "AND j.province = :province " +
-            "AND j.description = :description " +
-            "AND j.requirement = :requirement " +
-            "AND j.otherInfo = :otherInfo " +
-            "AND j.salaryMin = :salaryMin " +
-            "AND j.salaryMax = :salaryMax " +
-            "AND j.amount = :amount " +
-            "AND j.startDate != :startDate " +
-            "AND j.endDate != :endDate")
+    @Query("SELECT j FROM Job j " + "WHERE j.name = :name "
+            + "AND j.location = :location "
+            + "AND j.province = :province "
+            + "AND j.description = :description "
+            + "AND j.requirement = :requirement "
+            + "AND j.otherInfo = :otherInfo "
+            + "AND j.salaryMin = :salaryMin "
+            + "AND j.salaryMax = :salaryMax "
+            + "AND j.amount = :amount "
+            + "AND j.startDate != :startDate "
+            + "AND j.endDate != :endDate")
     List<Job> findJobsWithSimilarDetailsExceptStartAndEndDate(
             @Param("name") String name,
             @Param("location") String location,
@@ -66,9 +60,7 @@ public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificatio
             @Param("startDate") Date startDate,
             @Param("endDate") Date endDate);
 
-
-
-   boolean existsByStartDate(Date startDate);
+    boolean existsByStartDate(Date startDate);
 
     @Query("SELECT j FROM Job j WHERE j.status.statusId = 1")
     List<Job> findJobActive();
@@ -88,7 +80,8 @@ public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificatio
     @Query("SELECT j FROM Job j WHERE  j.status.statusId = 4 and j.company.id= :companyId ORDER BY j.createdDate DESC")
     Page<Job> findAllDisableByCompanyId(@Param("companyId") long companyId, Pageable pageable);
 
-    @Query("SELECT j FROM Job j WHERE j.company.id= :companyId AND j.status.statusId = 1 or j.status.statusId = 4 ORDER BY j.createdDate DESC ")
+    @Query(
+            "SELECT j FROM Job j WHERE j.company.id= :companyId AND j.status.statusId = 1 or j.status.statusId = 4 ORDER BY j.createdDate DESC ")
     Page<Job> findAllByCompanyId(@Param("companyId") long companyId, Pageable pageable);
 
     @Query("SELECT COUNT(*) FROM Job j WHERE  j.status.statusId = 1 and j.company.id= :companyId")
@@ -108,64 +101,66 @@ public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificatio
     @Query("SELECT j.status.name, COUNT(j.id) FROM Job j GROUP BY j.status.name")
     List<Object[]> getStatusStatistics();
 
-    @Query("SELECT YEAR(j.createdDate), MONTH(j.createdDate), COUNT(j) FROM Job j WHERE j.company.id = :companyId GROUP BY YEAR(j.createdDate), MONTH(j.createdDate)")
+    @Query(
+            "SELECT YEAR(j.createdDate), MONTH(j.createdDate), COUNT(j) FROM Job j WHERE j.company.id = :companyId GROUP BY YEAR(j.createdDate), MONTH(j.createdDate)")
     List<Object[]> countJobsByMonth(@Param("companyId") long companyId);
 
-    @Query("SELECT YEAR(j.createdDate), COUNT(j) FROM Job j WHERE j.company.id = :companyId GROUP BY YEAR(j.createdDate)")
+    @Query(
+            "SELECT YEAR(j.createdDate), COUNT(j) FROM Job j WHERE j.company.id = :companyId GROUP BY YEAR(j.createdDate)")
     List<Object[]> countJobsByYear(@Param("companyId") long companyId);
 
- @Query("SELECT DISTINCT j FROM Job j " +
-         "LEFT JOIN j.jobPositions jp " +
-         "LEFT JOIN j.jobSchedules js " +
-         "LEFT JOIN j.jobMajors jm " +
-         "WHERE (j.name LIKE CONCAT('%', :name, '%')) " +
-         "AND (:provinceName IS NULL OR j.province LIKE CONCAT('%', :provinceName, '%')) " +
-         "AND (COALESCE(SIZE(:positionIds), 0) = 0 OR jp.position.id IN :positionIds) " +
-         "AND (COALESCE(SIZE(:scheduleIds), 0) = 0 OR js.schedule.id IN :scheduleIds) " +
-         "AND (COALESCE(SIZE(:majorIds), 0) = 0 OR jm.major.id IN :majorIds) " +
-         "AND j.status.statusId = 1 " +
-         "ORDER BY j.createdDate DESC")
- Page<Job> findJobsWithFilters(@Param("name") String name,
-                               @Param("provinceName") String provinceName,
-                               @Param("positionIds") List<Integer> positionIds,
-                               @Param("scheduleIds") List<Integer> scheduleIds,
-                               @Param("majorIds") List<Integer> majorIds,
-                               Pageable pageable);
+    @Query("SELECT DISTINCT j FROM Job j " + "LEFT JOIN j.jobPositions jp "
+            + "LEFT JOIN j.jobSchedules js "
+            + "LEFT JOIN j.jobMajors jm "
+            + "WHERE (j.name LIKE CONCAT('%', :name, '%')) "
+            + "AND (:provinceName IS NULL OR j.province LIKE CONCAT('%', :provinceName, '%')) "
+            + "AND (COALESCE(SIZE(:positionIds), 0) = 0 OR jp.position.id IN :positionIds) "
+            + "AND (COALESCE(SIZE(:scheduleIds), 0) = 0 OR js.schedule.id IN :scheduleIds) "
+            + "AND (COALESCE(SIZE(:majorIds), 0) = 0 OR jm.major.id IN :majorIds) "
+            + "AND j.status.statusId = 1 "
+            + "ORDER BY j.createdDate DESC")
+    Page<Job> findJobsWithFilters(
+            @Param("name") String name,
+            @Param("provinceName") String provinceName,
+            @Param("positionIds") List<Integer> positionIds,
+            @Param("scheduleIds") List<Integer> scheduleIds,
+            @Param("majorIds") List<Integer> majorIds,
+            Pageable pageable);
 
-
-
-//     @Query("SELECT j.jobPositions FROM Job j")
-//     List<Object[]> findAllJob();
-//     @Query("SELECT j FROM Job j WHERE j.hr.id =:hrId ORDER BY j.createdDate ASC")
-//     List<Job> findAllByHRId(@Param("hrId") int hrId);
-//
-//     @Query("SELECT j FROM Job j WHERE j.hr.user.id = :userId ORDER BY j.createdDate ASC")
-//     List<Job> findAllByUserId(@Param("userId") long userId);
-//
-//     @Query("SELECT j FROM Job j WHERE j.hr.user.username = :username ORDER BY j.createdDate ASC")
-//     List<Job> findAllByUsername(@Param("username") String username);
-//
-//     @Query("SELECT j.jobPosition.name, COUNT(j.id) FROM Job j GROUP BY j.jobPosition.name")
-//     List<Object[]> getPositionStatistics();
-//
-//     @Query("SELECT j.major.name, COUNT(j.id) FROM Job j GROUP BY j.major.name")
-//     List<Object[]> getMajorStatistics();
-//
-//     @Query("SELECT j FROM Job j"
-//             + " WHERE j.hr.company.id = :companyId"
-//             + " AND (:quickSearch IS NULL"
-//             + "     OR (j.name LIKE %:quickSearch%"
-//             + "         OR CONCAT(j.hr.user.lastName, ' ', j.hr.user.firstName) LIKE %:quickSearch%))" // full name like
-//                                                                                                        // quickSearch
-//             + " AND (:provinceName IS NULL OR j.location.district.province.name = :provinceName)"
-//             + " AND (:endDate IS NULL OR DATE(j.endDate) = DATE(:endDate))"
-//             + " AND (:statusId IS NULL OR j.status.id = :statusId)")
-//     Page<Job> filterPostedJobOfCompanyByHr(
-//             @Param("companyId") int companyId,
-//             @Param("quickSearch") String quickSearch,
-//             @Param("provinceName") String provinceName,
-//             @Param("endDate") LocalDateTime endDate,
-//             @Param("statusId") Integer statusId,
-//             Pageable pageable);
+    //     @Query("SELECT j.jobPositions FROM Job j")
+    //     List<Object[]> findAllJob();
+    //     @Query("SELECT j FROM Job j WHERE j.hr.id =:hrId ORDER BY j.createdDate ASC")
+    //     List<Job> findAllByHRId(@Param("hrId") int hrId);
+    //
+    //     @Query("SELECT j FROM Job j WHERE j.hr.user.id = :userId ORDER BY j.createdDate ASC")
+    //     List<Job> findAllByUserId(@Param("userId") long userId);
+    //
+    //     @Query("SELECT j FROM Job j WHERE j.hr.user.username = :username ORDER BY j.createdDate ASC")
+    //     List<Job> findAllByUsername(@Param("username") String username);
+    //
+    //     @Query("SELECT j.jobPosition.name, COUNT(j.id) FROM Job j GROUP BY j.jobPosition.name")
+    //     List<Object[]> getPositionStatistics();
+    //
+    //     @Query("SELECT j.major.name, COUNT(j.id) FROM Job j GROUP BY j.major.name")
+    //     List<Object[]> getMajorStatistics();
+    //
+    //     @Query("SELECT j FROM Job j"
+    //             + " WHERE j.hr.company.id = :companyId"
+    //             + " AND (:quickSearch IS NULL"
+    //             + "     OR (j.name LIKE %:quickSearch%"
+    //             + "         OR CONCAT(j.hr.user.lastName, ' ', j.hr.user.firstName) LIKE %:quickSearch%))" // full
+    // name like
+    //                                                                                                        //
+    // quickSearch
+    //             + " AND (:provinceName IS NULL OR j.location.district.province.name = :provinceName)"
+    //             + " AND (:endDate IS NULL OR DATE(j.endDate) = DATE(:endDate))"
+    //             + " AND (:statusId IS NULL OR j.status.id = :statusId)")
+    //     Page<Job> filterPostedJobOfCompanyByHr(
+    //             @Param("companyId") int companyId,
+    //             @Param("quickSearch") String quickSearch,
+    //             @Param("provinceName") String provinceName,
+    //             @Param("endDate") LocalDateTime endDate,
+    //             @Param("statusId") Integer statusId,
+    //             Pageable pageable);
 
 }

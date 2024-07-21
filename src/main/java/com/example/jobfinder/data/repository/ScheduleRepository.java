@@ -1,12 +1,9 @@
 package com.example.jobfinder.data.repository;
 
-import com.example.jobfinder.data.entity.Schedule;
-import io.micrometer.observation.ObservationFilter;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import com.example.jobfinder.data.entity.Schedule;
 
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
@@ -16,6 +13,4 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
     Schedule findByName(String name);
 
     boolean existsByName(String name);
-
-
 }

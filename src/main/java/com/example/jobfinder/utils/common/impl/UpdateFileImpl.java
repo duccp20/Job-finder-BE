@@ -3,68 +3,75 @@ package com.example.jobfinder.utils.common.impl;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Objects;
 import java.util.UUID;
 
-import com.example.jobfinder.data.dto.response.ResponseMessage;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.example.jobfinder.data.dto.response.ApiResponse;
 import com.example.jobfinder.utils.common.UpdateFile;
 import com.google.auth.Credentials;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.*;
 
 import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.factory.annotation.Value;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
-
-import com.google.auth.oauth2.GoogleCredentials;
-import org.springframework.web.multipart.MultipartFile;
-
 
 @Component
 @Slf4j
 public class UpdateFileImpl implements UpdateFile {
 
-
     @Value("${url.firebase.bucket}")
     String bucketName;
+
     @Value("${url.firebase.folder}")
     String linkFolder;
-    public final static String FOLDER_NAME = "images/";
 
+    public static final String FOLDER_NAME = "images/";
 
     private String uploadFile(File file, String fileName) throws IOException {
         String filePath = FOLDER_NAME + fileName;
         BlobId blobId = BlobId.of(bucketName, filePath); // Replace with your bucket name
-//        BlobId blobId = BlobId.of(bucketName, fileName); // Replace with your bucker name
+        //        BlobId blobId = BlobId.of(bucketName, fileName); // Replace with your bucker name
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("media").build();
-        InputStream inputStream = UpdateFileImpl.class.getClassLoader().getResourceAsStream("job-worked-firebase.json"); // change the file name with your one
+        InputStream inputStream = UpdateFileImpl.class
+                .getClassLoader()
+                .getResourceAsStream("job-worked-firebase.json"); // change the file name with your one
         Credentials credentials = GoogleCredentials.fromStream(inputStream);
-        Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
+        Storage storage =
+                StorageOptions.newBuilder().setCredentials(credentials).build().getService();
         storage.create(blobInfo, Files.readAllBytes(file.toPath()));
-//        String DOWNLOAD_URL = linkFolder +bucketName+"/o/images%2F" + URLEncoder.encode(fileName, StandardCharsets.UTF_8) + "?alt=media";
+        //        String DOWNLOAD_URL = linkFolder +bucketName+"/o/images%2F" + URLEncoder.encode(fileName,
+        // StandardCharsets.UTF_8) + "?alt=media";
         String DOWNLOAD_URL = linkFolder + bucketName + "/o/images%2F" + fileName + "?alt=media";
         log.info(DOWNLOAD_URL);
 
-//    https:firebasestorage.googleapis.com/v0/b/job-worked.appspot.com/o/images%2Fadab3deb-4c49-4ce7-ba44-3fbf57d4524a.png?alt=media
+        //
+        // https:firebasestorage.googleapis.com/v0/b/job-worked.appspot.com/o/images%2Fadab3deb-4c49-4ce7-ba44-3fbf57d4524a.png?alt=media
         return fileName;
     }
 
     private String uploadFileCV(File file, String fileName) throws IOException {
         String filePath = "pdfs/" + fileName;
         BlobId blobId = BlobId.of(bucketName, filePath); // Replace with your bucket name
-//        BlobId blobId = BlobId.of(bucketName, fileName); // Replace with your bucker name
-        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("application/pdf").build();
-        InputStream inputStream = UpdateFileImpl.class.getClassLoader().getResourceAsStream("job-worked-firebase.json"); // change the file name with your one
+        //        BlobId blobId = BlobId.of(bucketName, fileName); // Replace with your bucker name
+        BlobInfo blobInfo =
+                BlobInfo.newBuilder(blobId).setContentType("application/pdf").build();
+        InputStream inputStream = UpdateFileImpl.class
+                .getClassLoader()
+                .getResourceAsStream("job-worked-firebase.json"); // change the file name with your one
         Credentials credentials = GoogleCredentials.fromStream(inputStream);
-        Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
+        Storage storage =
+                StorageOptions.newBuilder().setCredentials(credentials).build().getService();
         storage.create(blobInfo, Files.readAllBytes(file.toPath()));
-//        String DOWNLOAD_URL = linkFolder +bucketName+"/o/images%2F" + URLEncoder.encode(fileName, StandardCharsets.UTF_8) + "?alt=media";
+        //        String DOWNLOAD_URL = linkFolder +bucketName+"/o/images%2F" + URLEncoder.encode(fileName,
+        // StandardCharsets.UTF_8) + "?alt=media";
         String DOWNLOAD_URL = linkFolder + bucketName + "/o/pdfs%2F" + fileName + "?alt=media";
         log.info(DOWNLOAD_URL);
 
-//    https:firebasestorage.googleapis.com/v0/b/job-worked.appspot.com/o/images%2Fadab3deb-4c49-4ce7-ba44-3fbf57d4524a.png?alt=media
+        //
+        // https:firebasestorage.googleapis.com/v0/b/job-worked.appspot.com/o/images%2Fadab3deb-4c49-4ce7-ba44-3fbf57d4524a.png?alt=media
         return fileName;
     }
 
@@ -86,58 +93,61 @@ public class UpdateFileImpl implements UpdateFile {
     @Override
     public String uploadImage(MultipartFile multipartFile) throws IOException {
         try {
-            String fileName = multipartFile.getOriginalFilename();                        // to get original file name
-            fileName = UUID.randomUUID().toString().concat(this.getExtension(fileName));  // to generated random string values for file name.
+            String fileName = multipartFile.getOriginalFilename(); // to get original file name
+            fileName = UUID.randomUUID()
+                    .toString()
+                    .concat(this.getExtension(fileName)); // to generated random string values for file name.
 
-            File file = this.convertToFile(multipartFile, fileName);                      // to convert multipartFile to File
-            String URL = this.uploadFile(file, fileName);                                   // to get uploaded file link
+            File file = this.convertToFile(multipartFile, fileName); // to convert multipartFile to File
+            String URL = this.uploadFile(file, fileName); // to get uploaded file link
             file.delete();
             return URL;
         } catch (Exception e) {
             e.printStackTrace();
             return "Image couldn't upload, Something went wrong";
         }
-
     }
 
     @Override
     public String uploadCV(MultipartFile multipartFile) throws IOException {
         try {
-            String fileName = multipartFile.getOriginalFilename();                        // to get original file name
-            fileName = UUID.randomUUID().toString().concat(this.getExtension(fileName));  // to generated random string values for file name.
-            File file = this.convertToFile(multipartFile, fileName);                      // to convert multipartFile to File
-            String URL = this.uploadFileCV(file, fileName);                                   // to get uploaded file link
+            String fileName = multipartFile.getOriginalFilename(); // to get original file name
+            fileName = UUID.randomUUID()
+                    .toString()
+                    .concat(this.getExtension(fileName)); // to generated random string values for file name.
+            File file = this.convertToFile(multipartFile, fileName); // to convert multipartFile to File
+            String URL = this.uploadFileCV(file, fileName); // to get uploaded file link
             file.delete();
             return URL;
         } catch (Exception e) {
             e.printStackTrace();
             return "PDF couldn't upload, Something went wrong";
         }
-
     }
-
 
     @Override
     public Object downloadCV(String fileName) throws IOException {
-        String destFileName = UUID.randomUUID().toString().concat(this.getExtension(fileName));     // to set random strinh for destination file name
-        String destFilePath = "classpath:path/files/" + destFileName;                                    // to set destination file path
+        String destFileName = UUID.randomUUID()
+                .toString()
+                .concat(this.getExtension(fileName)); // to set random strinh for destination file name
+        String destFilePath = "classpath:path/files/" + destFileName; // to set destination file path
 
-        InputStream inputStream = UpdateFileImpl.class.getClassLoader().getResourceAsStream("job-worked-firebase.json"); // change the file name with your one
+        InputStream inputStream = UpdateFileImpl.class
+                .getClassLoader()
+                .getResourceAsStream("job-worked-firebase.json"); // change the file name with your one
         Credentials credentials = GoogleCredentials.fromStream(inputStream);
-        Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
+        Storage storage =
+                StorageOptions.newBuilder().setCredentials(credentials).build().getService();
         Blob blob = storage.get(BlobId.of(bucketName, fileName));
         blob.downloadTo(Paths.get(destFilePath));
         log.info("destFilePath" + destFilePath);
-        return ResponseMessage.builder()
+        return ApiResponse.builder()
                 .httpCode(HttpStatus.OK.value())
                 .message("Downloaded successfully")
                 .data(destFilePath)
                 .build();
     }
 }
-
-
-
 
 //    @Override
 //    public void uploadExcel(FileUpload fileUpload) {
@@ -228,4 +238,3 @@ public class UpdateFileImpl implements UpdateFile {
 //            e.printStackTrace();
 //        }
 //    }
-

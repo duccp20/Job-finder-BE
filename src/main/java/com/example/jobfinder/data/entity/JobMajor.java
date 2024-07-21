@@ -1,19 +1,19 @@
 package com.example.jobfinder.data.entity;
 
+import java.io.Serializable;
+
 import jakarta.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-
-import java.io.Serializable;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "job_major")
-public class JobMajor implements Serializable{
+@Table(name = "jobs_majors")
+public class JobMajor implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,5 +27,4 @@ public class JobMajor implements Serializable{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "major_id")
     private Major major;
-    
 }

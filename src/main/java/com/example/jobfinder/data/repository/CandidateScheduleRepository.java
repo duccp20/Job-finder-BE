@@ -1,10 +1,11 @@
 package com.example.jobfinder.data.repository;
 
-import com.example.jobfinder.data.entity.CandidateSchedule;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import com.example.jobfinder.data.entity.CandidateSchedule;
 
 @Repository
 public interface CandidateScheduleRepository extends JpaRepository<CandidateSchedule, Long> {

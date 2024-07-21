@@ -1,7 +1,9 @@
 package com.example.jobfinder.data.entity;
 
 import jakarta.persistence.*;
+
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,8 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "role")
-public class Role extends Auditable{
+@Table(name = "roles")
+@Builder
+public class Role extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,5 +22,4 @@ public class Role extends Auditable{
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
-
 }

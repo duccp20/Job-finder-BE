@@ -1,13 +1,7 @@
 package com.example.jobfinder.controller.candidate;
 
+import java.io.IOException;
 
-import com.example.jobfinder.constant.ApiURL;
-import com.example.jobfinder.constant.PageDefault;
-import com.example.jobfinder.data.dto.request.candidate.CandidateApplicationDTO;
-import com.example.jobfinder.data.dto.request.candidate.CandidateProfileDTO;
-import com.example.jobfinder.service.CandidateApplicationService;
-import com.example.jobfinder.service.JsonReaderService;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -17,7 +11,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import com.example.jobfinder.constant.ApiURL;
+import com.example.jobfinder.constant.PageDefault;
+import com.example.jobfinder.data.dto.request.candidate.CandidateApplicationDTO;
+import com.example.jobfinder.service.CandidateApplicationService;
+import com.example.jobfinder.service.JsonReaderService;
+
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping(ApiURL.CANDIDATE_APPLICATION)
@@ -27,6 +27,7 @@ public class CandidateApplicationController {
 
     @Autowired
     private JsonReaderService<Object> jsonReaderService;
+
     @Autowired
     MessageSource messageSource;
 
@@ -38,13 +39,16 @@ public class CandidateApplicationController {
      */
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('Role_Candidate')")
-    @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(
+            value = "",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> create(
             @RequestPart("candidateApplication") String candidateApplicationDTOJson,
-            @RequestPart(name = "fileCV", required = false) MultipartFile fileCV) throws IOException {
+            @RequestPart(name = "fileCV", required = false) MultipartFile fileCV)
+            throws IOException {
 
-        CandidateApplicationDTO candidateApplicationDTO = jsonReaderService.readValue(candidateApplicationDTOJson, CandidateApplicationDTO.class);
-
+        CandidateApplicationDTO candidateApplicationDTO =
+                jsonReaderService.readValue(candidateApplicationDTOJson, CandidateApplicationDTO.class);
 
         // create Date
         // applyListDTO.setCreatedDate(LocalDateTime.now());
@@ -56,8 +60,8 @@ public class CandidateApplicationController {
         // mailResponse.setApply();
         // tam thoi khong gui mail
         // mailService.send(mailResponse);
-        return new ResponseEntity<>(this.candidateApplicationService.create(candidateApplicationDTO, fileCV),
-                HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                this.candidateApplicationService.create(candidateApplicationDTO, fileCV), HttpStatus.CREATED);
     }
 
     /**
@@ -76,12 +80,13 @@ public class CandidateApplicationController {
         return ResponseEntity.ok(this.candidateApplicationService.findAllByCandidateId(no, limit));
     }
 
-
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('Role_HR')")
     @GetMapping("/job/{id}")
-    public ResponseEntity<?> findAllByJobId(@PathVariable int id, @RequestParam(defaultValue = PageDefault.NO) int no,
-                                            @RequestParam(defaultValue = PageDefault.LIMIT) int limit) {
+    public ResponseEntity<?> findAllByJobId(
+            @PathVariable int id,
+            @RequestParam(defaultValue = PageDefault.NO) int no,
+            @RequestParam(defaultValue = PageDefault.LIMIT) int limit) {
         return ResponseEntity.ok(this.candidateApplicationService.findAllByJobId(id, no, limit));
     }
 
@@ -91,9 +96,6 @@ public class CandidateApplicationController {
     public ResponseEntity<?> delete(@PathVariable int id) {
         return ResponseEntity.ok(this.candidateApplicationService.deleteById(id));
     }
-
-
-
 
     /**
      * Checks if a candidate application exists for a given job ID.
@@ -109,7 +111,5 @@ public class CandidateApplicationController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-
     }
-
 }

@@ -1,10 +1,11 @@
 package com.example.jobfinder.service.impl;
 
+import org.springframework.stereotype.Service;
+
 import com.example.jobfinder.exception.JsonProcessException;
 import com.example.jobfinder.service.JsonReaderService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.stereotype.Service;
 
 @Service
 public class JsonReaderServiceImpl implements JsonReaderService<Object> {

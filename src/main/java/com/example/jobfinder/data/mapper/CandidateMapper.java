@@ -1,16 +1,17 @@
 package com.example.jobfinder.data.mapper;
 
-import com.example.jobfinder.data.dto.request.candidate.CandidateCreationDTO;
-import com.example.jobfinder.data.dto.request.candidate.CandidateDTO;
-import com.example.jobfinder.data.dto.request.candidate.CandidateProfileDTO;
-import com.example.jobfinder.data.entity.Candidate;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
 
+import com.example.jobfinder.data.dto.request.candidate.CandidateCreationDTO;
+import com.example.jobfinder.data.dto.request.candidate.CandidateDTO;
+import com.example.jobfinder.data.dto.request.candidate.CandidateProfileDTO;
+import com.example.jobfinder.data.entity.Candidate;
 
-@Mapper(componentModel = "spring", uses = { UserMapper.class,
-        PositionMapper.class, ScheduleMapper.class, MajorMapper.class})
+@Mapper(
+        componentModel = "spring",
+        uses = {UserMapper.class, PositionMapper.class, ScheduleMapper.class, MajorMapper.class})
 @Component
 public interface CandidateMapper {
 
@@ -32,7 +33,6 @@ public interface CandidateMapper {
     @Mapping(source = "candidateOtherInfoDTO.desiredWorkingProvince", target = "desiredWorkingProvince")
     Candidate toEntity(CandidateProfileDTO candidateProfileDTO);
 
-
     @Mapping(source = "user", target = "userDTO")
     @Mapping(source = "searchable", target = "candidateOtherInfoDTO.searchable")
     @Mapping(source = "CV", target = "candidateOtherInfoDTO.CV")
@@ -45,17 +45,17 @@ public interface CandidateMapper {
     @Mapping(source = "candidateMajors", target = "candidateOtherInfoDTO.majorDTOs")
     CandidateDTO toDTO(Candidate candidate);
 
-//    @Mapping(target = "userDTO", ignore = true)
-//    @Mapping(source = "searchable", target = "candidateOtherInfoDTO.searchable")
-//    @Mapping(source = "CV", target = "candidateOtherInfoDTO.CV")
-//    @Mapping(source = "referenceLetter", target = "candidateOtherInfoDTO.referenceLetter")
-//    @Mapping(source = "university", target = "candidateOtherInfoDTO.university")
-//    @Mapping(source = "desiredJob", target = "candidateOtherInfoDTO.desiredJob")
-//    @Mapping(source = "desiredWorkingProvince", target = "candidateOtherInfoDTO.desiredWorkingProvince")
-//    @Mapping(source = "candidatePositions", target = "candidateOtherInfoDTO.positionDTOs")
-//    @Mapping(source = "candidateSchedules", target = "candidateOtherInfoDTO.scheduleDTOs")
-//    @Mapping(source = "candidateMajors", target = "candidateOtherInfoDTO.majorDTOs")
-//    CandidateDTO toShowDTO(Candidate candidate);
+    //    @Mapping(target = "userDTO", ignore = true)
+    //    @Mapping(source = "searchable", target = "candidateOtherInfoDTO.searchable")
+    //    @Mapping(source = "CV", target = "candidateOtherInfoDTO.CV")
+    //    @Mapping(source = "referenceLetter", target = "candidateOtherInfoDTO.referenceLetter")
+    //    @Mapping(source = "university", target = "candidateOtherInfoDTO.university")
+    //    @Mapping(source = "desiredJob", target = "candidateOtherInfoDTO.desiredJob")
+    //    @Mapping(source = "desiredWorkingProvince", target = "candidateOtherInfoDTO.desiredWorkingProvince")
+    //    @Mapping(source = "candidatePositions", target = "candidateOtherInfoDTO.positionDTOs")
+    //    @Mapping(source = "candidateSchedules", target = "candidateOtherInfoDTO.scheduleDTOs")
+    //    @Mapping(source = "candidateMajors", target = "candidateOtherInfoDTO.majorDTOs")
+    //    CandidateDTO toShowDTO(Candidate candidate);
 
     @Mapping(source = "userDTO", target = "user")
     @Mapping(source = "candidateOtherInfoDTO.searchable", target = "searchable")

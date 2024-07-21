@@ -1,16 +1,16 @@
 package com.example.jobfinder.data.mapper;
 
+import java.util.List;
 
-import com.example.jobfinder.data.dto.request.job.JobShowDTO;
-import com.example.jobfinder.data.dto.request.major.MajorDTO;
-import com.example.jobfinder.data.entity.JobMajor;
-import com.example.jobfinder.data.entity.Major;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import com.example.jobfinder.data.dto.request.job.JobShowDTO;
+import com.example.jobfinder.data.dto.request.major.MajorDTO;
+import com.example.jobfinder.data.entity.JobMajor;
+import com.example.jobfinder.data.entity.Major;
 
 @Mapper(componentModel = "spring")
 @Component
@@ -35,9 +35,6 @@ public interface JobMajorMapper {
     @Mapping(source = "jobMajor.job.amount", target = "amount")
     JobShowDTO toJobDto(JobMajor jobMajor);
 
-
-
     @IterableMapping(elementTargetType = MajorDTO.class)
     List<MajorDTO> toMajorDtoList(List<JobMajor> jobMajors);
-
 }

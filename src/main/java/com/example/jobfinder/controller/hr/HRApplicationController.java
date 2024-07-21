@@ -1,25 +1,25 @@
-//package com.example.jobfinder.controller.hr;
+// package com.example.jobfinder.controller.hr;
 //
 //
-//import com.example.jobfinder.constant.ApiURL;
-//import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.security.access.prepost.PreAuthorize;
-//import org.springframework.web.bind.annotation.CrossOrigin;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RestController;
+// import com.example.jobfinder.constant.ApiURL;
+// import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.http.ResponseEntity;
+// import org.springframework.security.access.prepost.PreAuthorize;
+// import org.springframework.web.bind.annotation.CrossOrigin;
+// import org.springframework.web.bind.annotation.GetMapping;
+// import org.springframework.web.bind.annotation.RequestMapping;
+// import org.springframework.web.bind.annotation.RestController;
 //
-//import java.time.LocalDate;
-//import java.time.Month;
+// import java.time.LocalDate;
+// import java.time.Month;
 //
-//@CrossOrigin(origins = "*", maxAge = 3600)
-//@RestController
-//@RequestMapping(ApiURL.HR_APPLICATION)
-//@SecurityRequirement(name = "Bearer Authentication")
-//@PreAuthorize("hasAuthority('Role_HR')")
-//public class HRApplicationController {
+// @CrossOrigin(origins = "*", maxAge = 3600)
+// @RestController
+// @RequestMapping(ApiURL.HR_APPLICATION)
+// @SecurityRequirement(name = "Bearer Authentication")
+// @PreAuthorize("hasAuthority('Role_HR')")
+// public class HRApplicationController {
 //    @Autowired
 //    private HRApplicationService hrApplicationService;
 //    @Autowired
@@ -62,4 +62,4 @@
 ////        this.hrApplicationService.deleteById(id);
 ////        return ResponseEntity.ok("DELETED");
 ////    }
-//}
+// }

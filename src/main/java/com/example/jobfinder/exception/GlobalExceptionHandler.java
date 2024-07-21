@@ -1,14 +1,13 @@
 package com.example.jobfinder.exception;
 
-
-import com.example.jobfinder.data.dto.response.ErrorMessageDTO;
 import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-
+import com.example.jobfinder.data.dto.response.ErrorMessageDTO;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -54,18 +53,13 @@ public class GlobalExceptionHandler {
         return createErrorResponse(ex, request, HttpStatus.NO_CONTENT);
     }
 
-
     @ExceptionHandler(CannotDeleteException.class)
     public ResponseEntity<?> handleCannotDeleteException(CannotDeleteException ex, HttpServletRequest request) {
         return createErrorResponse(ex, request, HttpStatus.BAD_REQUEST);
     }
 
     private ResponseEntity<?> createErrorResponse(ExceptionCustom ex, HttpServletRequest request, HttpStatus status) {
-        ErrorMessageDTO errorResponse = new ErrorMessageDTO(
-                ex.getMessage(), ex.getErrors(), request.getServletPath());
+        ErrorMessageDTO errorResponse = new ErrorMessageDTO(ex.getMessage(), ex.getErrors(), request.getServletPath());
         return ResponseEntity.status(status).body(errorResponse);
     }
-
-
-
 }

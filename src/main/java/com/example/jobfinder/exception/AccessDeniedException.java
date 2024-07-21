@@ -11,5 +11,4 @@ public class AccessDeniedException extends ExceptionCustom {
     public AccessDeniedException(Map<String, Object> errors) {
         super("ACCESS DENIED - NOT ENOUGH PERMISSION", errors);
     }
-
 }
