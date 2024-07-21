@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.jobfinder.data.dto.request.PaginationDTO;
 import com.example.jobfinder.data.dto.request.candidate.CandidateApplicationDTO;
-import com.example.jobfinder.data.dto.response.ResponseMessage;
+import com.example.jobfinder.data.dto.response.ApiResponse;
 import com.example.jobfinder.data.entity.CandidateApplication;
 
 public interface CandidateApplicationService {
@@ -23,7 +23,7 @@ public interface CandidateApplicationService {
 
     boolean existsByJobIdAndCandidateId(long jobId, long candidateId);
 
-    ResponseMessage checkCandidateApplication(int idJob);
+    ApiResponse checkCandidateApplication(int idJob);
 
     CandidateApplicationDTO create(CandidateApplicationDTO candidateApplicationDTO, MultipartFile fileCV)
             throws IOException;

@@ -2,17 +2,15 @@ package com.example.jobfinder.data.entity;
 
 import jakarta.persistence.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @Entity
-@Table(name = "position")
+@Builder
+@Table(name = "positions")
 public class Position extends Auditable {
 
     @Id

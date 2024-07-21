@@ -17,7 +17,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.example.jobfinder.data.dto.request.candidate.CandidateDTO;
 import com.example.jobfinder.data.dto.request.candidate.CandidateProfileDTO;
 import com.example.jobfinder.data.dto.request.user.UserDTO;
-import com.example.jobfinder.data.dto.response.ResponseMessage;
+import com.example.jobfinder.data.dto.response.ApiResponse;
 import com.example.jobfinder.data.entity.*;
 import com.example.jobfinder.data.mapper.CandidateMapper;
 import com.example.jobfinder.data.mapper.UserMapper;
@@ -194,7 +194,7 @@ public class CandidateServiceImpl implements CandidateService {
                 .getCandidateOtherInfoDTO()
                 .setScheduleDTOs(candidateProfileDTO.getCandidateOtherInfoDTO().getScheduleDTOs());
 
-        return ResponseMessage.builder()
+        return ApiResponse.builder()
                 .httpCode(200)
                 .message("Profile updated successfully")
                 .data(updatedCandidateDTO)
@@ -223,7 +223,7 @@ public class CandidateServiceImpl implements CandidateService {
         candidate.setCandidatePositions(existingCandidatePositions);
         candidate.setCandidateMajors(existingCandidateMajors);
         candidate.setCandidateSchedules(existingCandidateSchedules);
-        return ResponseMessage.builder()
+        return ApiResponse.builder()
                 .message("Get candidate successfully")
                 .httpCode(200)
                 .data(candidateMapper.toDTO(candidate))
@@ -269,7 +269,7 @@ public class CandidateServiceImpl implements CandidateService {
 
         candidate.setUser(user);
 
-        return ResponseMessage.builder()
+        return ApiResponse.builder()
                 .httpCode(200)
                 .message("Update avatar successfully")
                 .data(user.getAvatar())
@@ -277,7 +277,7 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
-    public ResponseMessage updateSearchable(long id) {
+    public ApiResponse updateSearchable(long id) {
 
         Candidate candidate = candidateRepository
                 .findById(id)
@@ -286,7 +286,7 @@ public class CandidateServiceImpl implements CandidateService {
         candidate.setSearchable(!candidate.isSearchable());
         candidateRepository.save(candidate);
 
-        return ResponseMessage.builder()
+        return ApiResponse.builder()
                 .httpCode(200)
                 .data(candidate.isSearchable())
                 .message("Update searchable successfully")
@@ -299,5 +299,11 @@ public class CandidateServiceImpl implements CandidateService {
         return candidateMapper.toDTO(candidateRepository
                 .findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("userId", userId))));
+    }
+
+    @Override
+    public Candidate handleCreateCandidate(Candidate candidate) {
+
+        return candidateRepository.save(candidate);
     }
 }

@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.jobfinder.data.dto.request.major.MajorDTO;
-import com.example.jobfinder.data.dto.response.ResponseMessage;
+import com.example.jobfinder.data.dto.response.ApiResponse;
 import com.example.jobfinder.data.entity.Major;
 import com.example.jobfinder.data.mapper.MajorMapper;
 import com.example.jobfinder.data.repository.MajorRepository;
@@ -34,13 +34,13 @@ public class MajorServiceImpl implements MajorService {
     }
 
     @Override
-    public ResponseMessage create(MajorDTO majorDTO) {
+    public ApiResponse create(MajorDTO majorDTO) {
         Major major = majorMapper.toEntity(majorDTO);
         if (majorRepository.existsByName(major.getName()))
             throw new InternalServerErrorException(String.format("Exists major named %s", major.getName()));
         ;
 
-        return ResponseMessage.builder()
+        return ApiResponse.builder()
                 .httpCode(HttpServletResponse.SC_CREATED)
                 .message("Create major successfully")
                 .data(majorMapper.toDTO(majorRepository.save(major)))
@@ -48,12 +48,12 @@ public class MajorServiceImpl implements MajorService {
     }
 
     @Override
-    public ResponseMessage deleteById(Integer id) {
+    public ApiResponse deleteById(Integer id) {
         this.majorRepository.delete(this.majorRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("major_id", id))));
 
-        return ResponseMessage.builder()
+        return ApiResponse.builder()
                 .httpCode(HttpServletResponse.SC_CREATED)
                 .message("Delete major successfully")
                 .data(null)

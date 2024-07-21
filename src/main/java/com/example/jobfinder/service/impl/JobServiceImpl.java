@@ -29,7 +29,7 @@ import com.example.jobfinder.data.dto.request.job.JobShowDTO;
 import com.example.jobfinder.data.dto.request.major.MajorDTO;
 import com.example.jobfinder.data.dto.request.position.PositionDTO;
 import com.example.jobfinder.data.dto.request.schedule.ScheduleDTO;
-import com.example.jobfinder.data.dto.response.ResponseMessage;
+import com.example.jobfinder.data.dto.response.ApiResponse;
 import com.example.jobfinder.data.entity.*;
 import com.example.jobfinder.data.mapper.*;
 import com.example.jobfinder.data.repository.*;
@@ -642,7 +642,7 @@ public class JobServiceImpl implements JobService {
 
     @Transactional
     @Override
-    public ResponseMessage delete(long id) {
+    public ApiResponse delete(long id) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         HR hr = this.hrRepository.findByUsername(username).orElseThrow(() -> new AccessDeniedException("FORBIDDEN"));
 
@@ -665,7 +665,7 @@ public class JobServiceImpl implements JobService {
         jobRepository.save(job);
 
         //            entityManager.clear();
-        return ResponseMessage.builder()
+        return ApiResponse.builder()
                 .httpCode(HttpStatus.OK.value())
                 .message("Delete success")
                 .data(jobMapper.toDTOShow(job))
@@ -680,7 +680,7 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public ResponseMessage disable(long id) {
+    public ApiResponse disable(long id) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         HR hr = this.hrRepository.findByUsername(username).orElseThrow(() -> new AccessDeniedException("FORBIDDEN"));
 
@@ -701,7 +701,7 @@ public class JobServiceImpl implements JobService {
         job.setStatus(disableStatus);
 
         this.jobRepository.save(job);
-        return ResponseMessage.builder()
+        return ApiResponse.builder()
                 .httpCode(HttpStatus.OK.value())
                 .message("Disable success")
                 .data(null)

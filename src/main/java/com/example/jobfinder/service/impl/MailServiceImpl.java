@@ -15,7 +15,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import com.example.jobfinder.data.dto.response.ResponseMessage;
+import com.example.jobfinder.data.dto.response.ApiResponse;
 import com.example.jobfinder.data.dto.response.mail.MailResponse;
 import com.example.jobfinder.data.entity.User;
 import com.example.jobfinder.data.repository.StatusRepository;
@@ -88,8 +88,7 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public ResponseMessage sendTokenForgetPassword(String email)
-            throws MessagingException, UnsupportedEncodingException {
+    public ApiResponse sendTokenForgetPassword(String email) throws MessagingException, UnsupportedEncodingException {
         User user = userRepository.findByEmail(email).orElseThrow(() -> {
             throw new ResourceNotFoundException(Collections.singletonMap("email", email));
         });
@@ -109,11 +108,11 @@ public class MailServiceImpl implements MailService {
         //        mailResponse.setToken(accessToken);
         this.send(mailResponse);
 
-        return new ResponseMessage(HttpServletResponse.SC_OK, "SEND MAIL", null, null);
+        return new ApiResponse(HttpServletResponse.SC_OK, "SEND MAIL", null, null);
     }
 
     @Override
-    public ResponseMessage sendMailActive(String email) throws MessagingException, UnsupportedEncodingException {
+    public ApiResponse sendMailActive(String email) throws MessagingException, UnsupportedEncodingException {
         User user = userRepository.findByEmail(email).orElseThrow(() -> {
             throw new ResourceNotFoundException(Collections.singletonMap("email", email));
         });
@@ -130,7 +129,7 @@ public class MailServiceImpl implements MailService {
         //        mailResponse.setToken(accessToken);
         this.send(mailResponse);
 
-        return new ResponseMessage(HttpServletResponse.SC_OK, "SEND MAIL", null, null);
+        return new ApiResponse(HttpServletResponse.SC_OK, "SEND MAIL", null, null);
     }
 
     //    private String generateActiveToken(User user) {

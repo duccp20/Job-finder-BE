@@ -9,7 +9,7 @@ import com.example.jobfinder.data.dto.request.PaginationDTO;
 import com.example.jobfinder.data.dto.request.job.JobCreationDTO;
 import com.example.jobfinder.data.dto.request.job.JobDTO;
 import com.example.jobfinder.data.dto.request.job.JobFilterDTO;
-import com.example.jobfinder.data.dto.response.ResponseMessage;
+import com.example.jobfinder.data.dto.response.ApiResponse;
 
 public interface JobService {
 
@@ -54,8 +54,8 @@ public interface JobService {
     Map<Integer, int[]> countByYear();
 
     @Transactional
-    ResponseMessage delete(long id);
+    ApiResponse delete(long id);
 
     @Transactional
-    ResponseMessage disable(long id);
+    ApiResponse disable(long id);
 }

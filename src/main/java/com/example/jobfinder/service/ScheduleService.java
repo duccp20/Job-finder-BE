@@ -3,7 +3,7 @@ package com.example.jobfinder.service;
 import java.util.List;
 
 import com.example.jobfinder.data.dto.request.schedule.ScheduleDTO;
-import com.example.jobfinder.data.dto.response.ResponseMessage;
+import com.example.jobfinder.data.dto.response.ApiResponse;
 
 public interface ScheduleService {
 
@@ -11,7 +11,7 @@ public interface ScheduleService {
 
     List<ScheduleDTO> findAll();
 
-    ResponseMessage create(ScheduleDTO scheduleDTO);
+    ApiResponse create(ScheduleDTO scheduleDTO);
 
-    ResponseMessage deleteById(Integer id);
+    ApiResponse deleteById(Integer id);
 }

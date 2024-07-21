@@ -17,7 +17,8 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @Entity
-@Table(name = "user")
+@Builder
+@Table(name = "users")
 public class User extends Auditable {
 
     @Id
@@ -79,7 +80,7 @@ public class User extends Auditable {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "status_id", nullable = false)
     private Status status;
 

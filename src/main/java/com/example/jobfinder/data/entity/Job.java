@@ -17,7 +17,7 @@ import lombok.*;
 @Setter
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "job")
+@Table(name = "jobs")
 public class Job extends Auditable {
 
     @Id

@@ -3,7 +3,7 @@ package com.example.jobfinder.service;
 import java.util.List;
 
 import com.example.jobfinder.data.dto.request.major.MajorDTO;
-import com.example.jobfinder.data.dto.response.ResponseMessage;
+import com.example.jobfinder.data.dto.response.ApiResponse;
 
 public interface MajorService {
 
@@ -11,7 +11,7 @@ public interface MajorService {
 
     List<MajorDTO> findAll();
 
-    ResponseMessage create(MajorDTO majorDTO);
+    ApiResponse create(MajorDTO majorDTO);
 
-    ResponseMessage deleteById(Integer id);
+    ApiResponse deleteById(Integer id);
 }

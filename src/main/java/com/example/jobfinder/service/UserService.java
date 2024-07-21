@@ -2,23 +2,29 @@ package com.example.jobfinder.service;
 
 import java.io.IOException;
 
+import com.example.jobfinder.data.entity.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.jobfinder.data.dto.request.ChangePasswordDTO;
 import com.example.jobfinder.data.dto.request.user.*;
-import com.example.jobfinder.data.dto.response.ResponseMessage;
+import com.example.jobfinder.data.dto.response.ApiResponse;
 import com.example.jobfinder.data.dto.response.user.LoginResponseDTO;
 import com.example.jobfinder.utils.enumeration.ERole;
 
 public interface UserService {
-    Object register(UserCreationDTO userCreationDTO);
+    default LoginResponseDTO register(UserCreationDTO userCreationDTO) {
+
+        return null;
+    }
 
     void updateTokenActive(String to, String valueOf);
 
     void updateTokenForgetPassword(String to, String token);
 
-    void updateRefreshToken(String email, String refreshToken);
+    default void updateRefreshToken(String email, String refreshToken) {
+
+    }
 
     ResponseEntity<LoginResponseDTO> login(LoginDTO loginDTO);
 
@@ -26,7 +32,7 @@ public interface UserService {
 
     void resetPasswordByToken(ResetPasswordByToken resetPasswordByTokenDTO);
 
-    ResponseMessage changePassword(ChangePasswordDTO changePasswordDTO);
+    ApiResponse changePassword(ChangePasswordDTO changePasswordDTO);
 
     boolean checkValidOldPassword(String oldPass, String newPass);
 
@@ -39,4 +45,10 @@ public interface UserService {
     Long getCurrentUserId();
 
     UserDTO getCurrentLoginUser();
+
+    boolean existsByEmail(String email);
+
+    User findByEmail(String email);
+
+    User create(User user);
 }

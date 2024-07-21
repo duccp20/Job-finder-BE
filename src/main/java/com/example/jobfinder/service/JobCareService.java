@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.example.jobfinder.data.dto.request.PaginationDTO;
 import com.example.jobfinder.data.dto.request.job.JobCareDTO;
-import com.example.jobfinder.data.dto.response.ResponseMessage;
+import com.example.jobfinder.data.dto.response.ApiResponse;
 
 public interface JobCareService {
 
@@ -20,11 +20,11 @@ public interface JobCareService {
 
     JobCareDTO findByCandidateIdAndJobId(int candidateId, int jobId);
 
-    ResponseMessage create(long idJob);
+    ApiResponse create(long idJob);
 
-    ResponseMessage deleteById(long idJobCare);
+    ApiResponse deleteById(long idJobCare);
 
-    ResponseMessage deleteByJobId(long jobId);
+    ApiResponse deleteByJobId(long jobId);
 
     boolean checkCandidateApplication(int idJob);
 

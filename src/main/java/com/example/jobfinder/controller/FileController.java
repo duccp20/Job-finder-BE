@@ -2,7 +2,7 @@
 //
 // import com.example.jobfinder.constant.ApiURL;
 // import com.example.jobfinder.data.dto.request.candidate.CandidateProfileDTO;
-// import com.example.jobfinder.data.dto.response.ResponseMessage;
+// import com.example.jobfinder.data.dto.response.ApiResponse;
 // import com.example.jobfinder.exception.AccessDeniedException;
 // import com.example.jobfinder.service.FileService;
 // import com.example.jobfinder.service.JsonReaderService;

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @Entity
-@Table(name = "hr")
+@Table(name = "Recruiters")
 public class HR extends Auditable {
 
     @Id

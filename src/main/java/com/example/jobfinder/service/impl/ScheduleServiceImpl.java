@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.jobfinder.data.dto.request.schedule.ScheduleDTO;
-import com.example.jobfinder.data.dto.response.ResponseMessage;
+import com.example.jobfinder.data.dto.response.ApiResponse;
 import com.example.jobfinder.data.entity.Schedule;
 import com.example.jobfinder.data.mapper.ScheduleMapper;
 import com.example.jobfinder.data.repository.ScheduleRepository;
@@ -40,12 +40,12 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public ResponseMessage create(ScheduleDTO scheduleDTO) {
+    public ApiResponse create(ScheduleDTO scheduleDTO) {
         Schedule schedule = scheduleMapper.toEntity(scheduleDTO);
         if (scheduleRepository.existsByName(schedule.getName()))
             throw new InternalServerErrorException(String.format("Exists major named %s", schedule.getName()));
 
-        return ResponseMessage.builder()
+        return ApiResponse.builder()
                 .httpCode(HttpServletResponse.SC_CREATED)
                 .message("Created successfully")
                 .data(scheduleMapper.toDTO(scheduleRepository.save(schedule)))
@@ -53,12 +53,12 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public ResponseMessage deleteById(Integer id) {
+    public ApiResponse deleteById(Integer id) {
         this.scheduleRepository.delete(this.scheduleRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("id", id))));
 
-        return ResponseMessage.builder()
+        return ApiResponse.builder()
                 .httpCode(HttpServletResponse.SC_OK)
                 .message("Deleted successfully")
                 .build();

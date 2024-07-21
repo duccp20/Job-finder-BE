@@ -1,5 +1,6 @@
 package com.example.jobfinder.data.mapper;
 
+import com.example.jobfinder.data.dto.response.user.ShowUserDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
@@ -38,4 +39,6 @@ public interface UserMapper {
     @Mapping(source = "roleDTO", target = "role")
     @Mapping(source = "statusDTO", target = "status")
     User toEntity(UserDTO userDTO);
+
+    ShowUserDTO toShowUserDTO(User user);
 }

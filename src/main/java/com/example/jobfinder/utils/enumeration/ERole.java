@@ -7,6 +7,10 @@ public enum ERole {
 
     private final String NAME;
 
+    public static int adminRole = 1;
+    public static int candidateRole = 2;
+    public static int hrRole = 3;
+
     ERole(String NAME) {
         this.NAME = NAME;
     }

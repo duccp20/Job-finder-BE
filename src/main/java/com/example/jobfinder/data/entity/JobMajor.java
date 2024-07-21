@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "job_major")
+@Table(name = "jobs_majors")
 public class JobMajor implements Serializable {
 
     @Id

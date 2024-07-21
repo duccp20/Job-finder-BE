@@ -8,7 +8,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.*;
 
@@ -18,7 +18,8 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @Entity
-@Table(name = "candidate")
+@Builder
+@Table(name = "candidates")
 public class Candidate extends Auditable {
 
     @Id
@@ -28,7 +29,7 @@ public class Candidate extends Auditable {
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @JsonIgnore
+    @JsonIgnoreProperties(value = {"role", "status"})
     private User user;
 
     @Column(name = "university")

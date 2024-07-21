@@ -20,7 +20,7 @@ import com.example.jobfinder.data.dto.request.candidate.CandidateApplicationDTO;
 import com.example.jobfinder.data.dto.request.candidate.CandidateDTO;
 import com.example.jobfinder.data.dto.request.job.JobDTO;
 import com.example.jobfinder.data.dto.request.user.UserDTO;
-import com.example.jobfinder.data.dto.response.ResponseMessage;
+import com.example.jobfinder.data.dto.response.ApiResponse;
 import com.example.jobfinder.data.dto.response.candidate.ApplicationDTONotShowJob;
 import com.example.jobfinder.data.entity.Candidate;
 import com.example.jobfinder.data.entity.CandidateApplication;
@@ -116,13 +116,13 @@ public class CandidateApplicationServiceImpl implements CandidateApplicationServ
     }
 
     @Override
-    public ResponseMessage checkCandidateApplication(int idJob) {
+    public ApiResponse checkCandidateApplication(int idJob) {
 
         UserDTO user = userService.getCurrentLoginUser();
         Candidate candidateDTO = candidateRepository
                 .findByUserId(user.getId())
                 .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("userID", user.getId())));
-        return ResponseMessage.builder()
+        return ApiResponse.builder()
                 .httpCode(200)
                 .message("success")
                 .data(this.existsByJobIdAndCandidateId(idJob, candidateDTO.getId()))

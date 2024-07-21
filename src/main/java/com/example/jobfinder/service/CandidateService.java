@@ -2,6 +2,7 @@ package com.example.jobfinder.service;
 
 import java.io.IOException;
 
+import com.example.jobfinder.data.entity.Candidate;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.jobfinder.data.dto.request.candidate.CandidateDTO;
@@ -22,4 +23,6 @@ public interface CandidateService {
     Object updateSearchable(long id);
 
     CandidateDTO findByUserId(long id);
+
+    Candidate handleCreateCandidate(Candidate candidate);
 }

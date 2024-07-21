@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.jobfinder.data.dto.request.position.PositionDTO;
-import com.example.jobfinder.data.dto.response.ResponseMessage;
+import com.example.jobfinder.data.dto.response.ApiResponse;
 import com.example.jobfinder.data.entity.Position;
 import com.example.jobfinder.data.mapper.PositionMapper;
 import com.example.jobfinder.data.repository.PositionRepository;
@@ -46,12 +46,12 @@ public class PossitionServiceImpl implements PositionService {
     }
 
     @Override
-    public ResponseMessage create(PositionDTO positionDTO) {
+    public ApiResponse create(PositionDTO positionDTO) {
         Position position = positionMapper.toEntity(positionDTO);
         if (positionRepository.existsByName(position.getName()))
             throw new InternalServerErrorException(String.format("Exists major named %s", position.getName()));
 
-        return ResponseMessage.builder()
+        return ApiResponse.builder()
                 .httpCode(HttpServletResponse.SC_CREATED)
                 .message("Created successfully")
                 .data(positionMapper.toDTO(positionRepository.save(position)))
@@ -59,12 +59,12 @@ public class PossitionServiceImpl implements PositionService {
     }
 
     @Override
-    public ResponseMessage deleteById(Integer id) {
+    public ApiResponse deleteById(Integer id) {
         this.positionRepository.delete(this.positionRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("id", id))));
 
-        return ResponseMessage.builder()
+        return ApiResponse.builder()
                 .httpCode(HttpServletResponse.SC_OK)
                 .message("Deleted successfully")
                 .build();

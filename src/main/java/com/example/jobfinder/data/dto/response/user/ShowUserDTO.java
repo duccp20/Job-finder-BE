@@ -2,6 +2,7 @@ package com.example.jobfinder.data.dto.response.user;
 
 import java.util.Date;
 
+import com.example.jobfinder.data.dto.request.role.RoleDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Getter;
@@ -22,5 +23,5 @@ public class ShowUserDTO {
     private String email;
     private String phone;
     private String avatar;
-    private String role;
+    private RoleDTO role;
 }

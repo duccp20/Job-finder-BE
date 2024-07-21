@@ -12,7 +12,7 @@ import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthen
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
-import com.example.jobfinder.data.dto.response.ResponseMessage;
+import com.example.jobfinder.data.dto.response.ApiResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +43,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json;charset=UTF-8");
 
-            ResponseMessage responseMessage = ResponseMessage.builder()
+            ApiResponse responseMessage = ApiResponse.builder()
                     .httpCode(HttpServletResponse.SC_UNAUTHORIZED)
                     .message("Access Denied")
                     .data(authException.getMessage())

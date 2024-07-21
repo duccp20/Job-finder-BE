@@ -15,4 +15,6 @@ public class UserCreationDTO extends UserProfileDTO {
 
     @NotNull
     private String password;
+
+    private Integer roleID;
 }

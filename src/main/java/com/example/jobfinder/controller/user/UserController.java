@@ -17,7 +17,7 @@ import com.example.jobfinder.constant.ApiURL;
 import com.example.jobfinder.data.dto.request.ChangePasswordDTO;
 import com.example.jobfinder.data.dto.request.mail.EmailRequest;
 import com.example.jobfinder.data.dto.request.user.ResetPasswordByToken;
-import com.example.jobfinder.data.dto.response.ResponseMessage;
+import com.example.jobfinder.data.dto.response.ApiResponse;
 import com.example.jobfinder.service.MailService;
 import com.example.jobfinder.service.UserService;
 
@@ -88,8 +88,7 @@ public class UserController {
     public ResponseEntity<?> resetPasswordByToken(@Valid @RequestBody ResetPasswordByToken resetPasswordByTokenDTO) {
         this.userService.resetPasswordByToken(resetPasswordByTokenDTO);
 
-        return ResponseEntity.ok(
-                new ResponseMessage(HttpServletResponse.SC_OK, "Đổi mật khẩu thành công!", null, null));
+        return ResponseEntity.ok(new ApiResponse(HttpServletResponse.SC_OK, "Đổi mật khẩu thành công!", null, null));
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
@@ -111,7 +110,7 @@ public class UserController {
      */
     @GetMapping
     public ResponseEntity<?> getUserProfile() {
-        return ResponseEntity.ok(new ResponseMessage(
+        return ResponseEntity.ok(new ApiResponse(
                 HttpServletResponse.SC_OK, "Lấy profile thành công!", userService.getUserProfile(), null));
     }
 }

@@ -17,7 +17,7 @@ import com.example.jobfinder.data.dto.request.PaginationDTO;
 import com.example.jobfinder.data.dto.request.candidate.CandidateDTO;
 import com.example.jobfinder.data.dto.request.job.JobCareDTO;
 import com.example.jobfinder.data.dto.request.job.JobDTO;
-import com.example.jobfinder.data.dto.response.ResponseMessage;
+import com.example.jobfinder.data.dto.response.ApiResponse;
 import com.example.jobfinder.data.entity.Candidate;
 import com.example.jobfinder.data.entity.Job;
 import com.example.jobfinder.data.entity.JobCare;
@@ -119,7 +119,7 @@ public class JobCareServiceImpl implements JobCareService {
     }
 
     @Override
-    public ResponseMessage create(long idJob) {
+    public ApiResponse create(long idJob) {
 
         JobDTO jobDTO = jobServiceImpl.findById(idJob);
         CandidateDTO candidateDTO = candidateService.findByUserId(userService.getCurrentUserId());
@@ -140,7 +140,7 @@ public class JobCareServiceImpl implements JobCareService {
         JobCare care = jobCareMapper.toEntity(jobCareDTO);
         jobCareRepository.save(care);
 
-        return ResponseMessage.builder()
+        return ApiResponse.builder()
                 .httpCode(200)
                 .data(jobCareMapper.toDTO(care))
                 .message("Create job care successfully")
@@ -148,7 +148,7 @@ public class JobCareServiceImpl implements JobCareService {
     }
 
     @Override
-    public ResponseMessage deleteById(long idJobCare) {
+    public ApiResponse deleteById(long idJobCare) {
 
         JobCareDTO jobCareDTO = findById((int) idJobCare);
         CandidateDTO candidateDTO = candidateService.findByUserId(userService.getCurrentUserId());
@@ -163,7 +163,7 @@ public class JobCareServiceImpl implements JobCareService {
             this.jobCareRepository.delete(this.jobCareRepository
                     .findById((long) idJobCare)
                     .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("id", idJobCare))));
-            return ResponseMessage.builder()
+            return ApiResponse.builder()
                     .message("Delete job care successfully")
                     .data(jobCareDTO)
                     .build();
@@ -174,14 +174,14 @@ public class JobCareServiceImpl implements JobCareService {
 
     @Override
     @Transactional
-    public ResponseMessage deleteByJobId(long jobId) {
+    public ApiResponse deleteByJobId(long jobId) {
 
         Job job = jobRepository
                 .findById(jobId)
                 .orElseThrow(() -> new ResourceNotFoundException(Collections.singletonMap("id", jobId)));
 
         this.jobCareRepository.deleteJobCareByJob(job);
-        return ResponseMessage.builder()
+        return ApiResponse.builder()
                 .httpCode(200)
                 .message("Delete job care successfully")
                 .build();

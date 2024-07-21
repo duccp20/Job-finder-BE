@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.jobfinder.data.dto.response.ResponseMessage;
+import com.example.jobfinder.data.dto.response.ApiResponse;
 import com.example.jobfinder.utils.common.UpdateFile;
 import com.google.auth.Credentials;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -141,7 +141,7 @@ public class UpdateFileImpl implements UpdateFile {
         Blob blob = storage.get(BlobId.of(bucketName, fileName));
         blob.downloadTo(Paths.get(destFilePath));
         log.info("destFilePath" + destFilePath);
-        return ResponseMessage.builder()
+        return ApiResponse.builder()
                 .httpCode(HttpStatus.OK.value())
                 .message("Downloaded successfully")
                 .data(destFilePath)

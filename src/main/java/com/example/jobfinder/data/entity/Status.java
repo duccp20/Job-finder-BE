@@ -3,14 +3,16 @@ package com.example.jobfinder.data.entity;
 import jakarta.persistence.*;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "status")
+@Table(name = "statuses")
 public class Status extends Auditable {
 
     @Id

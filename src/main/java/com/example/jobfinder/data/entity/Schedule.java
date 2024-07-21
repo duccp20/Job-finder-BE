@@ -2,17 +2,15 @@ package com.example.jobfinder.data.entity;
 
 import jakarta.persistence.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
+@Builder
 @Entity
-@Table(name = "schedule")
+@Table(name = "schedules")
 public class Schedule extends Auditable {
 
     @Id

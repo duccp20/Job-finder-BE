@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.jobfinder.constant.ApiURL;
 import com.example.jobfinder.data.dto.request.schedule.ScheduleDTO;
-import com.example.jobfinder.data.dto.response.ResponseMessage;
+import com.example.jobfinder.data.dto.response.ApiResponse;
 import com.example.jobfinder.service.ScheduleService;
 
 @RestController
@@ -22,7 +22,7 @@ public class ScheduleController {
     @GetMapping("")
     public ResponseEntity<?> findAll() {
         return new ResponseEntity<>(
-                ResponseMessage.builder()
+                ApiResponse.builder()
                         .httpCode(HttpServletResponse.SC_OK)
                         .message("Get all majors successfully")
                         .data(this.scheduleService.findAll())
